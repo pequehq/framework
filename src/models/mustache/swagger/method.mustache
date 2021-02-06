@@ -1,0 +1,33 @@
+tags:
+{{#prefix}}
+    - {{.}}
+{{/prefix}}
+summary: '{{{options.summary}}}'
+operationId: {{{options.operationId}}}
+parameters:
+{{#options.parameters}}
+    - $ref: '{{{.}}}'
+{{/options.parameters}}
+{{#options.requestBody}}
+requestBody:
+    $ref: '{{{.}}}'
+{{/options.requestBody}}
+responses:
+{{#route.responses}}
+    {{statusCode}}:
+        description: '{{{description}}}'
+        {{#object}}
+        content:
+            {{{content}}}:
+                schema:
+                    allOf:
+                        - $ref: '{{{refPath}}}'
+                        - $ref: '../../../components/schemas/schemas-generated.yaml#/BaseResponseDto'
+        {{/object}}
+{{/route.responses}}
+{{#security.length}}
+security:
+    {{#security}}
+    - {{{.}}}{{^isSecurityOptional}}: []{{/isSecurityOptional}}
+    {{/security}}
+{{/security.length}}

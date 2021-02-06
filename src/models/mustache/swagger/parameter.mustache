@@ -1,0 +1,39 @@
+{{{name}}}:
+{{#properties.length}}
+{{#properties}}
+    {{^isRef}}
+    {{^isArray}}
+    {{^value}}
+    {{name}}:
+        type: {{type}}
+    {{#isEnum}}
+        enum:
+        {{#enum}}
+            - {{{.}}}
+        {{/enum}}
+    {{/isEnum}}
+    {{/value}}
+    {{/isArray}}
+    {{/isRef}}
+    {{#value}}
+    {{name}}: {{{value}}}
+    {{/value}}
+    {{#isRef}}
+        {{^isArray}}
+            {{name}}:
+            $ref: "{{{ref}}}"
+        {{/isArray}}
+    {{/isRef}}
+    {{#isArray}}
+        {{name}}:
+        type: array
+        items:
+        {{#isArrayObject}}
+            $ref: "{{{ref}}}"
+        {{/isArrayObject}}
+        {{^isArrayObject}}
+            type: {{{arrayType}}}
+        {{/isArrayObject}}
+    {{/isArray}}
+{{/properties}}
+{{/properties.length}}
