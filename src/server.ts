@@ -1,14 +1,13 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { ControllerDefinition, ServerOptions } from './models';
+import { ControllerDefinition, ServerOptions } from './models/_index';
 import { DECORATORS } from './models/constants/decorators';
-import { RouteDefinition } from './models';
+import { RouteDefinition } from './models/_index';
 import { buildParameters } from './utils/express/factory';
-import { restFunction } from './utils/http.utils';
-import { fallback } from './middlewares';
-import { pushHttpEvents } from './middlewares';
+import { httpResponse } from './utils/http.utils';
+import { fallback } from './middlewares/_index';
+import { pushHttpEvents } from './middlewares/_index';
 import { getClassDependencies, loadInjectables } from './utils/dependencies.utils';
-import { Injector } from './models/dependency-injection/injector.service';
 import { Controllers } from './models/dependency-injection/controller.service';
 
 export interface GlobalMiddlewares {
@@ -59,7 +58,8 @@ export class Server {
       // Iterate the routes for express registration.
       routes.forEach(async route => {
         if (!route.documentOnly) {
-          let functionToExecute = restFunction(
+          console.info(`[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`);
+          let functionToExecute = httpResponse(
             (req: Request, res: Response) => {
               const args = buildParameters(req, res, route);
               return instance[route.method.name](...args);

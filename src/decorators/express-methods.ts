@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { MiddlewareHandler } from '../models/interfaces/types';
+import { MiddlewareHandler } from '../models/_index';
 import { methodBuilder } from './utils/decorators';
 
 export const Get = (

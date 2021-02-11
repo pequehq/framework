@@ -1,5 +1,5 @@
-import { Injectable } from '../../../src/decorators';
-import { HttpService } from '../../../src/services';
+import { Injectable } from '../../../src/decorators/_index';
+import { HttpService } from '../../../src/services/_index';
 
 @Injectable()
 export class ExternalTestService {

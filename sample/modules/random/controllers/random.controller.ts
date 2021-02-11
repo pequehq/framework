@@ -1,4 +1,4 @@
-import { Cacheable, Controller, Get, Query, Request, Response } from '../../../../src/decorators';
+import { Cacheable, Controller, Get, Query, Request, Response } from '../../../../src/decorators/_index';
 
 @Controller('/random')
 export class RandomController {

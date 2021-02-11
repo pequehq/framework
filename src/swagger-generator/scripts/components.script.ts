@@ -1,7 +1,7 @@
 import * as mustache from 'mustache';
 import * as path from 'path';
 import * as fs from 'fs';
-import { SwaggerComponents } from '../../decorators';
+import { SwaggerComponents } from '../../decorators/_index';
 import { DECORATORS } from '../../models/constants/decorators';
 import { appendSchemaObject } from '../index';
 

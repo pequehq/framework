@@ -1,13 +1,13 @@
-import { RouteDefinition } from '../../models';
+import { RouteDefinition } from '../../models/_index';
 import { DECORATORS } from '../../models/constants/decorators';
 import {
   ParamType,
   ExpressMethods,
   MiddlewareHandler
-} from '../../models';
-import { ControllerDefinition } from '../../models';
+} from '../../models/_index';
+import { ControllerDefinition } from '../../models/_index';
 import { Injector } from '../../models/dependency-injection/injector.service';
-import { ModuleDefinition } from '../../models';
+import { ModuleDefinition } from '../../models/_index';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 
 export const Providers = [];

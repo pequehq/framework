@@ -1,4 +1,4 @@
-import { MiddlewareHandler } from '../models';
+import { MiddlewareHandler } from '../models/_index';
 import { controllerBuilder } from './utils/decorators';
 
 export const Controller = (

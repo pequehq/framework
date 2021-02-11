@@ -3,10 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { ExpressControllers } from '../controllers/controllers.module';
 import { DECORATORS } from '../../models/constants/decorators';
-import { ControllerDefinition } from '../../models';
+import { ControllerDefinition } from '../../models/_index';
 import { SwaggerRouteDefinition } from '../../models/interfaces/swagger/swagger-route-definition.interface';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../../utils/express/factory';
-import { SwaggerSecurityType } from '../../models';
+import { SwaggerSecurityType } from '../../models/_index';
 import { SWAGGER } from '../../models/constants/swagger';
 
 export const generateControllers = () => {

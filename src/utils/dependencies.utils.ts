@@ -1,5 +1,5 @@
 import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../decorators';
+import { Providers } from '../decorators/_index';
 
 export const getClassDependencies = (clazz: any) => {
   // Getting the params to be injected declared inside the constructor.

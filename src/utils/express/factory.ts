@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { RouteDefinition } from '../../models';
+import { RouteDefinition } from '../../models/_index';
 
 export const buildParameters = (
   req: Request,

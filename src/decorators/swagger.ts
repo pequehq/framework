@@ -1,6 +1,6 @@
-import { SwaggerTags } from '../models/interfaces/types';
+import { SwaggerTags } from '../models/_index';
 import { SwaggerResponseType } from '../models/interfaces/swagger/swagger-response-type.interface';
-import { RouteOptions } from '../models/interfaces/route-options';
+import { RouteOptions } from '../models/_index';
 import { SwaggerPropertyOptions } from '../models/interfaces/swagger/swagger-property-options.interface';
 import {
   swaggerComponentBuilder,

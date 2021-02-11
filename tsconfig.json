@@ -24,8 +24,8 @@
         "**/*.test.ts",
         "build",
         "dist",
+        "test",
         "src/swagger-generator",
-        "sample",
-        "diagrams"
+        "sample"
     ]
 }

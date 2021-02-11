@@ -1,6 +1,6 @@
-import { Injectable } from '../../../src/decorators';
-import { HttpEventService } from '../../../src/services';
-import { HttpEvent } from '../../../src/models';
+import { Injectable } from '../../../src/decorators/_index';
+import { HttpEventService } from '../../../src/services/_index';
+import { HttpEvent } from '../../../src/models/_index';
 
 @Injectable()
 export class TestRootService {

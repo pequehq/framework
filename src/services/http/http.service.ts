@@ -1,4 +1,4 @@
-import { Injectable } from '../../decorators';
+import { Injectable } from '../../decorators/_index';
 import { HTTPError, Options, Response } from 'got';
 const got = require('got');
 

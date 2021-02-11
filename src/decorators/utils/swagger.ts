@@ -1,11 +1,11 @@
 import { DECORATORS } from '../../models/constants/decorators';
-import { SwaggerTags } from '../../models';
-import { RouteDefinition } from '../../models';
+import { SwaggerTags } from '../../models/_index';
+import { RouteDefinition } from '../../models/_index';
 import { SwaggerResponseType } from '../../models/interfaces/swagger/swagger-response-type.interface';
 import { SwaggerRouteDefinition } from '../../models/interfaces/swagger/swagger-route-definition.interface';
 import { SwaggerResponseDefinition } from '../../models/interfaces/swagger/swagger-response-definition.interface';
 import { SWAGGER } from '../../models/constants/swagger';
-import { RouteOptions } from '../../models';
+import { RouteOptions } from '../../models/_index';
 import { SwaggerPropertyOptions } from '../../models/interfaces/swagger/swagger-property-options.interface';
 
 export const SwaggerComponents = [];

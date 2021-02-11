@@ -1,5 +1,5 @@
 import { Server } from '../..';
-import { ServerOptions } from '../models';
+import { ServerOptions } from '../models/_index';
 import * as clusterUtils from '../utils/cluster.utils';
 
 export class ExpressFactory {
@@ -9,12 +9,13 @@ export class ExpressFactory {
     } else {
       const app = new Server(options).bootstrap();
 
-      const expressServer = app.listen(
-        options.port || 8888,
-        options.hostname || 'localhost',
-        () => {
-          console.log('Server is running');
-        });
+      const port = options.port || 8888;
+      const hostname = options.hostname || 'localhost';
+      const expressServer = app.listen(port, hostname, () => {
+        console.info(`\n`);
+        console.info(`Server is running @${hostname}:${port}`);
+        console.info(`CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}`);
+      });
 
       /*
        * Handling options.

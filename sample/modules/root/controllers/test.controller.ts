@@ -1,5 +1,5 @@
-import { Controller, Get } from '../../../../src/decorators';
-import { HttpService } from '../../../../src/services';
+import { Controller, Get } from '../../../../src/decorators/_index';
+import { HttpService } from '../../../../src/services/_index';
 import { ExternalTestService } from '../external-test.service';
 
 @Controller('/test')
