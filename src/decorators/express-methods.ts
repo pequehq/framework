@@ -26,7 +26,7 @@ export const Put = (
   documentOnly = false,
   noRestWrapper = false
 ): MethodDecorator => {
-  return methodBuilder('post', path, middleware, documentOnly, noRestWrapper);
+  return methodBuilder('put', path, middleware, documentOnly, noRestWrapper);
 };
 
 export const Patch = (
@@ -35,7 +35,7 @@ export const Patch = (
   documentOnly = false,
   noRestWrapper = false
 ): MethodDecorator => {
-  return methodBuilder('post', path, middleware, documentOnly, noRestWrapper);
+  return methodBuilder('patch', path, middleware, documentOnly, noRestWrapper);
 };
 
 export const Delete = (
