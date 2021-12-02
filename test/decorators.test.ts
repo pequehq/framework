@@ -7,6 +7,8 @@ import { ControllerDefinition } from '../src/models/controller-definition.interf
 import { Injectable } from '../src/decorators/injectable';
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
+import { Request, Response, Header, Body, Param, Query } from '../src/decorators/parameters';
+import exp = require('constants');
 
 const testRoute: RouteDefinition = {
   requestMethod: 'post',
@@ -124,7 +126,8 @@ describe('Routes', () => {
 describe('Service providers', () => {
   describe('@Injectable() decorator', () => {
     @Injectable()
-    class TestService { }
+    class TestService {
+    }
 
     loadInjectables();
 
@@ -133,4 +136,57 @@ describe('Service providers', () => {
       expect(testService.constructor.name).toEqual(TestService.name);
     });
   });
+})
+
+describe('Parameters decorators', () => {
+  @Controller('/')
+  class TestController {
+    @Get('/')
+    testRoute(
+      @Request() req: any,
+      @Response() res: any,
+      @Header('header') header: any,
+      @Body() body: any,
+      @Param('param') param: any,
+      @Query('query') query: any
+    ) {
+      return;
+    }
+  }
+
+  it('should contain the right REQUEST metadata', () => {
+    const testParameter = [{ testRoute: { index: 0, param: undefined } }]
+    const parameterMetadata = Reflect.getMetadata('request', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
+
+  it('should contain the right RESPONSE metadata', () => {
+    const testParameter = [{ testRoute: { index: 1, param: undefined } }]
+    const parameterMetadata = Reflect.getMetadata('response', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
+
+  it('should contain the right HEADER metadata', () => {
+    const testParameter = [{ testRoute: { index: 2, param: 'header' } }]
+    const parameterMetadata = Reflect.getMetadata('headers', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
+
+  it('should contain the right BODY metadata', () => {
+    const testParameter = [{ testRoute: { index: 3 } }]
+    const parameterMetadata = Reflect.getMetadata('body', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
+
+  it('should contain the right PARAM metadata', () => {
+    const testParameter = [{ testRoute: { index: 4, param: 'param' } }]
+    const parameterMetadata = Reflect.getMetadata('parameters', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
+
+  it('should contain the right QUERY metadata', () => {
+    const testParameter = [{ testRoute: { index: 5, param: 'query' } }]
+    const parameterMetadata = Reflect.getMetadata('queries', TestController) || [];
+    expect(parameterMetadata).toEqual(testParameter);
+  })
 })

@@ -25,6 +25,8 @@ const getMetadataKeyFromParam = (param: ParamType) => {
       return DECORATORS.metadata.REQUEST;
     case 'response':
       return DECORATORS.metadata.RESPONSE;
+    case 'query':
+      return DECORATORS.metadata.QUERY;
     default:
       return;
   }

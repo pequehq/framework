@@ -8,6 +8,7 @@ export const DECORATORS = {
     HEADERS: 'headers',
     REQUEST: 'request',
     RESPONSE: 'response',
+    QUERY: 'queries',
     swagger: {
       ROUTES: 'swagger_route',
       DTO_CLASS: 'swagger_dto-class',

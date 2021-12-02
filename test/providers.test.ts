@@ -1,7 +1,6 @@
 import { Injectable } from '../src/decorators/injectable';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { Injector } from '../src/models/dependency-injection/injector.service';
-import { Providers } from '../src/decorators/utils/decorators';
 
 describe('Decorators utils', () => {
   @Injectable()
