@@ -1,6 +1,6 @@
 import { Injector } from './injector.service';
 
-class ControllerService {
+export class ControllerService {
   private controllers = [];
 
   push(controller: any) {

@@ -6,6 +6,5 @@ export * from './cacheable';
 export * from './utils/swagger';
 export * from './utils/decorators';
 export * from './tests/test-property';
-export * from './metrics/method-measure';
 export * from './injectable';
 export * from './module';

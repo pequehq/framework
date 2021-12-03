@@ -8,7 +8,6 @@ import { Injectable } from '../src/decorators/injectable';
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { Request, Response, Header, Body, Param, Query } from '../src/decorators/parameters';
-import exp = require('constants');
 
 const testRoute: RouteDefinition = {
   requestMethod: 'post',
