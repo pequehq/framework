@@ -26,13 +26,14 @@ const testRoute: RouteDefinition = {
   noRestWrapper: false
 }
 
+const testMiddleware = () => {};
 const testController: ControllerDefinition = {
   prefix: '/test-controller',
-  middlewares: []
+  middlewares: [testMiddleware]
 }
 
 describe('@Controller() decorator', () => {
-  @Controller('/test-controller')
+  @Controller('/test-controller', testMiddleware)
   class TestController {
     testRoute() {
       return;

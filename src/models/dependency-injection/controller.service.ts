@@ -13,4 +13,4 @@ export class ControllerService {
 }
 
 Injector.set('ControllerService', ControllerService);
-export const Controllers = Injector.resolve('ControllerService');
+export const Controllers: ControllerService = Injector.resolve('ControllerService');
