@@ -1,4 +1,4 @@
-# Common Express Framework
+# Peque.ts
 
 [![CircleCI](https://circleci.com/gh/ukaoskid/peque-fwork.svg?style=shield)]()
 
