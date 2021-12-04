@@ -1,6 +1,7 @@
 version: 2.1
 
 orbs:
+  codecov: codecov/codecov@3.1.1
   node: circleci/node@4.7
 
 workflows:
@@ -9,3 +10,5 @@ workflows:
       - node/test:
           version: '12.20'
           pkg-manager: npm
+          post-steps:
+            - codecov/upload
