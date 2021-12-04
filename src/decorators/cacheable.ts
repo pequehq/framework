@@ -2,7 +2,7 @@ import { Injector } from '../models/dependency-injection/injector.service';
 
 interface CacheOptions {
   key: string | Function;
-  server: string;
+  server?: string;
   ttl?: number;
 }
 
@@ -16,7 +16,7 @@ export const Cacheable = (options: CacheOptions) => {
       if (cache) {
         return cache;
       } else {
-        const original = originalMethod.apply(this, args);
+        const original = await Promise.resolve(originalMethod.apply(this, args));
         await cacheService.set(key, original, 0);
         return original;
       }
