@@ -9,6 +9,7 @@ import { fallback } from './middlewares/_index';
 import { pushHttpEvents } from './middlewares/_index';
 import { getClassDependencies, loadInjectables } from './utils/dependencies.utils';
 import { Controllers } from './models/dependency-injection/controller.service';
+import { errorHandler, logError } from './middlewares/error-handler.middleware';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -87,7 +88,13 @@ export class Server {
     this.options.existingApp.use(fallback);
 
     // Add post-route Middlewares.
-    this.addMiddlewares(this.options.globalMiddlewares.postRoutes);
+    this.addMiddlewares([
+      ...this.options.globalMiddlewares.postRoutes,
+      logError,
+      errorHandler,
+    ]);
+
+    this.setDefaultUnhandledExceptionsFallback();
 
     return this.options.existingApp;
   }
@@ -104,5 +111,10 @@ export class Server {
     middlewares.forEach(middleware => {
       this.options.existingApp.use(middleware);
     });
+  }
+
+  private setDefaultUnhandledExceptionsFallback() {
+    process.on('uncaughtException', error => console.error(error));
+    process.on('unhandledRejection', error => console.error(error));
   }
 }

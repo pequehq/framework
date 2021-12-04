@@ -24,4 +24,11 @@ export class TestController {
   async external() {
     return { test: 'hello world', result: await this.externalService.getExternalCall()};
   }
+
+  @Get('/error')
+  async error() {
+    const test = function () {}
+    test();
+    return { test: 'hello world' };
+  }
 }
