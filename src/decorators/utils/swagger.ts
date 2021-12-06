@@ -1,5 +1,4 @@
 import { DECORATORS } from '../../models/constants/decorators';
-import { SwaggerTags } from '../../models/_index';
 import { RouteDefinition } from '../../models/_index';
 import { SwaggerResponseType } from '../../models/interfaces/swagger/swagger-response-type.interface';
 import { SwaggerRouteDefinition } from '../../models/interfaces/swagger/swagger-route-definition.interface';
@@ -14,16 +13,16 @@ export const SwaggerParameters = [];
 export const SwaggerSecuritySchemas = [];
 
 export const swaggerComponentBuilder = (
-  isResponseBody = false
+  isRequestBody = false
 ): ClassDecorator => {
   return (target: any) => {
-    isResponseBody
+    isRequestBody
       ? SwaggerResponseBodies.push(target)
       : SwaggerComponents.push(target);
   };
 };
 
-export const swaggerTagBuilder = (tag: SwaggerTags[]): ClassDecorator => {
+export const swaggerTagBuilder = (tag: string[]): ClassDecorator => {
   return (target: any) => {
     Reflect.defineMetadata(DECORATORS.metadata.swagger.TAGS, tag, target);
 
@@ -38,6 +37,17 @@ export const swaggerDtoPropertyBuilder = (
   object: any = undefined
 ): PropertyDecorator => {
   return (target, propertyKey: string | symbol): void => {
+    let ref,
+      multipleRefs = false;
+    if (Array.isArray(object)) {
+      multipleRefs = true;
+      ref = object.map(el => ({
+        refPath: `${SWAGGER.refs.COMPONENTS_SCHEMA.replace(
+          '{{DTO}}',
+          el.name
+        )}`
+      }));
+    }
     const property = {
       name: propertyKey,
       type: options.type,
@@ -50,13 +60,18 @@ export const swaggerDtoPropertyBuilder = (
           ? JSON.stringify(options.example)
           : undefined,
       description: options.description ? options.description : undefined,
-      ref: object
-        ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', object.name)}`
-        : undefined,
+      multipleRefs,
+      ref:
+        ref ||
+        (object
+          ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace(
+            '{{DTO}}',
+            object.name
+          )}`
+          : undefined),
       isRef: object !== undefined, // Inverted logic for Mustache template.
       isArray: options.type === 'array',
       required: options.required,
-      value: options.value,
       object
     };
     const key = `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${target.constructor.name}`;
@@ -115,15 +130,19 @@ export const swaggerResponseBuilder = (
     });
 
     // Adjust Route options.
-    options.parameters.forEach((parameter, index, array) => {
+    options.parameters?.forEach((parameter, index, array) => {
       array[index] = `${SWAGGER.refs.PATHS_PARAMETERS}${parameter}`;
     });
     options.requestBody = options.requestBody
-      ? `${SWAGGER.refs.PATHS_REQUEST_BODIES.replace(
+      ? `${SWAGGER.refs.PATHS_SCHEMA.replace(
         '{{DTO}}',
         options.requestBody.name
-      )}${options.requestBody.name}`
+      )}`
       : undefined;
+
+    options.content = options.content
+      ? options.content
+      : 'application/json; charset=utf-8';
 
     swaggerRoutes.push({
       options,

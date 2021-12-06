@@ -1,9 +1,9 @@
 import * as mustache from 'mustache';
 import * as path from 'path';
 import * as fs from 'fs';
-import { SwaggerComponents } from '../../decorators/_index';
-import { DECORATORS } from '../../models/constants/decorators';
-import { appendSchemaObject } from '../index';
+import { DECORATORS } from '../../../models/constants/decorators';
+import { SwaggerComponents } from '../../../..';
+import { appendSchemaObject } from '../../swagger-factory';
 
 export const generateComponents = () => {
   const components = [...SwaggerComponents];
@@ -11,11 +11,10 @@ export const generateComponents = () => {
   console.log('Components:');
   const componentGeneratedFolder = path.join(
     __dirname,
-    '../swagger/components/schemas/generated'
+    '../../../swagger/components/schemas/generated'
   );
-  if (!fs.existsSync(componentGeneratedFolder)) {
-    fs.mkdirSync(componentGeneratedFolder);
-  }
+  fs.mkdirSync(componentGeneratedFolder, { recursive: true });
+
   components.forEach(component => {
     // Looks for any parent DTO.
     console.log(component.name);
@@ -35,7 +34,7 @@ export const generateComponents = () => {
     // Merging all properties around extended DTOs
     properties = [...properties, ...parentProperties];
     const template = fs.readFileSync(
-      path.join(__dirname, '../models/mustache/swagger/component.mustache'),
+      path.join(__dirname, '../../../models/mustache/swagger/component.mustache'),
       'utf8'
     );
     const fileName = `${component.name}.yaml`;

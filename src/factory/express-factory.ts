@@ -3,14 +3,18 @@ import { ServerOptions } from '../models/_index';
 import * as clusterUtils from '../utils/cluster.utils';
 
 export class ExpressFactory {
+  private static sharedOptions: ServerOptions;
+
   static createServer = async (options: ServerOptions) => {
+    ExpressFactory.sharedOptions = options;
     if (options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
     } else {
-      const app = new Server(options).bootstrap();
-
+      const server = new Server(options);
+      const app = await server.bootstrap();
       const port = options.port || 8888;
       const hostname = options.hostname || 'localhost';
+
       const expressServer = app.listen(port, hostname, () => {
         console.info(`\n`);
         console.info(`Server is running @${hostname}:${port}`);
@@ -31,4 +35,8 @@ export class ExpressFactory {
       }
     }
   };
+
+  static getServerOptions() {
+    return ExpressFactory.sharedOptions;
+  }
 }

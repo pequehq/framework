@@ -6,4 +6,5 @@ export interface RouteOptions {
   parameters: string[];
   security?: SwaggerSecurityType[];
   requestBody?: any;
+  content?: string;
 }

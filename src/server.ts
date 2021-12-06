@@ -10,6 +10,11 @@ import { pushHttpEvents } from './middlewares/_index';
 import { getClassDependencies, loadInjectables } from './utils/dependencies.utils';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { errorHandler, logError } from './middlewares/error-handler.middleware';
+import { SwaggerFactory } from './factory/swagger-factory';
+import $RefParser from '@apidevtools/json-schema-ref-parser';
+import YAML from 'yamljs';
+import { getPath } from './utils/fs.utils';
+import swaggerUi from 'swagger-ui-express';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -22,7 +27,7 @@ export class Server {
   constructor(private options: ServerOptions) {
   }
 
-  bootstrap() {
+  async bootstrap() {
     // Load injectables and controllers.
     this.loadInjectables();
     this.loadControllers();
@@ -83,6 +88,14 @@ export class Server {
         }
       });
     });
+
+    // OpenAPI.
+    if (this.options.swagger) {
+      const swaggerFactory = new SwaggerFactory();
+      swaggerFactory.generate();
+      const swaggerDocument =  await $RefParser.dereference(YAML.parse(getPath('../swagger/base-swagger-doc.yaml')));
+      this.options.existingApp.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    }
 
     // Add fallback.
     this.options.existingApp.use(fallback);

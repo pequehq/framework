@@ -1,34 +1,47 @@
-import { Controller, Get } from '../../../../src/decorators/_index';
+import { Controller, Get, SwaggerResponse, SwaggerTag } from '../../../../src/decorators/_index';
 import { HttpService } from '../../../../src/services/_index';
 import { ExternalTestService } from '../external-test.service';
+import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
+import { ExternalDto } from '../../../models/dto/external.dto';
 
+@SwaggerTag(['Test'])
 @Controller('/test')
 export class TestController {
   constructor(private readonly httpService: HttpService,
               private readonly externalService: ExternalTestService) {
   }
 
+  @SwaggerResponse({
+    summary: 'Hello World',
+    operationId: 'helloWorld',
+    parameters: []
+  }, [
+    {
+      statusCode: 200,
+      object: HelloWorldDto,
+      content: 'application/json; charset=utf-8',
+      description: 'Hello World returned'
+    }
+  ])
   @Get('/hello-world')
   async helloWorld() {
-    const httpTest = await this.httpService.get({
-      query: {
-        param1: 'test',
-        param2: 12345
-      },
-      url: 'https://httpbin.org/get',
-    });
-    return { test: 'hello world', result: httpTest };
+    return { test: 'hello world' };
   }
 
+  @SwaggerResponse({
+    summary: 'External call',
+    operationId: 'external',
+    parameters: []
+  }, [
+    {
+      statusCode: 200,
+      object: ExternalDto,
+      content: 'application/json; charset=utf-8',
+      description: 'External call returned'
+    }
+  ])
   @Get('/external')
   async external() {
-    return { test: 'hello world', result: await this.externalService.getExternalCall()};
-  }
-
-  @Get('/error')
-  async error() {
-    const test = function () {}
-    test();
-    return { test: 'hello world' };
+    return { external: this.externalService.getExternalCall() };
   }
 }

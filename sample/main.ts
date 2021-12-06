@@ -10,14 +10,34 @@ async function startUp() {
       rootModule: TestRootModule,
       globalMiddlewares: {
         preRoutes: [
-          bodyParser.urlencoded({extended: true}),
-          bodyParser.json({limit: '2m'})
+          bodyParser.urlencoded({ extended: true }),
+          bodyParser.json({ limit: '2m' })
         ],
         postRoutes: [cors]
+      },
+      swagger: {
+        folder: '/doc',
+        info: {
+          title: 'Test API',
+          description: 'Test API description',
+          contacts: {
+            name: 'Simone Di Cicco',
+            email: 'simone.dicicco@gmail.com'
+          },
+          version: '1.0.0'
+        },
+        servers: [{ url: 'http://api.test.com/'}],
+        tags: [
+          {
+            name: 'Tag',
+            description: 'Description'
+          }
+        ]
       },
       isCpuClustered: false
     }
   );
 }
+
 startUp();
 

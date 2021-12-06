@@ -1,47 +1,64 @@
 type: object
 {{#properties.length}}
 {{#requiredFields.length}}
-required:
-    {{#requiredFields}}
+  required:
+  {{#requiredFields}}
     - {{{name}}}
-    {{/requiredFields}}
+  {{/requiredFields}}
 {{/requiredFields.length}}
 properties:
 {{#properties}}
-    {{^isRef}}
+  {{^isRef}}
     {{^isArray}}
     {{name}}:
-        {{#description}}
+      {{#description}}
         description: {{{.}}}
-        {{/description}}
-        type: {{type}}
-        {{#isEnum}}
+      {{/description}}
+      type: {{type}}
+      {{#isEnum}}
         enum:
-            {{#enum}}
-            - {{{.}}}
-            {{/enum}}
-        {{/isEnum}}
-        {{#example}}
+        {{#enum}}
+          - {{{.}}}
+        {{/enum}}
+      {{/isEnum}}
+      {{#example}}
         example: {{{.}}}
-        {{/example}}
+      {{/example}}
     {{/isArray}}
-    {{/isRef}}
-    {{#isRef}}
+  {{/isRef}}
+  {{#isRef}}
     {{^isArray}}
+      {{name}}:
+      $ref: "{{{ref}}}"
+    {{/isArray}}
+  {{/isRef}}
+  {{#isArray}}
     {{name}}:
+    type: array
+    items:
+    {{#isArrayObject}}
+      {{#multipleRefs}}
+
+        anyOf:
+        {{#ref}}
+          - $ref: '{{{refPath}}}'
+        {{/ref}}
+      {{/multipleRefs}}
+      {{^multipleRefs}}
         $ref: '{{{ref}}}'
-    {{/isArray}}
-    {{/isRef}}
-    {{#isArray}}
-    {{name}}:
-        type: array
-        items:
-            {{#isArrayObject}}
-            $ref: '{{{ref}}}'
-            {{/isArrayObject}}
-            {{^isArrayObject}}
-            type: {{{arrayType}}}
-            {{/isArrayObject}}
-    {{/isArray}}
+      {{/multipleRefs}}
+    {{/isArrayObject}}
+    {{^isArrayObject}}
+      {{#arrayType}}
+        type: {{{arrayType}}}
+      {{/arrayType}}
+      {{^arrayType}}
+        anyOf:
+        - type: object
+        - type: string
+        - type: integer
+      {{/arrayType}}
+    {{/isArrayObject}}
+  {{/isArray}}
 {{/properties}}
 {{/properties.length}}

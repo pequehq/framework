@@ -1,4 +1,3 @@
-import { SwaggerTags } from '../models/_index';
 import { SwaggerResponseType } from '../models/interfaces/swagger/swagger-response-type.interface';
 import { RouteOptions } from '../models/_index';
 import { SwaggerPropertyOptions } from '../models/interfaces/swagger/swagger-property-options.interface';
@@ -11,6 +10,7 @@ import {
   swaggerTagBuilder
 } from './utils/swagger';
 
+
 export const SwaggerComponent = (): ClassDecorator => {
   return swaggerComponentBuilder();
 };
@@ -19,7 +19,7 @@ export const SwaggerResponseBody = (): ClassDecorator => {
   return swaggerComponentBuilder(true);
 };
 
-export const SwaggerProperty = (
+export const SwaggerDtoProperty = (
   options: SwaggerPropertyOptions,
   object: any = undefined
 ): PropertyDecorator => {
@@ -33,7 +33,7 @@ export const SwaggerResponse = (
   return swaggerResponseBuilder(options, responses);
 };
 
-export const SwaggerTag = (tag: SwaggerTags[]): ClassDecorator => {
+export const SwaggerTag = (tag: string[]): ClassDecorator => {
   return swaggerTagBuilder(tag);
 };
 

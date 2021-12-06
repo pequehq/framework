@@ -1,49 +1,45 @@
-{{name}}:
-    content:
-        '*/*':
-            schema:
-                type: object
-                {{#requiredFields.length}}
-                required:
-                {{#requiredFields}}
-                    - {{{name}}}
-                {{/requiredFields}}
-                {{/requiredFields.length}}
-                properties:
-                {{#properties}}
-                    {{^isRef}}
-                    {{^isArray}}
-                    {{name}}:
-                        {{#description}}
-                        description: {{{.}}}
-                        {{/description}}
-                        type: {{type}}
-                        {{#isEnum}}
-                        enum:
-                            {{#enum}}
-                            - {{{.}}}
-                            {{/enum}}
-                        {{/isEnum}}
-                        {{#example}}
-                        example: {{{.}}}
-                        {{/example}}
-                    {{/isArray}}
-                    {{/isRef}}
-                    {{#isRef}}
-                    {{^isArray}}
-                    {{name}}:
-                        $ref: '{{{ref}}}'
-                    {{/isArray}}
-                    {{/isRef}}
-                    {{#isArray}}
-                    {{name}}:
-                        type: array
-                        items:
-                            {{#isArrayObject}}
-                            $ref: '{{{ref}}}'
-                            {{/isArrayObject}}
-                            {{^isArrayObject}}
-                            type: {{{arrayType}}}
-                            {{/isArrayObject}}
-                    {{/isArray}}
-                {{/properties}}
+type: object
+{{#requiredFields.length}}
+  required:
+  {{#requiredFields}}
+    - {{{name}}}
+  {{/requiredFields}}
+{{/requiredFields.length}}
+properties:
+{{#properties}}
+  {{^isRef}}
+    {{^isArray}}
+      {{name}}:
+      {{#description}}
+        description: {{{.}}}
+      {{/description}}
+      type: {{type}}
+      {{#isEnum}}
+        enum:
+        {{#enum}}
+          - {{{.}}}
+        {{/enum}}
+      {{/isEnum}}
+      {{#example}}
+        example: {{{.}}}
+      {{/example}}
+    {{/isArray}}
+  {{/isRef}}
+  {{#isRef}}
+    {{^isArray}}
+      {{name}}:
+      $ref: '{{{ref}}}'
+    {{/isArray}}
+  {{/isRef}}
+  {{#isArray}}
+    {{name}}:
+    type: array
+    items:
+    {{#isArrayObject}}
+      $ref: '{{{ref}}}'
+    {{/isArrayObject}}
+    {{^isArrayObject}}
+      type: {{{arrayType}}}
+    {{/isArrayObject}}
+  {{/isArray}}
+{{/properties}}

@@ -19,22 +19,6 @@ export type SwaggerParamType =
   | 'array'
   | 'object'
   | 'boolean';
-export type SwaggerTags =
-  | 'App'
-  | 'Bookmarks'
-  | 'Content'
-  | 'Device'
-  | 'Diagnostics'
-  | 'Favourites'
-  | 'Hooks'
-  | 'Link'
-  | 'Log'
-  | 'Page'
-  | 'Recommendations'
-  | 'Subscriptions'
-  | 'User'
-  | 'Promotions'
-  | 'Voucher';
 export enum SwaggerSecurityType {
   BEARER = 'bearerAuth',
   OPTIONAL = '{}'

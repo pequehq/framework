@@ -1,33 +1,37 @@
 tags:
 {{#prefix}}
-    - {{.}}
+  - {{.}}
 {{/prefix}}
-summary: '{{{options.summary}}}'
+summary: "{{{options.summary}}}"
 operationId: {{{options.operationId}}}
-parameters:
-{{#options.parameters}}
-    - $ref: '{{{.}}}'
-{{/options.parameters}}
+{{#options.parameters.length}}
+  parameters:
+  {{#options.parameters}}
+    - $ref: "{{{.}}}"
+  {{/options.parameters}}
+{{/options.parameters.length}}
 {{#options.requestBody}}
-requestBody:
-    $ref: '{{{.}}}'
+  requestBody:
+  content:
+    {{{options.content}}}:
+      schema:
+        $ref: "{{{.}}}"
 {{/options.requestBody}}
 responses:
 {{#route.responses}}
-    {{statusCode}}:
-        description: '{{{description}}}'
-        {{#object}}
-        content:
-            {{{content}}}:
-                schema:
-                    allOf:
-                        - $ref: '{{{refPath}}}'
-                        - $ref: '../../../components/schemas/schemas-generated.yaml#/BaseResponseDto'
-        {{/object}}
+  {{statusCode}}:
+    description: "{{{description}}}"
+    {{#object}}
+    content:
+      {{{content}}}:
+        schema:
+          allOf:
+          - $ref: "{{{refPath}}}"
+  {{/object}}
 {{/route.responses}}
 {{#security.length}}
-security:
-    {{#security}}
+  security:
+  {{#security}}
     - {{{.}}}{{^isSecurityOptional}}: []{{/isSecurityOptional}}
-    {{/security}}
+  {{/security}}
 {{/security.length}}
