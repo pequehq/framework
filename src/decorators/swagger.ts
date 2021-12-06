@@ -10,7 +10,6 @@ import {
   swaggerTagBuilder
 } from './utils/swagger';
 
-
 export const SwaggerComponent = (): ClassDecorator => {
   return swaggerComponentBuilder();
 };

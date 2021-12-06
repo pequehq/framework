@@ -1,21 +1,21 @@
 openapi: 3.0.1
 info:
-  $ref: ./info.yaml
+  $ref: ./generated/info.yaml
 servers:
-  $ref: ./servers.yaml
+  $ref: ./generated/servers.yaml
 tags:
-  $ref: ./tags.yaml
+  $ref: ./generated/tags.yaml
 paths:
-  $ref: ./paths/paths-generated.yaml
+  $ref: ./generated/paths/paths-generated.yaml
 components:
   # parameters:
-    # $ref: ./components/parameters/_index.yaml
+    # $ref: ./generated/components/parameters/_index.yaml
   # requestBodies:
-    # $ref: ./components/request-bodies/_index.yaml
+    # $ref: ./generated/components/request-bodies/_index.yaml
   schemas:
-    $ref: ./components/schemas/schemas-generated.yaml
+    $ref: ./generated/components/schemas/schemas-generated.yaml
     # responses:
-    # $ref: ./components/responses/_index.yaml
+    # $ref: ./generated/components/responses/_index.yaml
   # securitySchemes:
-    # $ref: ./components/security-schemes/_index.yaml
+    # $ref: ./generated/components/security-schemes/_index.yaml
 x-components: {}

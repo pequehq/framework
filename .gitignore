@@ -106,5 +106,3 @@ dist
 .idea
 .DS_Store
 .sample
-
-./src/swagger/generated

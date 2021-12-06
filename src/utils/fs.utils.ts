@@ -11,21 +11,27 @@ export const getFile = (filePath: string) => {
 }
 
 export const writeFile = (filePath: string, data: any) => {
-  const fullFilePath = path.join(__dirname, filePath);
-  fs.mkdirSync(path.dirname(fullFilePath), { recursive: true });
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   return fs.writeFileSync(
-    fullFilePath,
+    filePath,
     data,
     'utf8'
   );
 }
 
 export const appendFile = (filePath: string, data: any) => {
-  const fullFilePath = path.join(__dirname, filePath);
-  fs.mkdirSync(path.dirname(fullFilePath), { recursive: true });
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   return fs.appendFileSync(
-    fullFilePath,
+    filePath,
     data,
     'utf8'
   );
+}
+
+export const removeFolder = (folderPath: string) => {
+  fs.rmdirSync(getPath(folderPath), { recursive: true });
+}
+
+export const createFolder = (folderPath: string) => {
+  fs.mkdirSync(getPath(folderPath), { recursive: true });
 }
