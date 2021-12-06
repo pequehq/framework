@@ -5,6 +5,5 @@ export * from './controller';
 export * from './cacheable';
 export * from './utils/swagger';
 export * from './utils/decorators';
-export * from './tests/test-property';
 export * from './injectable';
 export * from './module';
