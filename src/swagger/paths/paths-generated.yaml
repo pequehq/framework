@@ -1,0 +1,6 @@
+/test/hello-world:
+  get:
+    $ref: "./generated/test/test-helloWorld.yaml"
+/test/external:
+  get:
+    $ref: "./generated/test/test-external.yaml"

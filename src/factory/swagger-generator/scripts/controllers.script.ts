@@ -1,23 +1,24 @@
+import 'reflect-metadata';
 import * as mustache from 'mustache';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ExpressControllers } from '../controllers/controllers.module';
 import { DECORATORS } from '../../models/constants/decorators';
 import { ControllerDefinition } from '../../models/_index';
 import { SwaggerRouteDefinition } from '../../models/interfaces/swagger/swagger-route-definition.interface';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../../utils/express/factory';
 import { SwaggerSecurityType } from '../../models/_index';
 import { SWAGGER } from '../../models/constants/swagger';
+import { Controllers } from '../../models/dependency-injection/controller.service';
 
 export const generateControllers = () => {
   console.log('\nControllers:');
-  const controllers = [...ExpressControllers];
+  const controllers = Controllers.getAll()
 
 // Prepping the old paths.
   const pathsPath = path.join(__dirname, '../swagger/paths/paths-generated.yaml');
   const oldPathsPath = path.join(__dirname, '../swagger/paths/paths.yaml');
-  const oldPathsContent = fs.readFileSync(oldPathsPath, {encoding: 'utf8'});
-  fs.writeFileSync(pathsPath, oldPathsContent, {encoding: 'utf8'});
+  const oldPathsContent = fs.readFileSync(oldPathsPath, { encoding: 'utf8' });
+  fs.writeFileSync(pathsPath, oldPathsContent, { encoding: 'utf8' });
 
 // Iterate controllers.
   const pathGeneratedGFolder = path.join(__dirname, `../swagger/paths/generated`);
@@ -100,12 +101,12 @@ export const generateControllers = () => {
           if (!fs.existsSync(controllerFolder)) {
             fs.mkdirSync(controllerFolder);
           }
-          fs.writeFileSync(routePath, swaggerContent, {encoding: 'utf8'});
+          fs.writeFileSync(routePath, swaggerContent, { encoding: 'utf8' });
 
           console.log(`    - ${pathObject.path}: ${controllerName}/${fileName}`);
         });
         const pathContent = mustache.render(pathTemplate, pathObject);
-        fs.appendFileSync(pathsPath, pathContent, {encoding: 'utf8'});
+        fs.appendFileSync(pathsPath, pathContent, { encoding: 'utf8' });
       }
     );
   });

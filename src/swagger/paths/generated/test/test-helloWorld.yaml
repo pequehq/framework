@@ -1,0 +1,12 @@
+tags:
+  - Test
+summary: "Hello World"
+operationId: helloWorld
+responses:
+  200:
+    description: "Hello World returned"
+    content:
+      application/json; charset=utf-8:
+        schema:
+          allOf:
+          - $ref: "../../../components/schemas/schemas-generated.yaml#/HelloWorldDto"

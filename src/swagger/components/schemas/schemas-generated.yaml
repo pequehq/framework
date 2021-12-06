@@ -1,0 +1,4 @@
+HelloWorldDto:
+  $ref: "./generated/HelloWorldDto.yaml"
+ExternalDto:
+  $ref: "./generated/ExternalDto.yaml"

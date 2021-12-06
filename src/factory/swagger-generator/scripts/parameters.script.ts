@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as mustache from 'mustache';
 import * as path from 'path';
 import * as fs from 'fs';

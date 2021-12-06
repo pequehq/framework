@@ -43,4 +43,3 @@ generateSecuritySchemas();
 generateControllers();
 
 console.log('\nCompleted.');
-process.exit(0);
