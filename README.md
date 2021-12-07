@@ -10,8 +10,10 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 ## Install
 `npm i peque.ts`
 
-## Server
+## Documentation
+[Documentation](https://ukaoskid.github.io/peque-fwork/)
 
+## Server
 ```typescript
 import 'reflect-metadata';
 import { TestRootModule } from './modules/root/test-root.module';

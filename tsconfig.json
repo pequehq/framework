@@ -25,7 +25,10 @@
         "build",
         "dist",
         "test",
-        "src/swagger-generator",
-        "sample"
+        "sample",
+        "coverage",
+        "docs",
+        ".circleci",
+        "post-build-actions.js"
     ]
 }

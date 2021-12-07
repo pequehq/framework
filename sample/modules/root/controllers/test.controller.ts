@@ -42,6 +42,6 @@ export class TestController {
   ])
   @Get('/external')
   async external() {
-    return { external: this.externalService.getExternalCall() };
+    return { external: await this.externalService.getExternalCall() };
   }
 }

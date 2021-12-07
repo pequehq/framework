@@ -2,5 +2,12 @@
 .DS_Store
 .sample
 .test
+.circleci
 
-./src/swagger-dist
+docs
+test
+coverage
+sample
+
+*.yml
+post-build-actions.js
