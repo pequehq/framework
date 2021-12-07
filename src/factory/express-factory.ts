@@ -1,6 +1,6 @@
-import { Server } from '../..';
 import { ServerOptions } from '../models/_index';
 import * as clusterUtils from '../utils/cluster.utils';
+import { Server } from '../server';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;
@@ -16,9 +16,9 @@ export class ExpressFactory {
       const hostname = options.hostname || 'localhost';
 
       const expressServer = app.listen(port, hostname, () => {
-        console.info(`\n`);
-        console.info(`Server is running @${hostname}:${port}`);
-        console.info(`CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}`);
+        server.logger().log({level: 'info', data: `\n`});
+        server.logger().log({level: 'info', data: `Server is running @${hostname}:${port}`});
+        server.logger().log({level: 'info', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}`});
       });
 
       /*

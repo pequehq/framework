@@ -5,6 +5,6 @@ export const Injectable = (provider?: string): ClassDecorator => {
   return injectableBuilder(provider);
 };
 
-export const Inject = (provider?: string | Function): PropertyDecorator => {
+export const Inject = (provider: string): PropertyDecorator => {
   return injectClass(provider);
 };

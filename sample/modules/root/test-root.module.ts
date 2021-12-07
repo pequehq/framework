@@ -4,6 +4,7 @@ import { RandomModule } from '../random/random.module';
 import { HttpService } from '../../../src/services/_index';
 import { ExternalTestService } from './external-test.service';
 import { TestRootService } from './test-root.service';
+import { LoggerService } from '../../../src/services/logger/logger.service';
 
 @Module({
   modules: [RandomModule],
@@ -11,7 +12,8 @@ import { TestRootService } from './test-root.service';
   providers: [
     HttpService,
     ExternalTestService,
-    TestRootService
+    TestRootService,
+    LoggerService
   ]
 })
 export class TestRootModule {

@@ -26,13 +26,19 @@ async function startUp() {
           },
           version: '1.0.0'
         },
-        servers: [{ url: 'https://api.test.com/'}],
+        servers: [{ url: 'https://api.test.com/' }],
         tags: [
           {
             name: 'Tag',
             description: 'Description'
           }
         ]
+      },
+      logger: {
+        consoleOutput: true,
+        level: 'info',
+        active: true,
+        engine: 'true'
       },
       isCpuClustered: false
     }

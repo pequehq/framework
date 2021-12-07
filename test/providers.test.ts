@@ -28,13 +28,14 @@ describe('Decorators utils', () => {
   loadInjectables();
 
   class TestInject {
-    @Inject()
+    @Inject('TestServiceOne')
     testServiceOne: TestServiceOne
   }
 
   const testInject = new TestInject();
 
   it('should inject the service into the property', () => {
+
     expect(Injector.resolve('TestServiceOne')).toEqual(testInject.testServiceOne);
   });
 });

@@ -1,5 +1,6 @@
 import { GlobalMiddlewares } from '../../server';
 import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
+import { LoggerInterface } from './logger.interface';
 
 export interface ServerOptions {
   rootModule: any;
@@ -12,4 +13,5 @@ export interface ServerOptions {
   keepAliveTimeout?: number;
   headersTimeout?: number;
   swagger?: SwaggerOptionsInterface;
+  logger?: LoggerInterface;
 }

@@ -159,17 +159,10 @@ export const injectableBuilder = (provider?: string): ClassDecorator => {
   };
 };
 
-export const injectClass = (provider?: string | Function): PropertyDecorator => {
+export const injectClass = (provider: string): PropertyDecorator => {
   return (target: any, key: string) => {
-    let paramType = '';
-    if (typeof provider === 'function') {
-      paramType = provider.apply(this);
-    } else {
-      paramType = provider ? provider :
-        (Reflect.getMetadata('design:type', target, key).name || '');
-    }
     Object.defineProperty(target, key, {
-      get: () => Injector.resolve(paramType),
+      get: () => Injector.resolve(provider),
       enumerable: true,
       configurable: true
     });

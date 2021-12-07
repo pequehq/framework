@@ -284,4 +284,5 @@ The framework comes out with a list of built-in providers and aspects ready to i
 | **HttpService**        | Provider | A full HTTP client based on the package got.                                                                                                         | 
 | **HttpEventService**   | Provider | Provides an subscription to the incoming request for async purposes such as logging or other tasks not related to a response. The service uses rxjs. |
 | **MemoryStoreService** | Provider | Internal key-value memory storage at runtime with TTL.                                                                                               |
+| **LoggerService**      | Provider | It provides an internal pipeline for logging.                                                                                                        |
 | **Cacheable**          | Aspect   | A method decorator that leverages the custom CacheService to cache the result of the decorated method.                                               |

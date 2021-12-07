@@ -19,3 +19,8 @@ export type SwaggerParamType =
   | 'array'
   | 'object'
   | 'boolean';
+export type LogLevelsType =
+  | 'debug'
+  | 'info'
+  | 'warn'
+  | 'error';
