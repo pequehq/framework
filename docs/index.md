@@ -4,7 +4,7 @@ This framework is built on-top of **Express** and is intended to provide a **sta
 and **life-cycle management** of **scalable** and **efficient** server-side web application (with **Node.js**).
 It can also be used to **invert the control** in a pre-existent Express application.
 
-## Table of contents
+## <a name="toc">Table of contents
 - [Install](#install)
 - [General architecture](#architecture)
 - [Modules](#modules)
@@ -12,7 +12,7 @@ It can also be used to **invert the control** in a pre-existent Express applicat
   - [Routings](#controllers-routings)
   - [Middlewares](#controllers-middlewares)
 - [Providers](#providers)
-  - [Dependency injection](#providres-di)
+  - [Dependency injection](#providers-di)
   - [Custom providers](#providers-custom)
 - [Build-in features](#builtin-features)
 
@@ -176,5 +176,5 @@ The framework comes out with a list of built-in providers and aspects ready to i
 |------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **HttpService**        | Provider | A full HTTP client based on the package got.                                                                                                         | 
 | **HttpEventService**   | Provider | Provides an subscription to the incoming request for async purposes such as logging or other tasks not related to a response. The service uses rxjs. |
-| **MemoryStoreService** | Aspect   | Internal key-value memory storage at runtime with TTL.                                                                                               |
+| **MemoryStoreService** | Provider | Internal key-value memory storage at runtime with TTL.                                                                                               |
 | **Cacheable**          | Aspect   | A method decorator that leverages the custom CacheService to cache the result of the decorated method.                                               |
