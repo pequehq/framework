@@ -3,7 +3,6 @@ import { HttpService } from '../../../src/services/_index';
 
 @Injectable()
 export class ExternalTestService {
-
   constructor(private readonly httpService: HttpService) {
   }
 
