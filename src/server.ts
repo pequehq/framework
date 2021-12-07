@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import { Request, Response } from 'express';
 import { ControllerDefinition, ServerOptions } from './models/_index';
 import { DECORATORS } from './models/constants/decorators';
@@ -27,9 +27,9 @@ export class Server {
   constructor(private options: ServerOptions) {
   }
 
-  async bootstrap() {
+  async bootstrap(): Promise<Application> {
     // Load injectables and controllers.
-    this.loadInjectables();
+    Server.loadInjectables();
     this.loadControllers();
 
     // Load existing app or one from scratch.
@@ -93,8 +93,9 @@ export class Server {
     if (this.options.swagger) {
       const swaggerFactory = new SwaggerFactory();
       swaggerFactory.generate();
-      const swaggerDocument =  await $RefParser.dereference(YAML.parse(getPath('../swagger/base-swagger-doc.yaml')));
+      const swaggerDocument =  await $RefParser.dereference(YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')));
       this.options.existingApp.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+      console.info(`[openapi] ${this.options.swagger.folder}`);
     }
 
     // Add fallback.
@@ -116,7 +117,7 @@ export class Server {
     this.controllers = Controllers.getAll();
   }
 
-  private loadInjectables() {
+  private static loadInjectables() {
     loadInjectables();
   }
 

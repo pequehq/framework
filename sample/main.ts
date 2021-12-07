@@ -6,7 +6,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 async function startUp() {
-  const expressServer = ExpressFactory.createServer({
+  await ExpressFactory.createServer({
       rootModule: TestRootModule,
       globalMiddlewares: {
         preRoutes: [
@@ -26,7 +26,7 @@ async function startUp() {
           },
           version: '1.0.0'
         },
-        servers: [{ url: 'http://api.test.com/'}],
+        servers: [{ url: 'https://api.test.com/'}],
         tags: [
           {
             name: 'Tag',
@@ -40,4 +40,3 @@ async function startUp() {
 }
 
 startUp();
-

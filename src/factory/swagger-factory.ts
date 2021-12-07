@@ -12,7 +12,6 @@ import { Controllers } from '../models/dependency-injection/controller.service';
 import { ControllerDefinition } from '../models/controller-definition.interface';
 import { SwaggerRouteDefinition } from '../models/interfaces/swagger/swagger-route-definition.interface';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../utils/express/factory';
-import { SwaggerSecurityType } from '../models/interfaces/types';
 import { SWAGGER } from '../models/constants/swagger';
 
 const GENERATED_FOLDER = '../swagger/generated';
@@ -37,8 +36,26 @@ const TAGS_TEMPLATE_PATH = `${TEMPLATE_FOLDER}/tags.mustache`;
 const TAGS_GENERATED_PATH = `${GENERATED_FOLDER}/tags.yaml`;
 const SERVERS_TEMPLATE_PATH = `${TEMPLATE_FOLDER}/servers.mustache`;
 const SERVERS_GENERATED_PATH = `${GENERATED_FOLDER}/servers.yaml`;
+const BASE_DOC_TEMPLATE_PATH = `${TEMPLATE_FOLDER}/base-swagger-doc.mustache`;
+const BASE_DOC_GENERATED_PATH = `${GENERATED_FOLDER}/base-swagger-doc.yaml`;
+
+const BASE_DOC = {
+  parameters: false,
+  requestBodies: false,
+  schemas: false,
+  responses: false,
+  securitySchemes: false
+}
 
 export class SwaggerFactory {
+  private static resetBaseDoc() {
+    BASE_DOC.parameters = false;
+    BASE_DOC.requestBodies = false;
+    BASE_DOC.schemas = false;
+    BASE_DOC.responses = false;
+    BASE_DOC.securitySchemes = false;
+  }
+
   private static render(templatePath: string, outputPath: string, object: any, append = false) {
     const template = getFile(templatePath);
     const content = mustache.render(template, object);
@@ -85,6 +102,7 @@ export class SwaggerFactory {
   private static createComponentsFile() {
     const components = [...SwaggerComponents];
     const componentGeneratedFolder = getPath(COMPONENTS_GENERATED_PATH);
+    BASE_DOC.schemas = components.length > 0;
 
     components.forEach(component => {
       // Looks for any parent DTO.
@@ -116,6 +134,7 @@ export class SwaggerFactory {
   private static createRequestBodiesFile() {
     const requestBodies = [...SwaggerResponseBodies];
     const requestBodiesGeneratedFolder = getPath(REQUEST_BODIES_GENERATED_PATH);
+    BASE_DOC.requestBodies = requestBodies.length > 0;
 
     requestBodies.forEach(requestBody => {
       const properties = Reflect.getMetadata(
@@ -133,6 +152,7 @@ export class SwaggerFactory {
   private static createParametersFile() {
     const parameters = [...SwaggerParameters];
     const parametersGeneratedFolder = getPath(PARAMETERS_GENERATED_PATH);
+    BASE_DOC.parameters = parameters.length > 0;
 
     parameters.forEach(parameter => {
       const properties = Reflect.getMetadata(
@@ -147,10 +167,11 @@ export class SwaggerFactory {
   }
 
   private static createSecuritySchemas() {
-    const securitySchemas = [...SwaggerSecuritySchemas];
-    const securitySchemasGeneratedFolder = getPath(SEC_SCHEMAS_GENERATED_PATH);
+    const securitySchemes = [...SwaggerSecuritySchemas];
+    const securitySchemesGeneratedFolder = getPath(SEC_SCHEMAS_GENERATED_PATH);
+    BASE_DOC.securitySchemes = securitySchemes.length > 0;
 
-    securitySchemas.forEach(securitySchema => {
+    securitySchemes.forEach(securitySchema => {
       const properties = Reflect.getMetadata(
         `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${securitySchema.name}`,
         securitySchema
@@ -158,7 +179,7 @@ export class SwaggerFactory {
 
       const fileName = `${securitySchema.name}.yaml`;
       const object = {name: securitySchema.name, properties};
-      SwaggerFactory.render(SEC_SCHEMAS_TEMPLATE_PATH, `${securitySchemasGeneratedFolder}/${fileName}`, object)
+      SwaggerFactory.render(SEC_SCHEMAS_TEMPLATE_PATH, `${securitySchemesGeneratedFolder}/${fileName}`, object)
     });
   }
 
@@ -209,9 +230,7 @@ export class SwaggerFactory {
               prefix: tags,
               options: route.options,
               security: route.options.security,
-              isSecurityOptional:
-                route.options.security !== undefined &&
-                route.options.security.includes(SwaggerSecurityType.OPTIONAL)
+              isSecurityOptional: route.options.security === undefined
             };
 
             pathObject.routes.push({
@@ -227,8 +246,17 @@ export class SwaggerFactory {
     });
   }
 
+  private static createBaseDoc() {
+    SwaggerFactory.render(
+      BASE_DOC_TEMPLATE_PATH,
+      getPath(BASE_DOC_GENERATED_PATH),
+      BASE_DOC
+    );
+  }
+
   generate() {
     removeFolder(GENERATED_FOLDER);
+    SwaggerFactory.resetBaseDoc();
     SwaggerFactory.createInfoFile();
     SwaggerFactory.createTagsFile();
     SwaggerFactory.createServersFile();
@@ -237,5 +265,6 @@ export class SwaggerFactory {
     SwaggerFactory.createParametersFile();
     SwaggerFactory.createSecuritySchemas();
     SwaggerFactory.createControllers();
+    SwaggerFactory.createBaseDoc();
   }
 }

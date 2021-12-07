@@ -19,8 +19,3 @@ export type SwaggerParamType =
   | 'array'
   | 'object'
   | 'boolean';
-export enum SwaggerSecurityType {
-  BEARER = 'bearerAuth',
-  OPTIONAL = '{}'
-}
-export type CacheServers = 'Redis';

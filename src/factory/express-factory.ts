@@ -33,6 +33,8 @@ export class ExpressFactory {
       if (options.headersTimeout) {
         expressServer.headersTimeout = options.headersTimeout;
       }
+
+      return expressServer;
     }
   };
 
