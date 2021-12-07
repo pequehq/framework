@@ -1,37 +1,32 @@
-## Welcome to GitHub Pages
+## Peque.ts
 
-You can use the [editor on GitHub](https://github.com/ukaoskid/peque-fwork/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+This framework is built on-top of **Express** and is intended to provide a **standard** to help the **design**, **development**,
+and **life-cycle management** of **scalable** and **efficient** server-side web application (with **Node.js**).
+It can also be used to **invert the control** in a pre-existent Express application.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Install
+`npm i peque.ts`
 
-### Markdown
+## General architecture
+![General architecture](images/arch.png)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Modules
+The modules are classes with the necessary metadata in order to define the structure of the application.
+They can import other modules and define its controller.
+An application must have at least one root module (a module importing all the other modules).
 
-```markdown
-Syntax highlighted code block
+![Modules](images/modules.png)
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+The Modules are decorated with the `@Module()` decorator that is necessary to define its metadata (other modules or controllers).
+```typescript
+@Module({
+  modules: [RandomModule],
+  controllers: [TestController],
+  providers: [
+    HttpService,
+    ExternalTestService,
+    TestRootService
+  ]
+})
+export class TestRootModule { }
 ```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ukaoskid/peque-fwork/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
