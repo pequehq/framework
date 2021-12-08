@@ -24,7 +24,7 @@ It can also be used to **invert the control** in a pre-existent Express applicat
   - [Property](#swagger-property)
 - [Build-in features](#builtin-features)
   - [Event management service](#builtin-events)
-  - [Logging service](#builtin-logging)
+  - [Logging service](#builtin-logger)
   - [Scheduler service](#builtin-scheduler)
 
 ## <a name="install"></a>Install <a href="#toc"><img src="images/backtop.png" width="20"/></a>
