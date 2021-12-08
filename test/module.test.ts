@@ -5,6 +5,7 @@ import { Module } from '../src/decorators/module';
 import { Controllers } from '../src/models/dependency-injection/controller.service';
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
+import { NATIVE_SERVICES } from '../jest.setup';
 
 describe('@Module() decorator', () => {
   const testMiddleware = () => {};
@@ -42,7 +43,7 @@ describe('@Module() decorator', () => {
   it ('should contain TestModule ModuleDefinition', () => {
     expect(controllers).toEqual(testControllers);
 
-    Injector.getProviders().delete('ControllerService');
+    NATIVE_SERVICES.forEach(service => Injector.getProviders().delete(service));
     expect(Injector.getProviders()).toEqual(serviceMap);
   });
 });

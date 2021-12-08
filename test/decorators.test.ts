@@ -8,6 +8,10 @@ import { Injectable } from '../src/decorators/injectable';
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { Request, Response, Header, Body, Param, Query } from '../src/decorators/parameters';
+import { OnEvent, OnEventInterface } from '../src/decorators/events';
+import { EventManagerService } from '../src/services/events/event-manager.service';
+import { Scheduler, SchedulerConfig } from '../src/decorators/scheduler';
+import { SchedulerService } from '../src/services/scheduler/scheduler.service';
 
 const testRoute: RouteDefinition = {
   requestMethod: 'post',
@@ -158,7 +162,7 @@ describe('Parameters decorators', () => {
     const testParameter = [{ testRoute: { index: 0, param: undefined } }]
     const parameterMetadata = Reflect.getMetadata('request', TestController) || [];
     expect(parameterMetadata).toEqual(testParameter);
-  })
+  });
 
   it('should contain the right RESPONSE metadata', () => {
     const testParameter = [{ testRoute: { index: 1, param: undefined } }]
@@ -170,23 +174,51 @@ describe('Parameters decorators', () => {
     const testParameter = [{ testRoute: { index: 2, param: 'header' } }]
     const parameterMetadata = Reflect.getMetadata('headers', TestController) || [];
     expect(parameterMetadata).toEqual(testParameter);
-  })
+  });
 
   it('should contain the right BODY metadata', () => {
     const testParameter = [{ testRoute: { index: 3 } }]
     const parameterMetadata = Reflect.getMetadata('body', TestController) || [];
     expect(parameterMetadata).toEqual(testParameter);
-  })
+  });
 
   it('should contain the right PARAM metadata', () => {
     const testParameter = [{ testRoute: { index: 4, param: 'param' } }]
     const parameterMetadata = Reflect.getMetadata('parameters', TestController) || [];
     expect(parameterMetadata).toEqual(testParameter);
-  })
+  });
 
   it('should contain the right QUERY metadata', () => {
     const testParameter = [{ testRoute: { index: 5, param: 'query' } }]
     const parameterMetadata = Reflect.getMetadata('queries', TestController) || [];
     expect(parameterMetadata).toEqual(testParameter);
-  })
-})
+  });
+});
+
+describe('@OnEvent() decorator', () => {
+  class TestClass {
+    @OnEvent('testEvent')
+    testMethod() {
+      console.log('test');
+    }
+  }
+
+  it('should contain the right event metadata', () => {
+    const eventMap: Map<string, OnEventInterface> = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || new Map<string, OnEventInterface>();
+    expect(eventMap.size).toBe(1);
+  });
+});
+
+describe('@Scheduler() decorator', () => {
+  class TestClass {
+    @Scheduler('testEvent', '*/5 * * * * *')
+    testMethod() {
+      console.log('test');
+    }
+  }
+
+  it('should contain the right event metadata', () => {
+    const eventMap: Map<string, SchedulerConfig> = Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
+    expect(eventMap.size).toBe(1);
+  });
+});

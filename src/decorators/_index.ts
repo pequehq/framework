@@ -7,3 +7,4 @@ export * from './utils/swagger';
 export * from './utils/decorators';
 export * from './injectable';
 export * from './module';
+export * from './events';

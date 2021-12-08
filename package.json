@@ -1,6 +1,6 @@
 {
   "name": "peque.ts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Peque.ts Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "got": "^11.8.0",
     "mustache": "^4.0.1",
+    "node-cron": "^3.0.0",
     "os": "^0.1.1",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
@@ -32,6 +33,7 @@
     "@types/jest": "^26.0.24",
     "@types/mustache": "^4.0.1",
     "@types/node": "^14.18.0",
+    "@types/node-cron": "^3.0.0",
     "@types/redis": "^2.8.28",
     "@types/rewire": "^2.5.28",
     "@types/socket.io": "^2.1.12",

@@ -15,6 +15,8 @@ import $RefParser from '@apidevtools/json-schema-ref-parser';
 import YAML from 'yamljs';
 import { getPath } from './utils/fs.utils';
 import swaggerUi from 'swagger-ui-express';
+import { LoggerService } from './services/logger/logger.service';
+import { Inject } from './decorators/injectable';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -24,7 +26,14 @@ export interface GlobalMiddlewares {
 export class Server {
   private controllers: any;
 
+  @Inject('LoggerService')
+  private logService: LoggerService;
+
   constructor(private options: ServerOptions) {
+  }
+
+  logger() {
+    return this.logService;
   }
 
   async bootstrap(): Promise<Application> {
@@ -64,7 +73,7 @@ export class Server {
       // Iterate the routes for express registration.
       routes.forEach(async route => {
         if (!route.documentOnly) {
-          console.info(`[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`);
+          this.logService.log({ level: 'debug', data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`});
           let functionToExecute = httpResponse(
             (req: Request, res: Response) => {
               const args = buildParameters(req, res, route);
@@ -95,7 +104,7 @@ export class Server {
       swaggerFactory.generate();
       const swaggerDocument =  await $RefParser.dereference(YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')));
       this.options.existingApp.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-      console.info(`[openapi] ${this.options.swagger.folder}`);
+      this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
     }
 
     // Add fallback.

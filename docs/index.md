@@ -23,6 +23,9 @@ It can also be used to **invert the control** in a pre-existent Express applicat
   - [Security schema](#swagger-secschema)
   - [Property](#swagger-property)
 - [Build-in features](#builtin-features)
+  - [Event sanagement service](#builtin-builtin-events)
+  - [Logging service](builtin-builtin-logging)
+  - [Scheduler service](builtin-builtin-scheduler)
 
 ## <a name="install"></a>Install <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 `npm i peque.ts`
@@ -279,9 +282,99 @@ The decorator `@SwaggerDtoProperty()` provides the definition of the metadata fo
 ## <a name="builtin-features"></a>Built-in features <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 The framework comes out with a list of built-in providers and aspects ready to implemented:
 
-| Feature                | Type     | Description                                                                                                                                          |
-|------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **HttpService**        | Provider | A full HTTP client based on the package got.                                                                                                         | 
-| **HttpEventService**   | Provider | Provides an subscription to the incoming request for async purposes such as logging or other tasks not related to a response. The service uses rxjs. |
-| **MemoryStoreService** | Provider | Internal key-value memory storage at runtime with TTL.                                                                                               |
-| **Cacheable**          | Aspect   | A method decorator that leverages the custom CacheService to cache the result of the decorated method.                                               |
+| Feature                 | Type      | Description                                                                                                                                          |
+|-------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **HttpService**         | Provider  | A full HTTP client based on the package got.                                                                                                         | 
+| **HttpEventService**    | Provider  | Provides an subscription to the incoming request for async purposes such as logging or other tasks not related to a response. The service uses rxjs. |
+| **MemoryStoreService**  | Provider  | Internal key-value memory storage at runtime with TTL.                                                                                               |
+| **EventManagerService** | Provider  | It provides an internal event system, it is also where the framework events can be hooked.                                                           |
+| **SchedulerService**    | Provider  | It provides an internal cron system.                                                                                                                 |
+| **LoggerService**       | Provider  | It provides an internal pipeline for logging.                                                                                                        |
+| **Cacheable**           | Decorator | A method decorator that leverages the custom `CacheService` to cache the result of the decorated method.                                             |
+| **OnEvent**             | Decorator | A method decorator that shall call the registered method at specified event time.                                                                    |
+| **Scheduler**           | Decorator | A method decorator that shall call the registered method at specified cron expression.                                                               |
+
+### <a name="builtin-builtin-events"></a>Event management service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+It is based on Node.js `EventEmitter`, and it provides a ready to use out-of-the-box implementation.
+The framework is also leveraging this service internally to dispatch native events that can also be hooked by developers for design purposes.
+
+| Native event | Description             |
+|--------------|-------------------------|
+| `http.in`    | Incoming HTTP request   |
+| `http.out`   | Response towards client |
+| `logger`     | Logging events          |
+| `scheduler`  | Logging events          |
+
+The Event Management System, besides the injectable `EventManagementService`, is also providing a set of decorators:
+- `@OnEvent(event: string | NativeEventType)`
+
+```typescript
+@Injectable()
+export class InternalService {
+  constructor(private readonly eventManager: EventManagerService) { }
+
+  @OnEvent('customEvent')
+  consumeEvent(data: EventData) {
+    console.log(data);
+  }
+}
+```
+
+### <a name="builtin-builtin-logger"></a>Logger service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+It is a simple service where to route all the logs. This service is also used internally by the framework so that the developers
+can make use of the internal logs as well.
+
+It provides four level of logs, and the log level can be defined in the `Server` config.
+The logs will be evaluated based on the expression `config.level >= log.level`.
+
+| Level   | Order  |
+|---------|--------|
+| `debug` | 1      |
+| `error` | 2      |
+| `warn`  | 3      |
+| `info`  | 4      |
+
+```typescript
+@Injectable()
+export class InternalService {
+  constructor(private readonly loggerService: LoggerService) { }
+  
+  doSomething() {
+    this.loggerService().log({ level: 'info', data: { test: 'test message' } });
+  }
+}
+```
+
+### <a name="builtin-builtin-scheduler"></a>Scheduler service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+It is based on the package [`node-cron`](https://www.npmjs.com/package/node-cron), and it allows the execution of methods at a specified time.
+The schedule is provided by this decorator:
+- `@Scheduler(name: string, cron: string)`
+
+```typescript
+@Injectable()
+export class InternalService {
+  constructor() { }
+
+  @Scheduler('doSomething', '*/5 * * * * *')
+  doSomething() {
+    console.log('Scheduled method');
+  }
+}
+```
+
+The tasks can also be managed via the `ScheduleService` itself.
+```typescript
+@Injectable()
+export class InternalService {
+  constructor(private readonly schedulerService: SchedulerService) { }
+
+  @Scheduler('doSomething', '*/5 * * * * *')
+  doSomething() {
+    console.log('Scheduled method');
+  }
+  
+  stopDoSomething() {
+    this.schedulerService.getScheduler('doSomething').stop();
+  }
+}
+```
