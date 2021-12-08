@@ -24,3 +24,6 @@ export type LogLevelsType =
   | 'info'
   | 'warn'
   | 'error';
+export type NativeEventsType =
+  | 'http'
+  | 'logger';

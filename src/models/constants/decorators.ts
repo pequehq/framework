@@ -19,6 +19,10 @@ export const DECORATORS = {
       REQUEST_BODY: 'swagger_request-body',
       TAGS: 'swagger_tags',
       CONTROLLER: 'swagger_controller'
-    }
+    },
+    events: {
+      ON_EVENT: 'on_event'
+    },
+    SCHEDULER: 'scheduler'
   }
 };

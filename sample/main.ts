@@ -36,7 +36,7 @@ async function startUp() {
       },
       logger: {
         consoleOutput: true,
-        level: 'info',
+        level: 'debug',
         active: true,
         engine: 'true'
       },

@@ -73,7 +73,7 @@ export class Server {
       // Iterate the routes for express registration.
       routes.forEach(async route => {
         if (!route.documentOnly) {
-          this.logService.log({ level: 'info', data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`});
+          this.logService.log({ level: 'debug', data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`});
           let functionToExecute = httpResponse(
             (req: Request, res: Response) => {
               const args = buildParameters(req, res, route);

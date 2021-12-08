@@ -1,7 +1,7 @@
 class InjectorService {
   private providers = new Map<string, any>();
 
-  resolve(provider: string) {
+  resolve<T>(provider: string): T {
     const matchedProvider = this.providers.get(provider);
     if (matchedProvider) {
       return matchedProvider;

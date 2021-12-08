@@ -1,7 +1,7 @@
 import { Injectable } from '../../decorators/injectable';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { LogLevelsType } from '../../models/interfaces/types';
 import { ExpressFactory } from '../../factory/express-factory';
+import { EventData, EventManagerService } from '../events/event-manager.service';
 
 interface LogEvent {
   level: LogLevelsType;
@@ -12,28 +12,33 @@ interface LogEventData extends LogEvent {
   timestamp: number;
 }
 
+const LOG_LEVELS_MAPPING = {
+  debug: { level: 'debug', order: 1 },
+  error: { level: 'error', order: 2 },
+  warn: { level: 'warn', order: 3 },
+  info: { level: 'info', order: 4 }
+}
+
+const calculateLogLevel = (level: LogLevelsType) => LOG_LEVELS_MAPPING[level].order;
+
 @Injectable()
 export class LoggerService {
-  private loggerQueue = new BehaviorSubject<LogEventData>(undefined);
-
-  constructor() {
-    this.observable().subscribe(value => {
-      if (value) {
-        const serverOptions = ExpressFactory.getServerOptions();
-        if (serverOptions.logger && (value.level === serverOptions.logger.level)) {
-          if (serverOptions.logger.consoleOutput) {
-            console[value.level](`[${value.timestamp}]`, `[${value.level}]`, value.data);
-          }
+  constructor(private readonly eventManager: EventManagerService) {
+    this.subscribe((value: EventData) => {
+      const serverOptions = ExpressFactory.getServerOptions();
+      if (serverOptions.logger && (calculateLogLevel(value.data.level) >= calculateLogLevel(serverOptions.logger.level))) {
+        if (serverOptions.logger.consoleOutput) {
+          console[value.data.level](`[${value.data.timestamp}]`, `[${value.data.level}]`, value.data.data);
         }
       }
     });
   }
 
   log(event: LogEvent) {
-    this.loggerQueue.next({ ...event, timestamp: Date.now()});
+    this.eventManager.push('logger', { ...event, timestamp: Date.now() });
   }
 
-  observable(): Observable<LogEventData> {
-    return this.loggerQueue.asObservable();
+  subscribe(listener: (...args: any[]) => void) {
+    this.eventManager.subscribe('logger', listener);
   }
 }
