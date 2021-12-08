@@ -23,9 +23,9 @@ It can also be used to **invert the control** in a pre-existent Express applicat
   - [Security schema](#swagger-secschema)
   - [Property](#swagger-property)
 - [Build-in features](#builtin-features)
-  - [Event sanagement service](#builtin-builtin-events)
-  - [Logging service](builtin-builtin-logging)
-  - [Scheduler service](builtin-builtin-scheduler)
+  - [Event management service](#builtin-events)
+  - [Logging service](#builtin-logging)
+  - [Scheduler service](#builtin-scheduler)
 
 ## <a name="install"></a>Install <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 `npm i peque.ts`
@@ -294,7 +294,7 @@ The framework comes out with a list of built-in providers and aspects ready to i
 | **OnEvent**             | Decorator | A method decorator that shall call the registered method at specified event time.                                                                    |
 | **Scheduler**           | Decorator | A method decorator that shall call the registered method at specified cron expression.                                                               |
 
-### <a name="builtin-builtin-events"></a>Event management service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+### <a name="builtin-events"></a>Event management service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 It is based on Node.js `EventEmitter`, and it provides a ready to use out-of-the-box implementation.
 The framework is also leveraging this service internally to dispatch native events that can also be hooked by developers for design purposes.
 
@@ -320,7 +320,7 @@ export class InternalService {
 }
 ```
 
-### <a name="builtin-builtin-logger"></a>Logger service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+### <a name="builtin-logger"></a>Logger service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 It is a simple service where to route all the logs. This service is also used internally by the framework so that the developers
 can make use of the internal logs as well.
 
@@ -334,6 +334,7 @@ The logs will be evaluated based on the expression `config.level >= log.level`.
 | `warn`  | 3      |
 | `info`  | 4      |
 
+
 ```typescript
 @Injectable()
 export class InternalService {
@@ -345,7 +346,7 @@ export class InternalService {
 }
 ```
 
-### <a name="builtin-builtin-scheduler"></a>Scheduler service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+### <a name="builtin-scheduler"></a>Scheduler service <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 It is based on the package [`node-cron`](https://www.npmjs.com/package/node-cron), and it allows the execution of methods at a specified time.
 The schedule is provided by this decorator:
 - `@Scheduler(name: string, cron: string)`
