@@ -25,5 +25,8 @@ export type LogLevelsType =
   | 'warn'
   | 'error';
 export type NativeEventsType =
+  | 'lifecycle.provider'
+  | 'lifecycle.module'
+  | 'lifecycle.controller'
   | 'http'
   | 'logger';

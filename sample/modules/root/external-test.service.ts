@@ -1,9 +1,14 @@
 import { Injectable } from '../../../src/decorators/_index';
 import { HttpService } from '../../../src/services/_index';
+import { OnProviderInit } from '../../../src/models/interfaces/life-cycle.interface';
 
 @Injectable()
-export class ExternalTestService {
+export class ExternalTestService implements OnProviderInit {
   constructor(private readonly httpService: HttpService) {
+  }
+
+  onProviderInit() {
+    console.log('I have been initialized', ExternalTestService.name);
   }
 
   async getExternalCall() {

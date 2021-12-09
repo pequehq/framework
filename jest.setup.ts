@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-export const NATIVE_SERVICES = [
-  'ControllerService',
-  'EventManagerService',
-  'SchedulerService'
-];
+import { NATIVE_SERVICES } from './src/models/constants/native-services';
+
+export const SERVICES = [];
+Object.keys(NATIVE_SERVICES).forEach(value => SERVICES.push(NATIVE_SERVICES[value]));

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '../src/decorators/injectable';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { Injector } from '../src/models/dependency-injection/injector.service';
-import { NATIVE_SERVICES } from '../jest.setup';
+import { SERVICES } from '../jest.setup';
 
 describe('Decorators utils', () => {
   @Injectable()
@@ -17,7 +17,7 @@ describe('Decorators utils', () => {
   loadInjectables();
 
   it('it should contain the defined providers', () => {
-    NATIVE_SERVICES.forEach(service => Injector.getProviders().delete(service));
+    SERVICES.forEach(service => Injector.getProviders().delete(service));
     expect(Injector.getProviders()).toEqual(serviceMap);
   });
 });

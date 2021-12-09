@@ -9,9 +9,9 @@ import { ControllerDefinition } from '../../models/_index';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { ModuleDefinition } from '../../models/_index';
 import { Controllers } from '../../models/dependency-injection/controller.service';
+import { Modules } from '../../models/dependency-injection/module.service';
 
 export const Providers = [];
-export const CustomProviders = [];
 
 const getMetadataKeyFromParam = (param: ParamType) => {
   switch (param) {
@@ -140,6 +140,8 @@ export const paramBuilder = (
 
 export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target: any) => {
+    Modules.push(target);
+
     if (module.controllers) {
       module.controllers.forEach(controller => Controllers.push(controller));
     }

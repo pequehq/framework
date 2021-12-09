@@ -4,13 +4,18 @@ import { ExternalTestService } from '../external-test.service';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { LoggerService } from '../../../../src/services/logger/logger.service';
+import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
 
 @SwaggerTag(['Test'])
 @Controller('/test')
-export class TestController {
+export class TestController implements OnControllerInit {
   constructor(private readonly httpService: HttpService,
               private readonly externalService: ExternalTestService,
               private readonly loggerService: LoggerService) {
+  }
+
+  onControllerInit() {
+    console.log('I have been initialized', TestController.name);
   }
 
   @SwaggerResponse({

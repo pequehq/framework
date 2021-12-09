@@ -31,7 +31,3 @@ export const appendFile = (filePath: string, data: any) => {
 export const removeFolder = (folderPath: string) => {
   fs.rmdirSync(getPath(folderPath), { recursive: true });
 }
-
-export const createFolder = (folderPath: string) => {
-  fs.mkdirSync(getPath(folderPath), { recursive: true });
-}
