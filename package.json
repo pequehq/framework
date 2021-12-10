@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && ts-node sample/main.ts",
-    "test": "jest --coverage",
+    "test": "jest --clearCache && jest --no-cache --coverage",
     "build": "rimraf dist && tsc && node post-build-actions.js"
   },
   "author": "Simone Di Cicco",
@@ -19,7 +19,6 @@
     "mustache": "^4.0.1",
     "node-cron": "^3.0.0",
     "os": "^0.1.1",
-    "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
     "socket.io": "^3.0.4",
@@ -34,7 +33,6 @@
     "@types/mustache": "^4.0.1",
     "@types/node": "^14.18.0",
     "@types/node-cron": "^3.0.0",
-    "@types/redis": "^2.8.28",
     "@types/rewire": "^2.5.28",
     "@types/socket.io": "^2.1.12",
     "@types/socket.io-client": "^1.4.34",

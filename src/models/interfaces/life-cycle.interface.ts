@@ -22,6 +22,18 @@ export interface OnProviderDestroy {
   onProviderDestroy();
 }
 
+export interface OnServerListen {
+  onServerListen();
+}
+
+export interface OnServerListenStop {
+  onServerListenStop();
+}
+
+export interface OnServerStarted {
+  onServerStarted();
+}
+
 export interface OnServerShutdown {
   onServerShutdown();
 }

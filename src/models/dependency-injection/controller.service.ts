@@ -27,11 +27,11 @@ export class ControllerService {
     return this.instances;
   }
 
-  initControllers(options: ServerOptions) {
+  async initControllers(options: ServerOptions) {
     const logService = Injector.resolve<LoggerService>(NATIVE_SERVICES.LOGGER);
 
     // Iterate controllers.
-    this.controllers.forEach(async controller => {
+    for (const controller of this.controllers) {
       const instance = new controller(...getClassDependencies(controller));
       this.instances.push(instance);
       await LifeCycleService.triggerControllerInit(instance);
@@ -79,16 +79,16 @@ export class ControllerService {
           );
         }
       }
-    });
+    }
     return options.existingApp;
   }
 
-  destroyControllers() {
-    this.instances.forEach(async controller => {
+  async destroyControllers() {
+    for (const controller of this.instances) {
       await LifeCycleService.triggerControllerDestroy(controller);
-    });
+    }
   }
 }
 
-Injector.set(NATIVE_SERVICES.CONTROLLER, ControllerService);
+Injector.setNative(NATIVE_SERVICES.CONTROLLER, ControllerService);
 export const Controllers = Injector.resolve<ControllerService>(NATIVE_SERVICES.CONTROLLER);

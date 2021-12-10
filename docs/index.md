@@ -7,6 +7,11 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 ## <a name="toc"></a>Table of contents
 - [Install](#install)
 - [General architecture](#architecture)
+- [Lifecycle](#lifecycle)
+  - [Interface hooks](#lifecycle-interface)
+  - [Event hooks](#lifecycle-events)
+  - [Start stage lifecycle](#lifecycle-start)
+  - [Stop stage lifecycle](#lifecycle-stop)
 - [Modules](#modules)
 - [Controllers](#controllers)
   - [Routings](#controllers-routings)
@@ -29,6 +34,41 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 
 ## <a name="install"></a>Install <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 `npm i peque.ts`
+
+## <a name="architecture"></a>General architecture <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+![General architecture](images/arch.png)
+
+## <a name="lifecycle"></a>Lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+The framework give you access also to lifecycle events. They can be hooked via interfaces and/or via the Event Manager Service.
+![](images/lifecycle.png)
+
+### <a name="lifecycle-interface"></a>Interface hooks <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+The interface hooks allows the developer to control the lifecycle synchronously where possible, hence, utilize `async/await` statements to wait for processes through stepping in the lifecycle.
+
+### <a name="lifecycle-events"></a>Event hooks <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+The lifecycle is also firing asynchronous events that can be consumed at developer will and in separate providers implementations.
+
+### <a name="lifecycle-start"></a>Start stage lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+| What                 | Interface           | Interface type | Event                        |
+|----------------------|---------------------|----------------|------------------------------|
+| **Server bootstrap** | `OnServerBootstrap` | All            | `lifecycle.bootstrap`        |
+| **Provider init**    | `OnProviderInit`    | Injectables    | `lifecycle.init.provider`    |
+| **Module init**      | `OnModuleInit`      | Modules        | `lifecycle.init.module`      |
+| **Controller init**  | `OnControllerInit`  | Controllers    | `lifecycle.init.controller`  | 
+| **Server listening** | `OnServerListen`    | All            | `lifecycle.server.listening` |
+| **Server started**   | `OnServerStarted`   | All            | `lifecycle.server.started`   |
+
+### <a name="lifecycle-stop"></a>Stop stage lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+The stop stage will refer to the `SIGINT`, `SIGTERM`, `SIGBREAK`, `SIGHUP` signals.
+Please read the Node.js process signal event [documentation](https://nodejs.org/api/process.html#process_signal_events) to understand which of them are available in your OS.
+
+| What                     | Interface              | Interface type | Event                             |
+|--------------------------|------------------------|----------------|-----------------------------------|
+| **Controller destroy**   | `OnControllerDestroy`  | Controllers    | `lifecycle.destroy.controller`    |
+| **Module destroy**       | `OnModuleDestroy`      | Modules        | `lifecycle.destroy.module`        |
+| **Provider destriy**     | `OnProviderDestroy`    | Injectables    | `lifecycle.destroy.provider`      |
+| **Server listener stop** | `OnServerListenStop`   | All            | `lifecycle.server.listening.stop` | 
+| **Server shutdown**      | `OnServerShutdown`     | All            | `lifecycle.server.shutdown`       |
 
 ## <a name="architecture"></a>General architecture <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 ![General architecture](images/arch.png)
@@ -181,6 +221,12 @@ The `providers` metadata in `@Module()` can either be a specific provider or a c
   ]
 })
 export class TestRootModule { }
+```
+
+You can inject custom providers also via the @Injectable({ interface: CustomProvider }) decorator.
+```typescript
+@Injectable({ interface: CacheManager })
+class RedisService implements CacheManager {}
 ```
 
 ## <a name="swagger"></a>Swagger (OpenAPI) <a href="#toc"><img src="images/backtop.png" width="20"/></a>

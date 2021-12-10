@@ -1,6 +1,7 @@
 import { ServerOptions } from '../models/_index';
 import * as clusterUtils from '../utils/cluster.utils';
 import { Server } from '../server';
+import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;
@@ -15,9 +16,12 @@ export class ExpressFactory {
       const port = options.port || 8888;
       const hostname = options.hostname || 'localhost';
 
-      const expressServer = app.listen(port, hostname, () => {
+      await LifeCycleService.triggerServerListen();
+
+      const expressServer = app.listen(port, hostname, async () => {
         server.logger().log({level: 'debug', data: `Server is running @${hostname}:${port}`});
         server.logger().log({level: 'debug', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}`});
+        await LifeCycleService.triggerServerStarted();
       });
 
       /*

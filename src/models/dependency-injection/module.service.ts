@@ -1,6 +1,5 @@
 import { Injector } from './injector.service';
 import { NATIVE_SERVICES } from '../constants/native-services';
-import { EventManagerService } from '../../services/events/event-manager.service';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 
 export class ModuleService {
@@ -19,21 +18,20 @@ export class ModuleService {
     return this.instances;
   }
 
-  initModules() {
-    const eventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);
-    this.modules.forEach(async module => {
+  async initModules() {
+    for (const module of this.modules) {
       const instance = new module();
       this.instances.push(instance);
       await LifeCycleService.triggerModuleInit(instance);
-    });
+    }
   }
 
-  destroyModules() {
-    this.instances.forEach(async module => {
+  async destroyModules() {
+    for (const module of this.instances) {
       await LifeCycleService.triggerModuleDestroy(module);
-    });
+    }
   }
 }
 
-Injector.set(NATIVE_SERVICES.MODULE, ModuleService);
+Injector.setNative(NATIVE_SERVICES.MODULE, ModuleService);
 export const Modules = Injector.resolve<ModuleService>(NATIVE_SERVICES.MODULE);

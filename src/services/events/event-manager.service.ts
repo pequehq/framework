@@ -4,7 +4,6 @@ import EventEmitter from 'events';
 import { NativeEventsType } from '../../models/interfaces/types';
 import { OnEventInterface } from '../../decorators/events';
 import { DECORATORS } from '../../models/constants/decorators';
-import { Scheduler } from '../../decorators/scheduler';
 
 export interface EventData {
   event: string | NativeEventsType;

@@ -16,21 +16,23 @@ class MockCacheService implements CacheManager {
 }
 
 describe('@Cacheable decorator', () => {
-  Injector.set('CacheService', MockCacheService);
-  loadInjectables();
+  beforeAll(async () => await loadInjectables());
 
-  const mockCacheService: CacheManager = Injector.resolve('CacheService');
+  it('should set and read from cache', async () => {
+    await Injector.set('CacheService', MockCacheService);
+    await loadInjectables();
 
-  class TestClass {
-    @Cacheable({ key: 'testKey' })
-    async testMethod() {
-      return 'test value';
+    const mockCacheService: CacheManager = Injector.resolve('CacheService');
+
+    class TestClass {
+      @Cacheable({ key: 'testKey' })
+      async testMethod() {
+        return 'test value';
+      }
     }
-  }
 
-  const testClass = new TestClass();
+    const testClass = new TestClass();
 
-  it ('should set and read from cache', async () => {
     expect(mockCacheService.get('testKey')).toBeUndefined();
     const firstRead = await testClass.testMethod();
     expect(firstRead).toBe('test value');

@@ -1,7 +1,16 @@
+import { getAllInstances } from '../../utils/dependencies.utils';
+
 class LifeCycleManagerService {
   private static async triggerLifeCycleEvent(instance: any, method: string) {
     if (typeof instance[method] === 'function') {
       await instance[method]();
+    }
+  }
+
+  private static async triggerAllModulesLifeCycleEvent(method: string) {
+    const instances = getAllInstances();
+    for (const instance of instances) {
+      await LifeCycleManagerService.triggerLifeCycleEvent(instance, method);
     }
   }
 
@@ -29,8 +38,20 @@ class LifeCycleManagerService {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onControllerDestroy');
   }
 
-  async triggerServerShutdown(instance: any) {
-    await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onServerShutdown');
+  async triggerServerStarted() {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerStarted');
+  }
+
+  async triggerServerShutdown() {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerShutdown');
+  }
+
+  async triggerServerListen() {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerListen');
+  }
+
+  async triggerServerListenStop() {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerListenStop');
   }
 }
 

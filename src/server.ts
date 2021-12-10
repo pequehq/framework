@@ -13,7 +13,6 @@ import swaggerUi from 'swagger-ui-express';
 import { LoggerService } from './services/logger/logger.service';
 import { Inject } from './decorators/injectable';
 import { Modules } from './models/dependency-injection/module.service';
-import { Injector } from './models/dependency-injection/injector.service';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 
 export interface GlobalMiddlewares {
@@ -26,27 +25,38 @@ export class Server {
   private logService: LoggerService;
 
   constructor(private options: ServerOptions) {
-    this.terminator();
   }
 
   logger() {
     return this.logService;
   }
 
-  terminator() {
-    process.on('SIGINT', args => {
-      Server.destroyControllers();
-      Server.destroyModules();
-      Server.destroyInjectables();
-      Server.serverShutdown();
-      console.log(args);
-      process.exit(1);
+  async terminator() {
+    await Server.destroyControllers();
+    await Server.destroyModules();
+    await Server.destroyInjectables();
+    await Server.serverListenStop();
+    this.options.existingApp.close();
+
+    await Server.serverShutdown();
+    process.exit(1);
+  }
+
+  terminationProcess() {
+    const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
+    terminationSignals.forEach((element) => {
+      process.on(element, async () => {
+        await this.terminator();
+      });
     });
   }
 
   async bootstrap(): Promise<Application> {
+    // Set terminators.
+    this.terminationProcess();
+
     // Load injectables and controllers.
-    Server.loadInjectables();
+    await Server.loadInjectables();
     await Server.loadModules();
 
     // Load existing app or one from scratch.
@@ -58,7 +68,7 @@ export class Server {
     // Add pre-route Middlewares.
     this.addMiddlewares(this.options.globalMiddlewares.preRoutes);
 
-    this.options.existingApp = this.loadControllers();
+    this.options.existingApp = await this.loadControllers();
 
     // OpenAPI.
     if (this.options.swagger) {
@@ -84,37 +94,36 @@ export class Server {
     return this.options.existingApp;
   }
 
-  private loadControllers() {
-    return Controllers.initControllers(this.options);
+  private async loadControllers() {
+    return await Controllers.initControllers(this.options);
   }
 
-  private static destroyControllers() {
-    Controllers.destroyControllers();
+  private static async destroyControllers() {
+    await Controllers.destroyControllers();
   }
 
   private static async loadModules() {
     await Modules.initModules();
   }
 
-  private static destroyModules() {
-    Modules.destroyModules();
+  private static async destroyModules() {
+    await Modules.destroyModules();
   }
 
-  private static loadInjectables() {
-    loadInjectables();
+  private static async loadInjectables() {
+    await loadInjectables();
   }
 
-  private static destroyInjectables() {
-    destroyInjectables();
+  private static async destroyInjectables() {
+    await destroyInjectables();
   }
 
-  private static serverShutdown() {
-    const instances = [
-      ...Controllers.getInstances(),
-      ...Modules.getInstances(),
-    ];
-    Injector.getProviders().forEach(value => instances.push(value));
-    instances.forEach(async instance => await LifeCycleService.triggerServerShutdown(instance));
+  private static async serverShutdown() {
+    await LifeCycleService.triggerServerShutdown();
+  }
+
+  private static async serverListenStop() {
+    await LifeCycleService.triggerServerListenStop();
   }
 
   private addMiddlewares(middlewares: any[]) {

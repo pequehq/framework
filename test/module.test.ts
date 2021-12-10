@@ -7,40 +7,45 @@ import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { SERVICES } from '../jest.setup';
 
-describe('@Module() decorator', () => {
-  const testMiddleware = () => {};
-  const testController: ControllerDefinition = {
-    prefix: '/test-controller',
-    middlewares: [testMiddleware]
-  }
+describe('@Module() decorator',() => {
+  beforeAll(async () => await loadInjectables());
 
-  const testControllers = [testController];
+  it ('should contain TestModule ModuleDefinition', async () => {
+    const testMiddleware = () => {};
+    const testController: ControllerDefinition = {
+      prefix: '/test-controller',
+      middlewares: [testMiddleware]
+    }
 
-  class TestServiceOne {}
+    const testControllers = [testController];
 
-  @Injectable()
-  class TestServiceTwo {}
+    class TestServiceOne {}
 
-  const testProviderService: ProviderDefinition = {
-    provider: 'TestProviderUseClass',
-    useClass: TestServiceOne
-  }
+    @Injectable()
+    class TestServiceTwo {}
 
-  const serviceMap = new Map<string, any>();
-  serviceMap.set('TestProviderUseClass', new TestServiceOne());
-  serviceMap.set(TestServiceTwo.name, new TestServiceTwo());
+    @Injectable({ interface: 'TestProviderUseClassThree' })
+    class TestServiceThree {}
 
-  loadInjectables();
+    const testProviderService: ProviderDefinition = {
+      provider: 'TestProviderUseClassTwo',
+      useClass: TestServiceOne
+    }
 
-  @Module({
-    controllers: [testController],
-    providers: [testProviderService, TestServiceTwo]
-  })
-  class TestModule { }
+    const serviceMap = new Map<string, any>();
+    serviceMap.set('TestProviderUseClassTwo', new TestServiceOne());
+    serviceMap.set(TestServiceTwo.name, new TestServiceTwo());
+    serviceMap.set('TestProviderUseClassThree', new TestServiceOne());
 
-  const controllers = Controllers.getAll();
+    @Module({
+      controllers: [testController],
+      providers: [testProviderService, TestServiceTwo]
+    })
+    class TestModule { }
 
-  it ('should contain TestModule ModuleDefinition', () => {
+    await loadInjectables();
+
+    const controllers = Controllers.getAll();
     expect(controllers).toEqual(testControllers);
 
     SERVICES.forEach(service => Injector.getProviders().delete(service));
