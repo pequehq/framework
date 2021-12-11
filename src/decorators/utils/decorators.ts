@@ -9,9 +9,15 @@ import { ControllerDefinition } from '../../models/_index';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { ModuleDefinition } from '../../models/_index';
 import { Controllers } from '../../models/dependency-injection/controller.service';
+import { Modules } from '../../models/dependency-injection/module.service';
+import { CustomProvider } from '../injectable';
 
-export const Providers = [];
-export const CustomProviders = [];
+interface ProviderInterface {
+  name: string;
+  clazz: any;
+}
+
+export const Providers: ProviderInterface[] = [];
 
 const getMetadataKeyFromParam = (param: ParamType) => {
   switch (param) {
@@ -140,22 +146,29 @@ export const paramBuilder = (
 
 export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target: any) => {
+    Modules.push(target);
+
     if (module.controllers) {
       module.controllers.forEach(controller => Controllers.push(controller));
     }
+
     // Setting custom providers.
     const providers = module.providers || [];
     providers.forEach(provider => {
       if (provider.useClass) {
-        Injector.set(provider.provider, provider.useClass);
+        Providers.push({ name: (provider.provider.name || provider.provider), clazz: provider.useClass })
       }
     })
   }
 }
 
-export const injectableBuilder = (provider?: string): ClassDecorator => {
+export const injectableBuilder = (customProvider?: CustomProvider): ClassDecorator => {
   return (target: any) => {
-    Providers.push(target);
+    const provider: ProviderInterface = {
+      name: customProvider ? (customProvider.interface.name || customProvider.interface) : target.name,
+      clazz: target
+    };
+    Providers.push(provider);
   };
 };
 

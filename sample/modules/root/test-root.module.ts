@@ -5,6 +5,7 @@ import { HttpService } from '../../../src/services/_index';
 import { ExternalTestService } from './external-test.service';
 import { TestRootService } from './test-root.service';
 import { LoggerService } from '../../../src/services/logger/logger.service';
+import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
 
 @Module({
   modules: [RandomModule],
@@ -16,6 +17,16 @@ import { LoggerService } from '../../../src/services/logger/logger.service';
     LoggerService
   ]
 })
-export class TestRootModule {
+export class TestRootModule implements OnModuleInit, OnModuleDestroy, OnServerShutdown {
+  async onModuleInit() {
+    console.log('I have been initialized', TestRootModule.name);
+  }
 
+  async onModuleDestroy() {
+    console.log('I have been destroyed', TestRootModule.name);
+  }
+
+  async onServerShutdown() {
+    console.log('Server has shutdown', TestRootModule.name);
+  }
 }

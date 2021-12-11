@@ -17,8 +17,10 @@ import { Controller } from '../../src/decorators/controller';
 import { HelloWorldDto } from '../../sample/models/dto/hello-world.dto';
 import { Get } from '../../src/decorators/express-methods';
 import { SwaggerRouteDefinition } from '../../src/models/interfaces/swagger/swagger-route-definition.interface';
+import { loadInjectables } from '../../src/utils/dependencies.utils';
 
 describe('Swagger decorators', () => {
+  beforeAll(async () => await loadInjectables());
 
   @SwaggerComponent()
   class TestComponent {

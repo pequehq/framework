@@ -1,8 +1,12 @@
 import { injectableBuilder, injectClass } from './utils/decorators';
 
-export const Injectable = (provider?: string): ClassDecorator => {
+export interface CustomProvider {
+  interface: any;
+}
+
+export const Injectable = (customProvider?: CustomProvider): ClassDecorator => {
   // TODO manage custom provider name.
-  return injectableBuilder(provider);
+  return injectableBuilder(customProvider);
 };
 
 export const Inject = (provider: string): PropertyDecorator => {

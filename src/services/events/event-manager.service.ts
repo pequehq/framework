@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { Injectable } from '../../decorators/injectable';
 import EventEmitter from 'events';
 import { NativeEventsType } from '../../models/interfaces/types';
 import { OnEventInterface } from '../../decorators/events';
 import { DECORATORS } from '../../models/constants/decorators';
-import { Scheduler } from '../../decorators/scheduler';
+import { Injector } from '../../models/dependency-injection/injector.service';
+import { NATIVE_SERVICES } from '../../models/constants/native-services';
 
 export interface EventData {
   event: string | NativeEventsType;
@@ -12,7 +12,6 @@ export interface EventData {
   data: any
 }
 
-@Injectable()
 export class EventManagerService {
   private emitter = new EventEmitter();
 
@@ -34,3 +33,5 @@ export class EventManagerService {
     this.emitter.on(event, listener);
   }
 }
+
+Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, EventManagerService);

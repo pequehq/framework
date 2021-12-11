@@ -1,42 +1,40 @@
 import { Inject, Injectable } from '../src/decorators/injectable';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 import { Injector } from '../src/models/dependency-injection/injector.service';
-import { NATIVE_SERVICES } from '../jest.setup';
+import { SERVICES } from '../jest.setup';
 
 describe('Decorators utils', () => {
-  @Injectable()
-  class TestServiceOne { }
+  beforeAll(async () => await loadInjectables());
 
-  @Injectable()
-  class TestServiceTwo { }
+  it('it should contain the defined providers', async () => {
+    @Injectable()
+    class TestServiceOne { }
 
-  const serviceMap = new Map<string, any>();
-  serviceMap.set(TestServiceOne.name, new TestServiceOne());
-  serviceMap.set(TestServiceTwo.name, new TestServiceTwo());
+    @Injectable()
+    class TestServiceTwo { }
 
-  loadInjectables();
+    const serviceMap = new Map<string, any>();
+    serviceMap.set(TestServiceOne.name, new TestServiceOne());
+    serviceMap.set(TestServiceTwo.name, new TestServiceTwo());
 
-  it('it should contain the defined providers', () => {
-    NATIVE_SERVICES.forEach(service => Injector.getProviders().delete(service));
+    await loadInjectables();
+
+    SERVICES.forEach(service => Injector.getProviders().delete(service));
     expect(Injector.getProviders()).toEqual(serviceMap);
   });
-});
 
-describe('Decorators utils', () => {
-  @Injectable()
-  class TestServiceOne { }
+  it('should inject the service into the property', async () => {
+    @Injectable()
+    class TestServiceOne { }
 
-  loadInjectables();
+    await loadInjectables();
 
-  class TestInject {
-    @Inject('TestServiceOne')
-    testServiceOne: TestServiceOne
-  }
+    class TestInject {
+      @Inject('TestServiceOne')
+      testServiceOne: TestServiceOne
+    }
 
-  const testInject = new TestInject();
-
-  it('should inject the service into the property', () => {
-
+    const testInject = new TestInject();
     expect(Injector.resolve('TestServiceOne')).toEqual(testInject.testServiceOne);
   });
 });

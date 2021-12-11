@@ -1,3 +1,5 @@
+import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+
 class InjectorService {
   private providers = new Map<string, any>();
 
@@ -10,9 +12,18 @@ class InjectorService {
     }
   }
 
-  set(provider: string, target: any, dependencies: any[] = []) {
+  async set(provider: string, target: any, dependencies: any[] = []) {
     if (!this.providers.get(provider)) {
-      this.providers.set(provider, new target(...dependencies));
+      const instance = new target(...dependencies);
+      await Promise.resolve(LifeCycleService.triggerProviderInit(instance));
+      this.providers.set(provider, instance);
+    }
+  }
+
+  setNative(provider: string, target: any, dependencies: any[] = []) {
+    if (!this.providers.get(provider)) {
+      const instance = new target(...dependencies);
+      this.providers.set(provider, instance);
     }
   }
 

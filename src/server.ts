@@ -1,13 +1,8 @@
 import express, { Application } from 'express';
-import { Request, Response } from 'express';
-import { ControllerDefinition, ServerOptions } from './models/_index';
-import { DECORATORS } from './models/constants/decorators';
-import { RouteDefinition } from './models/_index';
-import { buildParameters } from './utils/express/factory';
-import { httpResponse } from './utils/http.utils';
+import { ServerOptions } from './models/_index';
 import { fallback } from './middlewares/_index';
 import { pushHttpEvents } from './middlewares/_index';
-import { getClassDependencies, loadInjectables } from './utils/dependencies.utils';
+import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { errorHandler, logError } from './middlewares/error-handler.middleware';
 import { SwaggerFactory } from './factory/swagger-factory';
@@ -17,6 +12,9 @@ import { getPath } from './utils/fs.utils';
 import swaggerUi from 'swagger-ui-express';
 import { LoggerService } from './services/logger/logger.service';
 import { Inject } from './decorators/injectable';
+import { Modules } from './models/dependency-injection/module.service';
+import { LifeCycleService } from './services/life-cycle/life-cycle.service';
+import { ExpressFactory } from './factory/express-factory';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -24,22 +22,45 @@ export interface GlobalMiddlewares {
 }
 
 export class Server {
-  private controllers: any;
-
   @Inject('LoggerService')
   private logService: LoggerService;
 
   constructor(private options: ServerOptions) {
+    this.setDefaultUnhandledExceptionsFallback();
   }
 
   logger() {
     return this.logService;
   }
 
+  async terminator() {
+    await Server.destroyControllers();
+    await Server.destroyModules();
+    await Server.destroyInjectables();
+
+    await Server.serverListenStop();
+    await ExpressFactory.closeServer();
+
+    await Server.serverShutdown();
+    process.exit(1);
+  }
+
+  terminationProcess() {
+    const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
+    terminationSignals.forEach((element) => {
+      process.on(element, async () => {
+        await this.terminator();
+      });
+    });
+  }
+
   async bootstrap(): Promise<Application> {
+    // Set terminators.
+    this.terminationProcess();
+
     // Load injectables and controllers.
-    Server.loadInjectables();
-    this.loadControllers();
+    await Server.loadInjectables();
+    await Server.loadModules();
 
     // Load existing app or one from scratch.
     this.options.existingApp = this.options.existingApp ? this.options.existingApp : express();
@@ -50,53 +71,7 @@ export class Server {
     // Add pre-route Middlewares.
     this.addMiddlewares(this.options.globalMiddlewares.preRoutes);
 
-    // Iterate controllers.
-    this.controllers.forEach(controller => {
-      const instance = new controller(...getClassDependencies(controller));
-      const controllerMeta: ControllerDefinition = Reflect.getMetadata(
-        DECORATORS.metadata.CONTROLLER,
-        controller
-      );
-      const routes: RouteDefinition[] = Reflect.getMetadata(
-        DECORATORS.metadata.ROUTES,
-        controller
-      );
-
-      // Controller root middlewares.
-      if (controllerMeta.middlewares.length > 0) {
-        this.options.existingApp.use(
-          controllerMeta.prefix,
-          ...controllerMeta.middlewares
-        );
-      }
-
-      // Iterate the routes for express registration.
-      routes.forEach(async route => {
-        if (!route.documentOnly) {
-          this.logService.log({ level: 'debug', data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`});
-          let functionToExecute = httpResponse(
-            (req: Request, res: Response) => {
-              const args = buildParameters(req, res, route);
-              return instance[route.method.name](...args);
-            }
-          );
-
-          if (route.noRestWrapper) {
-            functionToExecute = (req: Request, res: Response) => {
-              const args = buildParameters(req, res, route);
-              return instance[route.method.name](...args);
-            };
-          }
-
-          const middlewares = [...route.middlewareFunctions];
-          this.options.existingApp[route.requestMethod](
-            controllerMeta.prefix + route.path,
-            middlewares,
-            functionToExecute
-          );
-        }
-      });
-    });
+    this.options.existingApp = await this.loadControllers();
 
     // OpenAPI.
     if (this.options.swagger) {
@@ -117,17 +92,39 @@ export class Server {
       errorHandler,
     ]);
 
-    this.setDefaultUnhandledExceptionsFallback();
-
     return this.options.existingApp;
   }
 
-  private loadControllers() {
-    this.controllers = Controllers.getAll();
+  private async loadControllers() {
+    return await Controllers.initControllers(this.options);
   }
 
-  private static loadInjectables() {
-    loadInjectables();
+  private static async destroyControllers() {
+    await Controllers.destroyControllers();
+  }
+
+  private static async loadModules() {
+    await Modules.initModules();
+  }
+
+  private static async destroyModules() {
+    await Modules.destroyModules();
+  }
+
+  private static async loadInjectables() {
+    await loadInjectables();
+  }
+
+  private static async destroyInjectables() {
+    await destroyInjectables();
+  }
+
+  private static async serverShutdown() {
+    await LifeCycleService.triggerServerShutdown();
+  }
+
+  private static async serverListenStop() {
+    await LifeCycleService.triggerServerListenStop();
   }
 
   private addMiddlewares(middlewares: any[]) {
@@ -137,7 +134,7 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback() {
-    process.on('uncaughtException', error => console.error(error));
-    process.on('unhandledRejection', error => console.error(error));
+    process.on('uncaughtException', async error => await LifeCycleService.triggerUncaughtException(error));
+    process.on('unhandledRejection', async error => await LifeCycleService.triggerUncaughtRejection(error));
   }
 }
