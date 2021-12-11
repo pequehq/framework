@@ -1,8 +1,8 @@
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../decorators/_index';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
-import { Controllers } from '../models/dependency-injection/controller.service';
-import { Modules } from '../models/dependency-injection/module.service';
+import { ControllerService } from '../models/dependency-injection/controller.service';
+import { ModuleService } from '../models/dependency-injection/module.service';
 
 export const getClassDependencies = (clazz: any) => {
   // Getting the params to be injected declared inside the constructor.
@@ -23,9 +23,11 @@ export const destroyInjectables = async () => {
 }
 
 export const getAllInstances = () => {
+  const controllers = Injector.resolve<ControllerService>('ControllerService');
+  const modules = Injector.resolve<ModuleService>('ModuleService');
   const instances = [
-    ...Controllers.getInstances(),
-    ...Modules.getInstances(),
+    ...controllers.getInstances(),
+    ...modules.getInstances(),
   ];
   Injector.getProviders().forEach(value => instances.push(value));
   return instances;

@@ -14,6 +14,7 @@ import { LoggerService } from './services/logger/logger.service';
 import { Inject } from './decorators/injectable';
 import { Modules } from './models/dependency-injection/module.service';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
+import { ExpressFactory } from './factory/express-factory';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -25,6 +26,7 @@ export class Server {
   private logService: LoggerService;
 
   constructor(private options: ServerOptions) {
+    this.setDefaultUnhandledExceptionsFallback();
   }
 
   logger() {
@@ -35,8 +37,9 @@ export class Server {
     await Server.destroyControllers();
     await Server.destroyModules();
     await Server.destroyInjectables();
+
     await Server.serverListenStop();
-    this.options.existingApp.close();
+    await ExpressFactory.closeServer();
 
     await Server.serverShutdown();
     process.exit(1);
@@ -89,8 +92,6 @@ export class Server {
       errorHandler,
     ]);
 
-    this.setDefaultUnhandledExceptionsFallback();
-
     return this.options.existingApp;
   }
 
@@ -133,7 +134,7 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback() {
-    process.on('uncaughtException', error => console.error(error));
-    process.on('unhandledRejection', error => console.error(error));
+    process.on('uncaughtException', error => LifeCycleService.triggerUncaughtException(error));
+    process.on('unhandledRejection', error => LifeCycleService.triggerUncaughtRejection(error));
   }
 }

@@ -37,3 +37,7 @@ export interface OnServerStarted {
 export interface OnServerShutdown {
   onServerShutdown();
 }
+
+export interface OnServerBootstrap {
+  onServerBootstrap();
+}

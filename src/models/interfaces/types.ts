@@ -25,8 +25,18 @@ export type LogLevelsType =
   | 'warn'
   | 'error';
 export type NativeEventsType =
-  | 'lifecycle.provider'
-  | 'lifecycle.module'
-  | 'lifecycle.controller'
+  | 'lifecycle.bootstrap'
+  | 'lifecycle.init.provider'
+  | 'lifecycle.init.module'
+  | 'lifecycle.init.controller'
+  | 'lifecycle.server.listening'
+  | 'lifecycle.server.started'
+  | 'lifecycle.destroy.controller'
+  | 'lifecycle.destroy.module'
+  | 'lifecycle.destroy.provider'
+  | 'lifecycle.server.listening.stop'
+  | 'lifecycle.server.shutdown'
+  | 'lifecycle.uncaught.exception'
+  | 'lifecycle.uncaught.rejection'
   | 'http'
   | 'logger';
