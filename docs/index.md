@@ -50,6 +50,7 @@ The interface hooks allows the developer to control the lifecycle synchronously 
 The lifecycle is also firing asynchronous events that can be consumed at developer will and in separate providers implementations.
 
 ### <a name="lifecycle-start"></a>Start stage lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+
 | What                 | Interface           | Interface type | Event                        |
 |----------------------|---------------------|----------------|------------------------------|
 | **Server bootstrap** | `OnServerBootstrap` | All            | `lifecycle.bootstrap`        |
@@ -72,6 +73,7 @@ Please read the Node.js process signal event [documentation](https://nodejs.org/
 | **Server shutdown**      | `OnServerShutdown`     | All            | `lifecycle.server.shutdown`       |
 
 ### <a name="lifecycle-error"></a>Error lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+
 | What                     | Interface             | Interface type | Event                          |
 |--------------------------|-----------------------|----------------|--------------------------------|
 | **Controller destroy**   | `OnUncaughtException` | All            | `lifecycle.uncaught.exception` |
