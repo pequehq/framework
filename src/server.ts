@@ -134,7 +134,7 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback() {
-    process.on('uncaughtException', error => LifeCycleService.triggerUncaughtException(error));
-    process.on('unhandledRejection', error => LifeCycleService.triggerUncaughtRejection(error));
+    process.on('uncaughtException', async error => await LifeCycleService.triggerUncaughtException(error));
+    process.on('unhandledRejection', async error => await LifeCycleService.triggerUncaughtRejection(error));
   }
 }

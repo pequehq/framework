@@ -12,6 +12,7 @@ It can also be used to **invert the control** in a pre-existent Express applicat
   - [Event hooks](#lifecycle-events)
   - [Start stage lifecycle](#lifecycle-start)
   - [Stop stage lifecycle](#lifecycle-stop)
+  - [Error lifecycle](#lifecycle-error)
 - [Modules](#modules)
 - [Controllers](#controllers)
   - [Routings](#controllers-routings)
@@ -69,6 +70,12 @@ Please read the Node.js process signal event [documentation](https://nodejs.org/
 | **Provider destriy**     | `OnProviderDestroy`    | Injectables    | `lifecycle.destroy.provider`      |
 | **Server listener stop** | `OnServerListenStop`   | All            | `lifecycle.server.listening.stop` | 
 | **Server shutdown**      | `OnServerShutdown`     | All            | `lifecycle.server.shutdown`       |
+
+### <a name="lifecycle-error"></a>Error lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
+| What                     | Interface             | Interface type | Event                          |
+|--------------------------|-----------------------|----------------|--------------------------------|
+| **Controller destroy**   | `OnUncaughtException` | All            | `lifecycle.uncaught.exception` |
+| **Module destroy**       | `OnUncaughtRejection` | All            | `lifecycle.uncaught.rejection` |
 
 ## <a name="architecture"></a>General architecture <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 ![General architecture](images/arch.png)

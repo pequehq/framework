@@ -41,3 +41,11 @@ export interface OnServerShutdown {
 export interface OnServerBootstrap {
   onServerBootstrap();
 }
+
+export interface OnUncaughtException {
+  onUncaughtException();
+}
+
+export interface OnUncaughtRejection {
+  onUncaughtRejection();
+}

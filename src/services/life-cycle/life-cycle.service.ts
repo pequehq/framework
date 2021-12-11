@@ -78,10 +78,12 @@ class LifeCycleManagerService {
   }
 
   async triggerUncaughtException(error: any) {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerBootstrap');
     LifeCycleManagerService.pushEvent('lifecycle.uncaught.exception', { error });
   }
 
   async triggerUncaughtRejection(error: any) {
+    await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onUncaughtRejection');
     LifeCycleManagerService.pushEvent('lifecycle.uncaught.rejection', { error });
   }
 }
