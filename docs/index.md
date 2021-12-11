@@ -39,6 +39,9 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 ## <a name="architecture"></a>General architecture <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 ![General architecture](images/arch.png)
 
+### Swagger self generation
+![Swagger architecture](images/swagger-arch.png)
+
 ## <a name="lifecycle"></a>Lifecycle <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 The framework give you access also to lifecycle events. They can be hooked via interfaces and/or via the Event Manager Service.
 ![](images/lifecycle.png)
@@ -78,12 +81,6 @@ Please read the Node.js process signal event [documentation](https://nodejs.org/
 |--------------------------|-----------------------|----------------|--------------------------------|
 | **Controller destroy**   | `OnUncaughtException` | All            | `lifecycle.uncaught.exception` |
 | **Module destroy**       | `OnUncaughtRejection` | All            | `lifecycle.uncaught.rejection` |
-
-## <a name="architecture"></a>General architecture <a href="#toc"><img src="images/backtop.png" width="20"/></a>
-![General architecture](images/arch.png)
-
-### Swagger self generation
-![Swagger architecture](images/swagger-arch.png)
 
 ## <a name="modules"></a>Modules <a href="#toc"><img src="images/backtop.png" width="20"/></a>
 The modules are classes with the necessary metadata in order to define the structure of the application.
