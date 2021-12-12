@@ -3,10 +3,12 @@ import * as clusterUtils from '../utils/cluster.utils';
 import { Server } from '../server';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 import * as http from 'http';
+import { Socket } from 'net';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;
   private static expressServer: http.Server;
+  private static sockets = new Set<Socket>();
 
   static createServer = async (options: ServerOptions) => {
     ExpressFactory.sharedOptions = options;
@@ -28,18 +30,11 @@ export class ExpressFactory {
         await LifeCycleService.triggerServerStarted();
       });
 
-      /*
-       * Handling options.
-       */
-      if (options.timeout) {
-        ExpressFactory.expressServer.timeout = options.timeout;
-      }
-      if (options.keepAliveTimeout) {
-        ExpressFactory.expressServer.keepAliveTimeout = options.keepAliveTimeout;
-      }
-      if (options.headersTimeout) {
-        ExpressFactory.expressServer.headersTimeout = options.headersTimeout;
-      }
+      // Connections management.
+      ExpressFactory.expressServer.on('connection', socket => {
+        ExpressFactory.expressServer.once('close', () => ExpressFactory.sockets.delete(socket));
+        ExpressFactory.sockets.add(socket);
+      });
 
       return ExpressFactory.expressServer;
     }
@@ -51,6 +46,12 @@ export class ExpressFactory {
 
   static async closeServer() {
     return new Promise((resolve, reject) => {
+      // Ending all the open connections first.
+      for (const socket of ExpressFactory.sockets) {
+        socket.destroy();
+        ExpressFactory.sockets.delete(socket);
+      }
+
       ExpressFactory.expressServer.close(err => {
         if (err) {
           reject(err);
