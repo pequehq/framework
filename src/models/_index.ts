@@ -5,7 +5,7 @@ export * from './interfaces/module-definition.interface';
 export * from './interfaces/param-definition.interface';
 export * from './interfaces/route-definition.interface';
 export * from './interfaces/route-options';
-export * from './interfaces/types'
+export * from './interfaces/types';
 export * from './interfaces/cache/cache-client.abstract';
 export * from './interfaces/web-sockets/web-sockets-client.abstract';
 export * from './interfaces/web-sockets/web-sockets-server.abstract';

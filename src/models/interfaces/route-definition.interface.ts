@@ -1,5 +1,5 @@
-import { ExpressMethods, MiddlewareHandler } from './types';
 import { MethodDefinition } from './method-definition.interface';
+import { ExpressMethods, MiddlewareHandler } from './types';
 
 export interface RouteDefinition {
   path: string;

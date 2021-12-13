@@ -10,8 +10,10 @@ export interface SwaggerOptionsInterface {
     version: string;
   };
   servers: [{ url: string }];
-  tags: [{
-    name: string;
-    description: string
-  }];
+  tags: [
+    {
+      name: string;
+      description: string;
+    },
+  ];
 }

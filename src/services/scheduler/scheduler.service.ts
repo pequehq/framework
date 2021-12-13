@@ -1,15 +1,17 @@
-import cron, { ScheduledTask } from 'node-cron'
+import cron, { ScheduledTask } from 'node-cron';
+
 import { Injectable } from '../../decorators/injectable';
-import { DECORATORS } from '../../models/constants/decorators';
 import { SchedulerConfig } from '../../decorators/scheduler';
+import { DECORATORS } from '../../models/constants/decorators';
 
 @Injectable()
 export class SchedulerService {
   private tasks: Map<string, ScheduledTask> = new Map<string, ScheduledTask>();
 
   constructor() {
-    const scheduleMap: Map<string, SchedulerConfig> = Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
-    scheduleMap.forEach((value, key) => {
+    const scheduleMap: Map<string, SchedulerConfig> =
+      Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
+    scheduleMap.forEach((value) => {
       this.tasks.set(value.name, cron.schedule(value.cron, value.listener));
     });
   }

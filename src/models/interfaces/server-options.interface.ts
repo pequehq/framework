@@ -1,6 +1,6 @@
 import { GlobalMiddlewares } from '../../server';
-import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
 import { LoggerInterface } from './logger.interface';
+import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
 
 export interface ServerOptions {
   rootModule: any;
