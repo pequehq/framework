@@ -2,7 +2,7 @@ import { Injector } from '../models/dependency-injection/injector.service';
 import { CacheManager } from '../models/interfaces/cache/cache-client.abstract';
 
 interface CacheOptions {
-  key: string | Function;
+  key: string | (() => void);
   server?: string;
   ttl?: number;
 }

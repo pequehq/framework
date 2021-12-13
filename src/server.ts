@@ -1,20 +1,21 @@
+import $RefParser from '@apidevtools/json-schema-ref-parser';
 import express, { Application } from 'express';
-import { ServerOptions } from './models/_index';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
+import { Inject } from './decorators/injectable';
+import { ExpressFactory } from './factory/express-factory';
+import { SwaggerFactory } from './factory/swagger-factory';
 import { fallback } from './middlewares/_index';
 import { pushHttpEvents } from './middlewares/_index';
-import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
-import { Controllers } from './models/dependency-injection/controller.service';
 import { errorHandler, logError } from './middlewares/error-handler.middleware';
-import { SwaggerFactory } from './factory/swagger-factory';
-import $RefParser from '@apidevtools/json-schema-ref-parser';
-import YAML from 'yamljs';
-import { getPath } from './utils/fs.utils';
-import swaggerUi from 'swagger-ui-express';
-import { LoggerService } from './services/logger/logger.service';
-import { Inject } from './decorators/injectable';
+import { ServerOptions } from './models/_index';
+import { Controllers } from './models/dependency-injection/controller.service';
 import { Modules } from './models/dependency-injection/module.service';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
-import { ExpressFactory } from './factory/express-factory';
+import { LoggerService } from './services/logger/logger.service';
+import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
+import { getPath } from './utils/fs.utils';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -77,7 +78,9 @@ export class Server {
     if (this.options.swagger) {
       const swaggerFactory = new SwaggerFactory();
       swaggerFactory.generate();
-      const swaggerDocument =  await $RefParser.dereference(YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')));
+      const swaggerDocument = await $RefParser.dereference(
+        YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')),
+      );
       this.options.existingApp.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
       this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
     }
@@ -86,11 +89,7 @@ export class Server {
     this.options.existingApp.use(fallback);
 
     // Add post-route Middlewares.
-    this.addMiddlewares([
-      ...this.options.globalMiddlewares.postRoutes,
-      logError,
-      errorHandler,
-    ]);
+    this.addMiddlewares([...this.options.globalMiddlewares.postRoutes, logError, errorHandler]);
 
     return this.options.existingApp;
   }
@@ -128,13 +127,13 @@ export class Server {
   }
 
   private addMiddlewares(middlewares: any[]) {
-    middlewares.forEach(middleware => {
+    middlewares.forEach((middleware) => {
       this.options.existingApp.use(middleware);
     });
   }
 
   private setDefaultUnhandledExceptionsFallback() {
-    process.on('uncaughtException', async error => await LifeCycleService.triggerUncaughtException(error));
-    process.on('unhandledRejection', async error => await LifeCycleService.triggerUncaughtRejection(error));
+    process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
+    process.on('unhandledRejection', async (error) => await LifeCycleService.triggerUncaughtRejection(error));
   }
 }

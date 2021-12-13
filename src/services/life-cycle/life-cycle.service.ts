@@ -1,10 +1,9 @@
-import { getAllInstances } from '../../utils/dependencies.utils';
-import { EventManagerService } from '../events/event-manager.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { NativeEventsType } from '../../models/interfaces/types';
+import { getAllInstances } from '../../utils/dependencies.utils';
+import { EventManagerService } from '../events/event-manager.service';
 
 class LifeCycleManagerService {
-
   private static async triggerLifeCycleEvent(instance: any, method: string) {
     if (typeof instance[method] === 'function') {
       await instance[method]();

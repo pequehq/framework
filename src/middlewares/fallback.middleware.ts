@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
+
 import { HTTP_STATES } from '../models/constants/http-states';
 
-export const fallback = (req: Request, res: Response, next: any) => {
+export const fallback: RequestHandler = (req, res) => {
   res.status(HTTP_STATES.HTTP_404);
   res.send({
-    message: 'Route not found.'
-  })
-}
+    message: 'Route not found.',
+  });
+};

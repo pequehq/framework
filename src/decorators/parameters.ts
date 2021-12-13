@@ -1,4 +1,4 @@
-import { paramBuilder } from "./utils/decorators";
+import { paramBuilder } from './utils/decorators';
 
 export const Request = (): ParameterDecorator => {
   return paramBuilder('request');

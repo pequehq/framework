@@ -1,8 +1,9 @@
-import { Injectable } from '../../decorators/_index';
 import { HTTPError, Options, Response } from 'got';
-const got = require('got');
 
-export declare type HttpContentType = 'application/json'
+import { Injectable } from '../../decorators/_index';
+const got = require('got'); // eslint-disable-line @typescript-eslint/no-var-requires
+
+export declare type HttpContentType = 'application/json';
 
 export interface HttpRequest {
   url: string;
@@ -14,15 +15,16 @@ export interface HttpRequest {
 
 const HTTP_SERVICE = {
   CONTENT_TYPES: {
-    APP_JSON: 'application/json'
-  }
-}
+    APP_JSON: 'application/json',
+  },
+};
 
 @Injectable()
 export class HttpService {
   private convertResponse(response: Response) {
-    return response.headers['content-type'] === HTTP_SERVICE.CONTENT_TYPES.APP_JSON ?
-      JSON.parse(String(response.body)) : response.body;
+    return response.headers['content-type'] === HTTP_SERVICE.CONTENT_TYPES.APP_JSON
+      ? JSON.parse(String(response.body))
+      : response.body;
   }
 
   private buildCommonOptions(httpRequest: HttpRequest) {
@@ -30,7 +32,7 @@ export class HttpService {
       url: this.buildUrlQueryParameters(httpRequest),
       headers: httpRequest.headers,
       body: httpRequest.body,
-    }
+    };
   }
 
   private buildUrlQueryParameters(httpRequest: HttpRequest) {
@@ -38,27 +40,30 @@ export class HttpService {
       return httpRequest.url;
     }
 
-    const parameters = [];
-    Object.keys(httpRequest.query).forEach(key => {
-      parameters.push(`${key}=${httpRequest.query[key]}`);
-    })
+    const parameters = new URLSearchParams();
 
-    return `${httpRequest.url}?${parameters.join('&')}`;
+    for (const [key, value] of Object.entries(httpRequest.query)) {
+      parameters.append(key, value);
+    }
+
+    return `${httpRequest.url}?${parameters.toString()}`;
   }
 
   private request(options: Options) {
-    return got(options).then((data: Response) => {
-      return this.convertResponse(data);
-    }).catch(error => {
-      throw new HTTPError(error);
-    });
+    return got(options)
+      .then((data: Response) => {
+        return this.convertResponse(data);
+      })
+      .catch((error) => {
+        throw new HTTPError(error);
+      });
   }
 
   get(httpRequest: HttpRequest) {
     const options: Options = {
       ...this.buildCommonOptions(httpRequest),
-      method: 'GET'
-    }
+      method: 'GET',
+    };
 
     return this.request(options);
   }
@@ -66,8 +71,8 @@ export class HttpService {
   post(httpRequest: HttpRequest) {
     const options: Options = {
       ...this.buildCommonOptions(httpRequest),
-      method: 'POST'
-    }
+      method: 'POST',
+    };
 
     return this.request(options);
   }
@@ -75,8 +80,8 @@ export class HttpService {
   delete(httpRequest: HttpRequest) {
     const options: Options = {
       ...this.buildCommonOptions(httpRequest),
-      method: 'DELETE'
-    }
+      method: 'DELETE',
+    };
 
     return this.request(options);
   }
@@ -84,8 +89,8 @@ export class HttpService {
   put(httpRequest: HttpRequest) {
     const options: Options = {
       ...this.buildCommonOptions(httpRequest),
-      method: 'PUT'
-    }
+      method: 'PUT',
+    };
 
     return this.request(options);
   }
@@ -93,8 +98,8 @@ export class HttpService {
   patch(httpRequest: HttpRequest) {
     const options: Options = {
       ...this.buildCommonOptions(httpRequest),
-      method: 'PATCH'
-    }
+      method: 'PATCH',
+    };
 
     return this.request(options);
   }

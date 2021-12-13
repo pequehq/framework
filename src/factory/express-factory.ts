@@ -1,9 +1,10 @@
-import { ServerOptions } from '../models/_index';
-import * as clusterUtils from '../utils/cluster.utils';
-import { Server } from '../server';
-import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 import * as http from 'http';
 import { Socket } from 'net';
+
+import { ServerOptions } from '../models/_index';
+import { Server } from '../server';
+import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
+import * as clusterUtils from '../utils/cluster.utils';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;
@@ -25,13 +26,13 @@ export class ExpressFactory {
       await LifeCycleService.triggerServerListen();
 
       ExpressFactory.expressServer = app.listen(port, hostname, async () => {
-        server.logger().log({level: 'debug', data: `Server is running @${hostname}:${port}`});
-        server.logger().log({level: 'debug', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}`});
+        server.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
+        server.logger().log({ level: 'debug', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}` });
         await LifeCycleService.triggerServerStarted();
       });
 
       // Connections management.
-      ExpressFactory.expressServer.on('connection', socket => {
+      ExpressFactory.expressServer.on('connection', (socket) => {
         ExpressFactory.expressServer.once('close', () => ExpressFactory.sockets.delete(socket));
         ExpressFactory.sockets.add(socket);
       });
@@ -52,13 +53,13 @@ export class ExpressFactory {
         ExpressFactory.sockets.delete(socket);
       }
 
-      ExpressFactory.expressServer.close(err => {
+      ExpressFactory.expressServer.close((err) => {
         if (err) {
           reject(err);
         } else {
           resolve(true);
         }
-      })
+      });
     });
   }
 }
