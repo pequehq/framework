@@ -16,6 +16,9 @@ import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { LoggerService } from './services/logger/logger.service';
 import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
+import { guardExecutor } from './middlewares/guard.middleware';
+import { Injector } from './models/dependency-injection/injector.service';
+import { CanExecute } from './models/interfaces/authorization.interface';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -65,6 +68,10 @@ export class Server {
 
     // Load existing app or one from scratch.
     this.options.existingApp = this.options.existingApp ? this.options.existingApp : express();
+
+    // Global guards.
+    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
+    this.options.existingApp.use(...guards);
 
     // Push HTTP event.
     this.options.existingApp.use(pushHttpEvents);

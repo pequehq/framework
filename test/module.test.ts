@@ -14,7 +14,8 @@ describe('@Module() decorator',() => {
     const testMiddleware = () => {};
     const testController: ControllerDefinition = {
       prefix: '/test-controller',
-      middlewares: [testMiddleware]
+      middlewares: [testMiddleware],
+      guards: []
     }
 
     const testControllers = [testController];

@@ -6,9 +6,9 @@ export const guardExecutor = (guard: any) => {
     if (canExecute) {
       next();
     } else {
-      res.status(HTTP_STATES.HTTP_401);
+      res.status(HTTP_STATES.HTTP_403);
       res.send({
-        message: 'Route is unauthorized.',
+        message: 'Forbidden resource',
       });
     }
   };

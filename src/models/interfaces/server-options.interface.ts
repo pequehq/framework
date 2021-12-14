@@ -14,4 +14,5 @@ export interface ServerOptions {
   headersTimeout?: number;
   swagger?: SwaggerOptionsInterface;
   logger?: LoggerInterface;
+  guards?: any[];
 }

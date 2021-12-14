@@ -3,4 +3,5 @@ export enum HTTP_STATES {
   'HTTP_404' = 404,
   'HTTP_500' = 500,
   'HTTP_401' = 401,
+  'HTTP_403' = 403,
 }
