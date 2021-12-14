@@ -11,6 +11,9 @@ import { ControllerDefinition } from '../controller-definition.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
+import { guardExecutor } from '../../middlewares/guard.middleware';
+import { HTTP_STATES } from '../constants/http-states';
+import { CanExecute } from '../interfaces/authorization.interface';
 
 export class ControllerService {
   private controllers = [];
@@ -61,8 +64,12 @@ export class ControllerService {
             };
           }
 
+          // Applying guards and middlewares.
+          const guards = route.guards?.map(guard => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
           const middlewares = [...route.middlewareFunctions];
-          options.existingApp[route.requestMethod](controllerMeta.prefix + route.path, middlewares, functionToExecute);
+
+          // Route registration.
+          options.existingApp[route.requestMethod](controllerMeta.prefix + route.path, guards, middlewares, functionToExecute);
         }
       }
     }

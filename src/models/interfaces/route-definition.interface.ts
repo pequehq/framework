@@ -8,4 +8,5 @@ export interface RouteDefinition {
   middlewareFunctions: MiddlewareHandler[];
   documentOnly: boolean;
   noRestWrapper: boolean;
+  guards?: any[];
 }

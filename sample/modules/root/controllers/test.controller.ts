@@ -5,6 +5,8 @@ import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { LoggerService } from '../../../../src/services/logger/logger.service';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
+import { Guard } from '../../../../src/decorators/authorization';
+import { TestGuard } from '../../guards/test.guard';
 
 @SwaggerTag(['Test'])
 @Controller('/test')
@@ -30,6 +32,7 @@ export class TestController implements OnControllerInit {
       description: 'Hello World returned'
     }
   ])
+  @Guard(TestGuard)
   @Get('/hello-world')
   async helloWorld() {
     this.loggerService.log({level: 'info', data: 'Test log from /hello-world'});
@@ -48,6 +51,7 @@ export class TestController implements OnControllerInit {
       description: 'External call returned'
     }
   ])
+  @Guard(TestGuard)
   @Get('/external')
   async external() {
     return { external: await this.externalService.getExternalCall() };
