@@ -1,5 +1,6 @@
-import { Injectable } from '../../decorators/_index';
 import { BehaviorSubject } from 'rxjs';
+
+import { Injectable } from '../../decorators/_index';
 import { HttpEvent } from '../../models/_index';
 
 export const httpEventQueue = new BehaviorSubject(null);

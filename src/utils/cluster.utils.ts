@@ -18,7 +18,7 @@ export const setupWorkers = () => {
   for (let i = 0; i < numCPUs; i++) {
     spawn();
   }
-  cluster.on('exit', worker => {
+  cluster.on('exit', (worker) => {
     delete workers[worker.id];
     spawn();
   });

@@ -12,6 +12,8 @@ import { OnEvent, OnEventInterface } from '../src/decorators/events';
 import { EventManagerService } from '../src/services/events/event-manager.service';
 import { Scheduler, SchedulerConfig } from '../src/decorators/scheduler';
 import { SchedulerService } from '../src/services/scheduler/scheduler.service';
+import { CanExecute } from '../src/models/interfaces/authorization.interface';
+import { Guard } from '../src/decorators/authorization';
 
 describe('Decorator tests', () => {
   beforeAll(async () => await loadInjectables());
@@ -54,6 +56,15 @@ describe('Decorator tests', () => {
   });
 
   describe('Routes', () => {
+    @Injectable()
+    class TestGuard implements CanExecute {
+      async canExecute(context: any): Promise<boolean> {
+        console.log('guard executed');
+        return true;
+      }
+    }
+
+
     describe('@Get() decorator', () => {
       class TestController {
         @Get('/test-route')
@@ -126,6 +137,22 @@ describe('Decorator tests', () => {
         const metadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestController);
         testRoute.requestMethod = 'delete';
         expect(metadata[0]).toEqual(testRoute);
+      });
+    });
+
+    describe('@Guard() decorator', () => {
+      class TestController {
+        @Guard(TestGuard)
+        @Get('/test-route')
+        testRoute() {
+          return;
+        }
+      }
+
+      it('should contain DELETE RouteDefinition', () => {
+        const metadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestController);
+        expect(metadata[0].guards.length).toBe(1);
+        expect(typeof metadata[0].guards[0]).toBe('function');
       });
     });
   })

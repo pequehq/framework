@@ -1,6 +1,6 @@
-import { Injector } from './injector.service';
-import { NATIVE_SERVICES } from '../constants/native-services';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { NATIVE_SERVICES } from '../constants/native-services';
+import { Injector } from './injector.service';
 
 export class ModuleService {
   private modules = [];

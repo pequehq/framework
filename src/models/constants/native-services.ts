@@ -3,5 +3,5 @@ export const NATIVE_SERVICES = {
   CONTROLLER: 'ControllerService',
   EVENT_MANAGER: 'EventManagerService',
   SCHEDULER: 'SchedulerService',
-  LOGGER: 'LoggerService'
+  LOGGER: 'LoggerService',
 };
