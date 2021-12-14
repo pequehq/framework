@@ -44,7 +44,8 @@ export class ControllerService {
 
       // Controller root guards.
       if (controllerMeta.guards.length > 0) {
-        const guards = controllerMeta.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
+        const guards =
+          controllerMeta.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 

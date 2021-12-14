@@ -1,6 +1,6 @@
 import { DECORATORS } from '../models/constants/decorators';
-import { RouteDefinition } from '../models/interfaces/route-definition.interface';
 import { ControllerDefinition } from '../models/controller-definition.interface';
+import { RouteDefinition } from '../models/interfaces/route-definition.interface';
 
 export function Guard(guard: any): MethodDecorator & ClassDecorator {
   return (target: any, propertyKey?: string, descriptor?: PropertyDescriptor) => {
