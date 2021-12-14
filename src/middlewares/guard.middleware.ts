@@ -11,5 +11,5 @@ export const guardExecutor = (guard: any) => {
         message: 'Route is unauthorized.',
       });
     }
-  }
-}
+  };
+};

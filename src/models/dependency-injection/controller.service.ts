@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
 
+import { guardExecutor } from '../../middlewares/guard.middleware';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { httpResponse } from '../../utils/http.utils';
 import { DECORATORS } from '../constants/decorators';
+import { HTTP_STATES } from '../constants/http-states';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
+import { CanExecute } from '../interfaces/authorization.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
-import { guardExecutor } from '../../middlewares/guard.middleware';
-import { HTTP_STATES } from '../constants/http-states';
-import { CanExecute } from '../interfaces/authorization.interface';
 
 export class ControllerService {
   private controllers = [];
@@ -65,11 +65,16 @@ export class ControllerService {
           }
 
           // Applying guards and middlewares.
-          const guards = route.guards?.map(guard => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
+          const guards = route.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
           const middlewares = [...route.middlewareFunctions];
 
           // Route registration.
-          options.existingApp[route.requestMethod](controllerMeta.prefix + route.path, guards, middlewares, functionToExecute);
+          options.existingApp[route.requestMethod](
+            controllerMeta.prefix + route.path,
+            guards,
+            middlewares,
+            functionToExecute,
+          );
         }
       }
     }

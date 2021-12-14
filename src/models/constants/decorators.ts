@@ -23,6 +23,6 @@ export const DECORATORS = {
     events: {
       ON_EVENT: 'on_event',
     },
-    SCHEDULER: 'scheduler'
+    SCHEDULER: 'scheduler',
   },
 };
