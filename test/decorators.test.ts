@@ -38,7 +38,8 @@ describe('Decorator tests', () => {
   const testMiddleware = () => {};
   const testController: ControllerDefinition = {
     prefix: '/test-controller',
-    middlewares: [testMiddleware]
+    middlewares: [testMiddleware],
+    guards: []
   }
 
   describe('@Controller() decorator', () => {

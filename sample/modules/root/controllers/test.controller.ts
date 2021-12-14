@@ -9,6 +9,7 @@ import { Guard } from '../../../../src/decorators/authorization';
 import { TestGuard } from '../../guards/test.guard';
 
 @SwaggerTag(['Test'])
+@Guard(TestGuard)
 @Controller('/test')
 export class TestController implements OnControllerInit {
   constructor(private readonly httpService: HttpService,
@@ -51,7 +52,6 @@ export class TestController implements OnControllerInit {
       description: 'External call returned'
     }
   ])
-  @Guard(TestGuard)
   @Get('/external')
   async external() {
     return { external: await this.externalService.getExternalCall() };

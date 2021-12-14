@@ -45,6 +45,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
     const controllerDefinition: ControllerDefinition = {
       prefix,
       middlewares: Array.isArray(middlewares) ? middlewares : [middlewares],
+      guards: [],
     };
     Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controllerDefinition, target);
 

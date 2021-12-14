@@ -7,7 +7,6 @@ import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { httpResponse } from '../../utils/http.utils';
 import { DECORATORS } from '../constants/decorators';
-import { HTTP_STATES } from '../constants/http-states';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
 import { CanExecute } from '../interfaces/authorization.interface';
@@ -42,6 +41,13 @@ export class ControllerService {
 
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, controller);
+
+      // Controller root guards.
+      if (controllerMeta.guards.length > 0) {
+        const guards =
+          controllerMeta.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
+        options.existingApp.use(controllerMeta.prefix, ...guards);
+      }
 
       // Controller root middlewares.
       if (controllerMeta.middlewares.length > 0) {
