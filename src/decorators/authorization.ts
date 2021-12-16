@@ -20,4 +20,4 @@ export const Guard = (guard: any): MethodDecorator & ClassDecorator => {
       return target;
     }
   };
-}
+};

@@ -1,5 +1,7 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
+import cookieParser from 'cookie-parser';
 import express, { Application } from 'express';
+import expressSession from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -9,18 +11,16 @@ import { SwaggerFactory } from './factory/swagger-factory';
 import { fallback } from './middlewares/_index';
 import { pushHttpEvents } from './middlewares/_index';
 import { errorHandler, logError } from './middlewares/error-handler.middleware';
+import { guardExecutor } from './middlewares/guard.middleware';
 import { ServerOptions } from './models/_index';
 import { Controllers } from './models/dependency-injection/controller.service';
+import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
+import { CanExecute } from './models/interfaces/authorization.interface';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { LoggerService } from './services/logger/logger.service';
 import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
-import { guardExecutor } from './middlewares/guard.middleware';
-import { Injector } from './models/dependency-injection/injector.service';
-import { CanExecute } from './models/interfaces/authorization.interface';
-import cookieParser from 'cookie-parser';
-import expressSession from 'express-session';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];

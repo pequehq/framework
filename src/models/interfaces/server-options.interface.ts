@@ -1,7 +1,8 @@
+import { SessionOptions } from 'express-session';
+
 import { GlobalMiddlewares } from '../../server';
 import { LoggerInterface } from './logger.interface';
 import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
-import { SessionOptions } from 'express-session';
 
 export interface ServerOptions {
   rootModule: any;
