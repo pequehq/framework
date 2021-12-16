@@ -7,7 +7,7 @@ import { ControllerDefinition } from '../src/models/controller-definition.interf
 import { Injectable } from '../src/decorators/injectable';
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
-import { Request, Response, Header, Body, Param, Query } from '../src/decorators/parameters';
+import { Request, Response, Header, Body, Param, Query, Session, Cookie } from '../src/decorators/parameters';
 import { OnEvent, OnEventInterface } from '../src/decorators/events';
 import { EventManagerService } from '../src/services/events/event-manager.service';
 import { Scheduler, SchedulerConfig } from '../src/decorators/scheduler';
@@ -24,11 +24,13 @@ describe('Decorator tests', () => {
     method: {
       name: 'testRoute',
       body: [],
+      cookies: [],
       params: [],
       query: [],
       headers: [],
       request: [],
-      response: []
+      response: [],
+      session: []
     },
     middlewareFunctions: [],
     documentOnly: false,
@@ -183,7 +185,9 @@ describe('Decorator tests', () => {
         @Header('header') header: any,
         @Body() body: any,
         @Param('param') param: any,
-        @Query('query') query: any
+        @Query('query') query: any,
+        @Session() session: any,
+        @Cookie('cookie') cookie: any
       ) {
         return;
       }
@@ -222,6 +226,18 @@ describe('Decorator tests', () => {
     it('should contain the right QUERY metadata', () => {
       const testParameter = [{ testRoute: { index: 5, param: 'query' } }]
       const parameterMetadata = Reflect.getMetadata('queries', TestController) || [];
+      expect(parameterMetadata).toEqual(testParameter);
+    });
+
+    it('should contain the right SESSION metadata', () => {
+      const testParameter = [{ testRoute: { index: 6 } }]
+      const parameterMetadata = Reflect.getMetadata('session', TestController) || [];
+      expect(parameterMetadata).toEqual(testParameter);
+    });
+
+    it('should contain the right COOKIE metadata', () => {
+      const testParameter = [{ testRoute: { index: 7, param: 'cookie' } }]
+      const parameterMetadata = Reflect.getMetadata('cookies', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
   });

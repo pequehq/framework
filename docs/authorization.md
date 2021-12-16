@@ -58,6 +58,6 @@ When the guard is not allowing the route, it will return an `HTTP 403` error wit
 
 ```json
 {
-  "message": "Forbidden resource",
+  "message": "Forbidden resource"
 }
 ```

@@ -23,3 +23,11 @@ export const Query = (param: string): ParameterDecorator => {
 export const Header = (header: string): ParameterDecorator => {
   return paramBuilder('header', header);
 };
+
+export const Cookie = (cookie: string): ParameterDecorator => {
+  return paramBuilder('cookies', cookie);
+};
+
+export const Session = (): ParameterDecorator => {
+  return paramBuilder('session');
+};

@@ -2,7 +2,7 @@ import { DECORATORS } from '../models/constants/decorators';
 import { ControllerDefinition } from '../models/controller-definition.interface';
 import { RouteDefinition } from '../models/interfaces/route-definition.interface';
 
-export function Guard(guard: any): MethodDecorator & ClassDecorator {
+export const Guard = (guard: any): MethodDecorator & ClassDecorator => {
   return (target: any, propertyKey?: string, descriptor?: PropertyDescriptor) => {
     if (descriptor) {
       const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor);

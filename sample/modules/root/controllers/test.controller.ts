@@ -1,4 +1,4 @@
-import { Controller, Get, SwaggerResponse, SwaggerTag } from '../../../../src/decorators/_index';
+import { Controller, Cookie, Get, Session, SwaggerResponse, SwaggerTag } from '../../../../src/decorators/_index';
 import { HttpService } from '../../../../src/services/_index';
 import { ExternalTestService } from '../external-test.service';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
@@ -35,9 +35,10 @@ export class TestController implements OnControllerInit {
   ])
   @Guard(TestGuard)
   @Get('/hello-world')
-  async helloWorld() {
-    this.loggerService.log({level: 'info', data: 'Test log from /hello-world'});
-    return { test: 'hello world' };
+  async helloWorld(@Cookie('hayu-portability') portability: string,
+                   @Session() session: any) {
+    this.loggerService.log({ level: 'info', data: 'Test log from /hello-world' });
+    return { test: 'hello world', portability, session };
   }
 
   @SwaggerResponse({

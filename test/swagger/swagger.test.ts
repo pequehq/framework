@@ -162,12 +162,14 @@ describe('Swagger decorators', () => {
           documentOnly: false,
           method: {
             body: [],
+            cookies: [],
             headers: [],
             name: 'helloWorld',
             params: [],
             query: [],
             request: [],
-            response: []
+            response: [],
+            session: [],
           },
           middlewareFunctions: [],
           noRestWrapper: false,
