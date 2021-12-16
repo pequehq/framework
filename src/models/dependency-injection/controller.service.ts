@@ -18,19 +18,19 @@ export class ControllerService {
   private controllers = [];
   private instances = [];
 
-  push(controller: any) {
+  push(controller: any): void {
     this.controllers.push(controller);
   }
 
-  getAll() {
+  getAll(): any[] {
     return this.controllers;
   }
 
-  getInstances() {
+  getInstances(): any[] {
     return this.instances;
   }
 
-  async initControllers(options: ServerOptions) {
+  async initControllers(options: ServerOptions): Promise<any> {
     const logService = Injector.resolve<LoggerService>(NATIVE_SERVICES.LOGGER);
 
     // Iterate controllers.
@@ -87,7 +87,7 @@ export class ControllerService {
     return options.existingApp;
   }
 
-  async destroyControllers() {
+  async destroyControllers(): Promise<void> {
     for (const controller of this.instances) {
       await LifeCycleService.triggerControllerDestroy(controller);
     }

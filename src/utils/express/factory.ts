@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 
 import { RouteDefinition } from '../../models/_index';
 
-export const buildParameters = (req: Request, res: Response, route: RouteDefinition) => {
-  const args: any[] = [];
+export const buildParameters = (req: Request, res: Response, route: RouteDefinition): unknown[] => {
+  const args: unknown[] = [];
   const method = route.method;
 
   if (method.request && method.request.length > 0) {
@@ -41,7 +41,7 @@ export const buildParameters = (req: Request, res: Response, route: RouteDefinit
   return args;
 };
 
-export const swaggerReplaceQueryParamsWithCurlyBrackets = (path: string) => {
+export const swaggerReplaceQueryParamsWithCurlyBrackets = (path: string): string => {
   const finalArray = [];
   path.split('/').forEach((parameter) => {
     if (parameter.startsWith(':')) {

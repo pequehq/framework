@@ -9,7 +9,7 @@ The framework comes out with a list of built-in providers and aspects ready to i
 
 | Feature                 | Type      | Description                                                                                                                                          |
 |-------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **HttpService**         | Provider  | A full HTTP client based on the package got.                                                                                                         | 
+| **HttpService**         | Provider  | A full HTTP client based on the package Axios.                                                                                                       | 
 | **HttpEventService**    | Provider  | Provides an subscription to the incoming request for async purposes such as logging or other tasks not related to a response. The service uses rxjs. |
 | **MemoryStoreService**  | Provider  | Internal key-value memory storage at runtime with TTL.                                                                                               |
 | **EventManagerService** | Provider  | It provides an internal event system, it is also where the framework events can be hooked.                                                           |

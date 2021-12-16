@@ -11,7 +11,7 @@ export class ExpressFactory {
   private static expressServer: http.Server;
   private static sockets = new Set<Socket>();
 
-  static createServer = async (options: ServerOptions) => {
+  static createServer = async (options: ServerOptions): Promise<http.Server> => {
     ExpressFactory.sharedOptions = options;
     if (options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
@@ -41,11 +41,11 @@ export class ExpressFactory {
     }
   };
 
-  static getServerOptions() {
+  static getServerOptions(): ServerOptions {
     return ExpressFactory.sharedOptions;
   }
 
-  static async closeServer() {
+  static async closeServer(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // Ending all the open connections first.
       for (const socket of ExpressFactory.sockets) {

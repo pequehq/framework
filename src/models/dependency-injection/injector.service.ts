@@ -12,7 +12,7 @@ class InjectorService {
     }
   }
 
-  async set(provider: string, target: any, dependencies: any[] = []) {
+  async set(provider: string, target: any, dependencies: any[] = []): Promise<void> {
     if (!this.providers.get(provider)) {
       const instance = new target(...dependencies);
       await Promise.resolve(LifeCycleService.triggerProviderInit(instance));
@@ -20,7 +20,7 @@ class InjectorService {
     }
   }
 
-  setNative(provider: string, target: any, dependencies: any[] = []) {
+  setNative(provider: string, target: any, dependencies: any[] = []): void {
     if (!this.providers.get(provider)) {
       const instance = new target(...dependencies);
       this.providers.set(provider, instance);

@@ -15,7 +15,7 @@ const LOG_LEVELS_MAPPING = {
   info: { level: 'info', order: 4 },
 };
 
-const calculateLogLevel = (level: LogLevelsType) => LOG_LEVELS_MAPPING[level].order;
+const calculateLogLevel = (level: LogLevelsType): number => LOG_LEVELS_MAPPING[level].order;
 
 @Injectable()
 export class LoggerService {

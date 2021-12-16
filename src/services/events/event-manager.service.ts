@@ -24,7 +24,7 @@ export class EventManagerService {
     eventMap.forEach((value) => this.emitter.addListener(value.event, value.listener));
   }
 
-  push(event: string | NativeEventsType, data: any) {
+  push(event: string | NativeEventsType, data: any): void {
     const eventData: EventData = {
       event,
       timestamp: Date.now(),
@@ -33,7 +33,7 @@ export class EventManagerService {
     this.emitter.emit(event, eventData);
   }
 
-  subscribe(event: string | NativeEventsType, listener: (...args: any[]) => void) {
+  subscribe(event: string | NativeEventsType, listener: (...args: any[]) => void): void {
     this.emitter.on(event, listener);
   }
 }

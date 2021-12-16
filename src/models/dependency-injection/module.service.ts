@@ -6,19 +6,19 @@ export class ModuleService {
   private modules = [];
   private instances = [];
 
-  push(modules: any) {
+  push(modules: any): void {
     this.modules.push(modules);
   }
 
-  getAll() {
+  getAll(): any[] {
     return this.modules;
   }
 
-  getInstances() {
+  getInstances(): any[] {
     return this.instances;
   }
 
-  async initModules() {
+  async initModules(): Promise<void> {
     for (const module of this.modules) {
       const instance = new module();
       this.instances.push(instance);
@@ -26,7 +26,7 @@ export class ModuleService {
     }
   }
 
-  async destroyModules() {
+  async destroyModules(): Promise<void> {
     for (const module of this.instances) {
       await LifeCycleService.triggerModuleDestroy(module);
     }

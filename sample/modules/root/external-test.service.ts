@@ -12,17 +12,13 @@ export class ExternalTestService implements OnProviderInit {
   }
 
   async getExternalCall() {
-    const httpTest = await this.httpService.get({
-      query: {
+    const httpTest = await this.httpService.request({
+      params: {
         param1: 'externaTest',
         param2: 12345
       },
       url: 'https://httpbin.org/get',
     });
-    return { test: 'hello world', result: httpTest };
-  }
-
-  getTest() {
-    return 'waffle';
+    return { test: 'hello world', result: httpTest.data };
   }
 }

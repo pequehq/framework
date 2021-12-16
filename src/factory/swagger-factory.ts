@@ -49,7 +49,7 @@ const BASE_DOC = {
 };
 
 export class SwaggerFactory {
-  private static resetBaseDoc() {
+  private static resetBaseDoc(): void {
     BASE_DOC.parameters = false;
     BASE_DOC.requestBodies = false;
     BASE_DOC.schemas = false;
@@ -57,7 +57,7 @@ export class SwaggerFactory {
     BASE_DOC.securitySchemes = false;
   }
 
-  private static render(templatePath: string, outputPath: string, object: any, append = false) {
+  private static render(templatePath: string, outputPath: string, object: any, append = false): string {
     const template = getFile(templatePath);
     const content = mustache.render(template, object);
     if (append) {
@@ -68,7 +68,7 @@ export class SwaggerFactory {
     return content;
   }
 
-  private static appendSchemaObject(object, objectPath) {
+  private static appendSchemaObject(object, objectPath): void {
     const schemaObject = {
       name: object.name,
       ref: `${objectPath}${object.name}.yaml`,
@@ -76,25 +76,25 @@ export class SwaggerFactory {
     SwaggerFactory.render(SCHEMAS_TEMPLATE_PATH, getPath(SCHEMAS_GENERATED_PATH), schemaObject, true);
   }
 
-  private static createInfoFile() {
+  private static createInfoFile(): void {
     SwaggerFactory.render(INFO_TEMPLATE_PATH, getPath(INFO_GENERATED_PATH), {
       info: ExpressFactory.getServerOptions().swagger.info,
     });
   }
 
-  private static createTagsFile() {
+  private static createTagsFile(): void {
     SwaggerFactory.render(TAGS_TEMPLATE_PATH, getPath(TAGS_GENERATED_PATH), {
       tags: ExpressFactory.getServerOptions().swagger.tags,
     });
   }
 
-  private static createServersFile() {
+  private static createServersFile(): void {
     SwaggerFactory.render(SERVERS_TEMPLATE_PATH, getPath(SERVERS_GENERATED_PATH), {
       servers: ExpressFactory.getServerOptions().swagger.servers,
     });
   }
 
-  private static createComponentsFile() {
+  private static createComponentsFile(): void {
     const components = [...SwaggerComponents];
     const componentGeneratedFolder = getPath(COMPONENTS_GENERATED_PATH);
     BASE_DOC.schemas = components.length > 0;
@@ -118,7 +118,7 @@ export class SwaggerFactory {
     });
   }
 
-  private static createRequestBodiesFile() {
+  private static createRequestBodiesFile(): void {
     const requestBodies = [...SwaggerResponseBodies];
     const requestBodiesGeneratedFolder = getPath(REQUEST_BODIES_GENERATED_PATH);
     BASE_DOC.requestBodies = requestBodies.length > 0;
@@ -136,7 +136,7 @@ export class SwaggerFactory {
     });
   }
 
-  private static createParametersFile() {
+  private static createParametersFile(): void {
     const parameters = [...SwaggerParameters];
     const parametersGeneratedFolder = getPath(PARAMETERS_GENERATED_PATH);
     BASE_DOC.parameters = parameters.length > 0;
@@ -153,7 +153,7 @@ export class SwaggerFactory {
     });
   }
 
-  private static createSecuritySchemas() {
+  private static createSecuritySchemas(): void {
     const securitySchemes = [...SwaggerSecuritySchemas];
     const securitySchemesGeneratedFolder = getPath(SEC_SCHEMAS_GENERATED_PATH);
     BASE_DOC.securitySchemes = securitySchemes.length > 0;
@@ -170,7 +170,7 @@ export class SwaggerFactory {
     });
   }
 
-  private static createControllers() {
+  private static createControllers(): void {
     const controllers = Controllers.getAll();
 
     // Iterate controllers.
@@ -223,11 +223,11 @@ export class SwaggerFactory {
     });
   }
 
-  private static createBaseDoc() {
+  private static createBaseDoc(): void {
     SwaggerFactory.render(BASE_DOC_TEMPLATE_PATH, getPath(BASE_DOC_GENERATED_PATH), BASE_DOC);
   }
 
-  generate() {
+  generate(): void {
     removeFolder(GENERATED_FOLDER);
     SwaggerFactory.resetBaseDoc();
     SwaggerFactory.createInfoFile();

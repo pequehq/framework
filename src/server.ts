@@ -35,11 +35,11 @@ export class Server {
     this.setDefaultUnhandledExceptionsFallback();
   }
 
-  logger() {
+  logger(): LoggerService {
     return this.logService;
   }
 
-  async terminator() {
+  async terminator(): Promise<void> {
     await Server.destroyControllers();
     await Server.destroyModules();
     await Server.destroyInjectables();
@@ -111,45 +111,45 @@ export class Server {
     return this.options.existingApp;
   }
 
-  private async loadControllers() {
+  private async loadControllers(): Promise<void> {
     return await Controllers.initControllers(this.options);
   }
 
-  private static async destroyControllers() {
+  private static async destroyControllers(): Promise<void> {
     await Controllers.destroyControllers();
   }
 
-  private static async loadModules() {
+  private static async loadModules(): Promise<void> {
     await Modules.initModules();
   }
 
-  private static async destroyModules() {
+  private static async destroyModules(): Promise<void> {
     await Modules.destroyModules();
   }
 
-  private static async loadInjectables() {
+  private static async loadInjectables(): Promise<void> {
     await loadInjectables();
   }
 
-  private static async destroyInjectables() {
+  private static async destroyInjectables(): Promise<void> {
     await destroyInjectables();
   }
 
-  private static async serverShutdown() {
+  private static async serverShutdown(): Promise<void> {
     await LifeCycleService.triggerServerShutdown();
   }
 
-  private static async serverListenStop() {
+  private static async serverListenStop(): Promise<void> {
     await LifeCycleService.triggerServerListenStop();
   }
 
-  private addMiddlewares(middlewares: any[]) {
+  private addMiddlewares(middlewares: any[]): void {
     middlewares.forEach((middleware) => {
       this.options.existingApp.use(middleware);
     });
   }
 
-  private setDefaultUnhandledExceptionsFallback() {
+  private setDefaultUnhandledExceptionsFallback(): void {
     process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
     process.on('unhandledRejection', async (error) => await LifeCycleService.triggerUncaughtRejection(error));
   }
