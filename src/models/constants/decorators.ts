@@ -9,6 +9,8 @@ export const DECORATORS = {
     REQUEST: 'request',
     RESPONSE: 'response',
     QUERY: 'queries',
+    COOKIES: 'cookies',
+    SESSION: 'session',
     swagger: {
       ROUTES: 'swagger_route',
       DTO_CLASS: 'swagger_dto-class',

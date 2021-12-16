@@ -29,6 +29,10 @@ const getMetadataKeyFromParam = (param: ParamType) => {
       return DECORATORS.metadata.RESPONSE;
     case 'query':
       return DECORATORS.metadata.QUERY;
+    case 'cookies':
+      return DECORATORS.metadata.COOKIES;
+    case 'session':
+      return DECORATORS.metadata.SESSION;
     default:
       return;
   }
@@ -80,6 +84,8 @@ export const methodBuilder = (
         headers: extractParameters('header', target, propertyKey),
         request: extractParameters('request', target, propertyKey),
         response: extractParameters('response', target, propertyKey),
+        cookies: extractParameters('cookies', target, propertyKey),
+        session: extractParameters('session', target, propertyKey),
       },
       middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
       documentOnly,

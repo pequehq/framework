@@ -43,6 +43,8 @@ Decorators to intercept directly the content of the **response** and the **reque
 | `@Header(key?: string)` | `req.headers` or `req.headers[key]`  |
 | `@Body()`               | `req.body`                           |
 | `@Session()`            | `req.session`                        |
+| `@Cookie(name: string)` | `req.cookies`                        |
+
 
 ## Middlewares
 Middlewares can be injected as **single** or **array** at controller time or HTTP method time.

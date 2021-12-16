@@ -19,6 +19,11 @@ import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { LoggerService } from './services/logger/logger.service';
 import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
+import { guardExecutor } from './middlewares/guard.middleware';
+import { Injector } from './models/dependency-injection/injector.service';
+import { CanExecute } from './models/interfaces/authorization.interface';
+import cookieParser from 'cookie-parser';
+import expressSession from 'express-session';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -68,6 +73,14 @@ export class Server {
 
     // Load existing app or one from scratch.
     this.options.existingApp = this.options.existingApp ? this.options.existingApp : express();
+
+    // Session.
+    if (this.options.session) {
+      this.options.existingApp.use(expressSession(this.options.session));
+    }
+
+    // Cookie parser.
+    this.options.existingApp.use(cookieParser());
 
     // Global guards.
     const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];

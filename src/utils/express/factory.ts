@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-
 import { RouteDefinition } from '../../models/_index';
 
 export const buildParameters = (req: Request, res: Response, route: RouteDefinition) => {
@@ -28,6 +27,14 @@ export const buildParameters = (req: Request, res: Response, route: RouteDefinit
 
   if (method.headers && method.headers.length > 0) {
     method.headers.forEach((param) => (args[param.index] = req.headers[param.param]));
+  }
+
+  if (method.cookies && method.cookies.length > 0) {
+    method.cookies.forEach((param) => (args[param.index] = req.cookies[param.param]));
+  }
+
+  if (method.session && method.session.length > 0) {
+    method.session.forEach((param) => (args[param.index] = req['session']));
   }
 
   return args;

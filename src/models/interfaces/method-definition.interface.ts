@@ -8,4 +8,6 @@ export interface MethodDefinition {
   headers?: ParamDefinition[];
   request?: ParamDefinition[];
   response?: ParamDefinition[];
+  cookies?: ParamDefinition[];
+  session?: ParamDefinition[];
 }
