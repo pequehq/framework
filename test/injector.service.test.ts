@@ -1,7 +1,7 @@
 import { Injector } from '../src/models/dependency-injection/injector.service';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 
-describe('ControllerService',() => {
+describe('ControllerService', () => {
   beforeAll(async () => await loadInjectables());
 
   class TestServiceOne {}
@@ -19,7 +19,7 @@ describe('ControllerService',() => {
 
     serviceMap.forEach((value, key) => {
       expect(Injector.getProviders().get(key)).toStrictEqual(value);
-    })
+    });
   });
 
   it('should resolve the requested providers', () => {

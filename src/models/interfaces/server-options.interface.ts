@@ -1,3 +1,4 @@
+import { Application } from 'express';
 import { SessionOptions } from 'express-session';
 
 import { GlobalMiddlewares } from '../../server';
@@ -8,7 +9,7 @@ export interface ServerOptions {
   rootModule: any;
   port?: number;
   hostname?: string;
-  existingApp?: any;
+  existingApp?: Application;
   globalMiddlewares?: GlobalMiddlewares;
   isCpuClustered?: boolean;
   timeout?: number;

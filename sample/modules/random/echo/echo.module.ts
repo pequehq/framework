@@ -2,8 +2,6 @@ import { Module } from '../../../../src/decorators/module';
 import { EchoController } from './controllers/echo.controller';
 
 @Module({
-  controllers: [EchoController]
+  controllers: [EchoController],
 })
-export class EchoModule {
-
-}
+export class EchoModule {}

@@ -1,5 +1,5 @@
 import { MethodDefinition } from './method-definition.interface';
-import { ExpressMethods, MiddlewareHandler } from './types';
+import { ExpressMethods, GuardClass, MiddlewareHandler } from './types';
 
 export interface RouteDefinition {
   path: string;
@@ -8,5 +8,5 @@ export interface RouteDefinition {
   middlewareFunctions: MiddlewareHandler[];
   documentOnly: boolean;
   noRestWrapper: boolean;
-  guards?: any[];
+  guards?: GuardClass[];
 }

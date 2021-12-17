@@ -9,4 +9,5 @@ export * from './interfaces/types';
 export * from './interfaces/cache/cache-client.abstract';
 export * from './interfaces/web-sockets/web-sockets-client.abstract';
 export * from './interfaces/web-sockets/web-sockets-server.abstract';
+export * from './interfaces/http-client.interface';
 export * from './controller-definition.interface';

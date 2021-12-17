@@ -1,4 +1,8 @@
-export type MiddlewareHandler = any | any[];
+export interface Type<T = any> extends Function {
+  new (...args: any[]): T;
+}
+
+export type MiddlewareHandler = any | any[]; // @TODO use Express type
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
@@ -19,3 +23,17 @@ export type NativeEventsType =
   | 'lifecycle.uncaught.rejection'
   | 'http'
   | 'logger';
+
+export type ClassDeclaration = Type<any>;
+
+export type ModuleClass = ClassDeclaration;
+export type ModuleInstance = InstanceType<ModuleClass>;
+
+export type ProviderClass = ClassDeclaration;
+export type ProviderInstance = InstanceType<ProviderClass>;
+
+export type ControllerClass = ClassDeclaration;
+export type ControllerInstance = InstanceType<ControllerClass>;
+
+export type GuardClass = ClassDeclaration;
+export type GuardInstance = InstanceType<GuardClass>;
