@@ -1,4 +1,4 @@
-export type MiddlewareHandler = any | any[];
+export type MiddlewareHandler = any | any[]; // @TODO use Express types
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
@@ -19,3 +19,12 @@ export type NativeEventsType =
   | 'lifecycle.uncaught.rejection'
   | 'http'
   | 'logger';
+
+export type ModuleClass = { new (...args: unknown[]): unknown };
+export type ModuleInstance = InstanceType<ModuleClass>;
+
+export type ProviderClass = { new (...args: unknown[]): unknown };
+export type ProviderInstance = InstanceType<ProviderClass>;
+
+export type ControllerClass = { new (...args: unknown[]): unknown };
+export type ControllerInstance = InstanceType<ControllerClass>;

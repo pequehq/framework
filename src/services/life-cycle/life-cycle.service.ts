@@ -76,12 +76,12 @@ class LifeCycleManagerService {
     LifeCycleManagerService.pushEvent('lifecycle.bootstrap');
   }
 
-  async triggerUncaughtException(error: any): Promise<void> {
+  async triggerUncaughtException(error: Error): Promise<void> {
     await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onServerBootstrap');
     LifeCycleManagerService.pushEvent('lifecycle.uncaught.exception', { error });
   }
 
-  async triggerUncaughtRejection(error: any): Promise<void> {
+  async triggerUncaughtRejection(error: Error): Promise<void> {
     await LifeCycleManagerService.triggerAllModulesLifeCycleEvent('onUncaughtRejection');
     LifeCycleManagerService.pushEvent('lifecycle.uncaught.rejection', { error });
   }

@@ -1,6 +1,7 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import cookieParser from 'cookie-parser';
 import express, { Application } from 'express';
+import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -111,7 +112,7 @@ export class Server {
     return this.options.existingApp;
   }
 
-  private async loadControllers(): Promise<void> {
+  private async loadControllers(): Promise<Application> {
     return await Controllers.initControllers(this.options);
   }
 
@@ -143,7 +144,7 @@ export class Server {
     await LifeCycleService.triggerServerListenStop();
   }
 
-  private addMiddlewares(middlewares: any[]): void {
+  private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
       this.options.existingApp.use(middleware);
     });
@@ -151,6 +152,9 @@ export class Server {
 
   private setDefaultUnhandledExceptionsFallback(): void {
     process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
-    process.on('unhandledRejection', async (error) => await LifeCycleService.triggerUncaughtRejection(error));
+    process.on(
+      'unhandledRejection',
+      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
+    );
   }
 }

@@ -1,7 +1,5 @@
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
-
-type ProviderClass = { new (...args: unknown[]): unknown };
-type ProviderInstance = InstanceType<ProviderClass>;
+import { ProviderClass, ProviderInstance } from '../interfaces/types';
 
 class InjectorService {
   private providers = new Map<string, ProviderInstance>();

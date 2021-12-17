@@ -120,7 +120,7 @@ export const swaggerParameterBuilder = (): ClassDecorator => {
 };
 
 export const swaggerSecuritySchemaBuilder = (): ClassDecorator => {
-  return (target: any) => {
+  return (target): void => {
     SwaggerSecuritySchemas.push(target);
   };
 };
