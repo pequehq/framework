@@ -8,10 +8,10 @@ import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { NativeEventsType } from '../../models/interfaces/types';
 
-export interface EventData {
+export interface EventPayload<TData> {
   event: string | NativeEventsType;
   timestamp: number;
-  data: any;
+  data: TData;
 }
 
 export class EventManagerService {
@@ -19,21 +19,19 @@ export class EventManagerService {
 
   constructor() {
     const eventMap: Map<string, OnEventInterface> =
-      Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ||
+      Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ??
       new Map<string, OnEventInterface>();
+
     eventMap.forEach((value) => this.emitter.addListener(value.event, value.listener));
   }
 
-  push(event: string | NativeEventsType, data: any): void {
-    const eventData: EventData = {
-      event,
-      timestamp: Date.now(),
-      data,
-    };
-    this.emitter.emit(event, eventData);
+  push<TData>(event: string | NativeEventsType, data: TData): void {
+    const payload: EventPayload<TData> = { event, timestamp: Date.now(), data };
+
+    this.emitter.emit(event, payload);
   }
 
-  subscribe(event: string | NativeEventsType, listener: (...args: any[]) => void): void {
+  subscribe<TData>(event: string | NativeEventsType, listener: (data: EventPayload<TData>) => void): void {
     this.emitter.on(event, listener);
   }
 }

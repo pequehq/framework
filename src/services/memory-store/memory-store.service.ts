@@ -2,17 +2,18 @@ import { Injectable } from '../../decorators/_index';
 
 @Injectable()
 export class MemoryStoreService {
-  private store = new Map<string, any>();
+  private store = new Map<string, unknown>();
 
-  set(key: string, value: any, ttl = undefined): void {
+  set<TValue>(key: string, value: TValue, ttl?: number): void {
     this.store.set(key, value);
+
     if (ttl) {
       setTimeout(() => this.delete(key), ttl);
     }
   }
 
-  get(key: string): unknown {
-    return this.store.get(key);
+  get<TValue>(key: string): TValue {
+    return this.store.get(key) as TValue;
   }
 
   delete(key: string): void {
