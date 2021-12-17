@@ -6,35 +6,35 @@ export const buildParameters = (req: Request, res: Response, route: RouteDefinit
   const args: unknown[] = [];
   const method = route.method;
 
-  if (method.request && method.request.length > 0) {
+  if (method.request?.length) {
     args[method.request[0].index] = req;
   }
 
-  if (method.response && method.response.length > 0) {
+  if (method.response?.length) {
     args[method.response[0].index] = res;
   }
 
-  if (method.body && method.body.length > 0) {
+  if (method.body?.length) {
     args[method.body[0].index] = req.body;
   }
 
-  if (method.params && method.params.length > 0) {
+  if (method.params?.length) {
     method.params.forEach((param) => (args[param.index] = req.params[param.param]));
   }
 
-  if (method.query && method.query.length > 0) {
+  if (method.query?.length) {
     method.query.forEach((param) => (args[param.index] = req.query[param.param]));
   }
 
-  if (method.headers && method.headers.length > 0) {
+  if (method.headers?.length) {
     method.headers.forEach((param) => (args[param.index] = req.headers[param.param]));
   }
 
-  if (method.cookies && method.cookies.length > 0) {
+  if (method.cookies?.length) {
     method.cookies.forEach((param) => (args[param.index] = req.cookies[param.param]));
   }
 
-  if (method.session && method.session.length > 0) {
+  if (method.session?.length) {
     method.session.forEach((param) => (args[param.index] = req['session']));
   }
 
@@ -42,7 +42,8 @@ export const buildParameters = (req: Request, res: Response, route: RouteDefinit
 };
 
 export const swaggerReplaceQueryParamsWithCurlyBrackets = (path: string): string => {
-  const finalArray = [];
+  const finalArray: string[] = [];
+
   path.split('/').forEach((parameter) => {
     if (parameter.startsWith(':')) {
       finalArray.push(`{${parameter.replace(':', '')}}`);
@@ -52,5 +53,5 @@ export const swaggerReplaceQueryParamsWithCurlyBrackets = (path: string): string
   });
 
   const result = finalArray.join('/');
-  return result[result.length - 1] === '/' ? result.slice(0, Math.max(0, result.length - 1)) : result;
+  return result.endsWith('/') ? result.slice(0, Math.max(0, result.length - 1)) : result;
 };

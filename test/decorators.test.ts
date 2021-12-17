@@ -1,19 +1,21 @@
 import 'reflect-metadata';
-import { Get, Post, Put, Patch, Delete } from '../src/decorators/express-methods';
-import { DECORATORS } from '../src/models/constants/decorators';
-import { RouteDefinition } from '../src/models/interfaces/route-definition.interface';
-import { Controller } from '../src/decorators/controller';
-import { ControllerDefinition } from '../src/models/controller-definition.interface';
-import { Injectable } from '../src/decorators/injectable';
-import { Injector } from '../src/models/dependency-injection/injector.service';
-import { loadInjectables } from '../src/utils/dependencies.utils';
-import { Request, Response, Header, Body, Param, Query, Session, Cookie } from '../src/decorators/parameters';
-import { OnEvent, OnEventInterface } from '../src/decorators/events';
-import { EventManagerService } from '../src/services/events/event-manager.service';
-import { Scheduler, SchedulerConfig } from '../src/decorators/scheduler';
-import { SchedulerService } from '../src/services/scheduler/scheduler.service';
-import { CanExecute } from '../src/models/interfaces/authorization.interface';
+
 import { Guard } from '../src/decorators/authorization';
+import { Controller } from '../src/decorators/controller';
+import { OnEvent, OnEventInterface } from '../src/decorators/events';
+import { Delete, Get, Patch, Post, Put } from '../src/decorators/express-methods';
+import { Injectable } from '../src/decorators/injectable';
+import { Body, Cookie, Header, Param, Query, Request, Response, Session } from '../src/decorators/parameters';
+import { Scheduler, SchedulerConfig } from '../src/decorators/scheduler';
+import { DECORATORS } from '../src/models/constants/decorators';
+import { ControllerDefinition } from '../src/models/controller-definition.interface';
+import { Injector } from '../src/models/dependency-injection/injector.service';
+import { CanExecute } from '../src/models/interfaces/authorization.interface';
+import { RouteDefinition } from '../src/models/interfaces/route-definition.interface';
+import { ProviderClass } from '../src/models/interfaces/types';
+import { EventManagerService } from '../src/services/events/event-manager.service';
+import { SchedulerService } from '../src/services/scheduler/scheduler.service';
+import { loadInjectables } from '../src/utils/dependencies.utils';
 
 describe('Decorator tests', () => {
   beforeAll(async () => await loadInjectables());
@@ -30,19 +32,22 @@ describe('Decorator tests', () => {
       headers: [],
       request: [],
       response: [],
-      session: []
+      session: [],
     },
     middlewareFunctions: [],
     documentOnly: false,
-    noRestWrapper: false
-  }
+    noRestWrapper: false,
+  };
 
-  const testMiddleware = () => {};
+  const testMiddleware = () => {
+    // noop
+  };
+
   const testController: ControllerDefinition = {
     prefix: '/test-controller',
     middlewares: [testMiddleware],
-    guards: []
-  }
+    guards: [],
+  };
 
   describe('@Controller() decorator', () => {
     @Controller('/test-controller', testMiddleware)
@@ -66,7 +71,6 @@ describe('Decorator tests', () => {
         return true;
       }
     }
-
 
     describe('@Get() decorator', () => {
       class TestController {
@@ -154,26 +158,25 @@ describe('Decorator tests', () => {
 
       it('should contain DELETE RouteDefinition', () => {
         const metadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestController);
-        expect(metadata[0].guards.length).toBe(1);
-        expect(typeof metadata[0].guards[0]).toBe('function');
+        expect(metadata[0].guards?.length).toBe(1);
+        expect(typeof metadata[0].guards?.[0]).toBe('function');
       });
     });
-  })
+  });
 
   describe('Service providers', () => {
-    describe('@Injectable() decorator',() => {
+    describe('@Injectable() decorator', () => {
       it('should contain TestService service', async () => {
         @Injectable()
-        class TestService {
-        }
+        class TestService {}
 
         await loadInjectables();
 
-        const testService = Injector.resolve('TestService');
+        const testService = Injector.resolve<ProviderClass>('TestService');
         expect(testService.constructor.name).toEqual(TestService.name);
       });
     });
-  })
+  });
 
   describe('Parameters decorators', () => {
     @Controller('/')
@@ -187,56 +190,56 @@ describe('Decorator tests', () => {
         @Param('param') param: any,
         @Query('query') query: any,
         @Session() session: any,
-        @Cookie('cookie') cookie: any
+        @Cookie('cookie') cookie: any,
       ) {
         return;
       }
     }
 
     it('should contain the right REQUEST metadata', () => {
-      const testParameter = [{ testRoute: { index: 0, param: undefined } }]
+      const testParameter = [{ testRoute: { index: 0, param: undefined } }];
       const parameterMetadata = Reflect.getMetadata('request', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right RESPONSE metadata', () => {
-      const testParameter = [{ testRoute: { index: 1, param: undefined } }]
+      const testParameter = [{ testRoute: { index: 1, param: undefined } }];
       const parameterMetadata = Reflect.getMetadata('response', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
-    })
+    });
 
     it('should contain the right HEADER metadata', () => {
-      const testParameter = [{ testRoute: { index: 2, param: 'header' } }]
+      const testParameter = [{ testRoute: { index: 2, param: 'header' } }];
       const parameterMetadata = Reflect.getMetadata('headers', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right BODY metadata', () => {
-      const testParameter = [{ testRoute: { index: 3 } }]
+      const testParameter = [{ testRoute: { index: 3 } }];
       const parameterMetadata = Reflect.getMetadata('body', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right PARAM metadata', () => {
-      const testParameter = [{ testRoute: { index: 4, param: 'param' } }]
+      const testParameter = [{ testRoute: { index: 4, param: 'param' } }];
       const parameterMetadata = Reflect.getMetadata('parameters', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right QUERY metadata', () => {
-      const testParameter = [{ testRoute: { index: 5, param: 'query' } }]
+      const testParameter = [{ testRoute: { index: 5, param: 'query' } }];
       const parameterMetadata = Reflect.getMetadata('queries', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right SESSION metadata', () => {
-      const testParameter = [{ testRoute: { index: 6 } }]
+      const testParameter = [{ testRoute: { index: 6 } }];
       const parameterMetadata = Reflect.getMetadata('session', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
 
     it('should contain the right COOKIE metadata', () => {
-      const testParameter = [{ testRoute: { index: 7, param: 'cookie' } }]
+      const testParameter = [{ testRoute: { index: 7, param: 'cookie' } }];
       const parameterMetadata = Reflect.getMetadata('cookies', TestController) || [];
       expect(parameterMetadata).toEqual(testParameter);
     });
@@ -251,7 +254,9 @@ describe('Decorator tests', () => {
     }
 
     it('should contain the right event metadata', () => {
-      const eventMap: Map<string, OnEventInterface> = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || new Map<string, OnEventInterface>();
+      const eventMap: Map<string, OnEventInterface> =
+        Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ||
+        new Map<string, OnEventInterface>();
       expect(eventMap.size).toBe(1);
     });
   });
@@ -265,7 +270,8 @@ describe('Decorator tests', () => {
     }
 
     it('should contain the right event metadata', () => {
-      const eventMap: Map<string, SchedulerConfig> = Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
+      const eventMap: Map<string, SchedulerConfig> =
+        Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
       expect(eventMap.size).toBe(1);
     });
   });

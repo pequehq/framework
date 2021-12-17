@@ -1,5 +1,4 @@
-import { RouteDefinition } from '../../models/_index';
-import { RouteOptions } from '../../models/_index';
+import { ClassDeclaration, RouteDefinition, RouteOptions } from '../../models/_index';
 import { DECORATORS } from '../../models/constants/decorators';
 import { SWAGGER } from '../../models/constants/swagger';
 import { SwaggerPropertyOptions } from '../../models/interfaces/swagger/swagger-property-options.interface';
@@ -7,19 +6,21 @@ import { SwaggerResponseDefinition } from '../../models/interfaces/swagger/swagg
 import { SwaggerResponseType } from '../../models/interfaces/swagger/swagger-response-type.interface';
 import { SwaggerRouteDefinition } from '../../models/interfaces/swagger/swagger-route-definition.interface';
 
-export const SwaggerComponents = [];
-export const SwaggerResponseBodies = [];
-export const SwaggerParameters = [];
-export const SwaggerSecuritySchemas = [];
+export const SwaggerComponents: ClassDeclaration[] = [];
+export const SwaggerResponseBodies: ClassDeclaration[] = [];
+export const SwaggerParameters: ClassDeclaration[] = [];
+export const SwaggerSecuritySchemas: ClassDeclaration[] = [];
 
 export const swaggerComponentBuilder = (isRequestBody = false): ClassDecorator => {
-  return (target: any) => {
-    isRequestBody ? SwaggerResponseBodies.push(target) : SwaggerComponents.push(target);
+  return (target): void => {
+    isRequestBody
+      ? SwaggerResponseBodies.push(target as unknown as ClassDeclaration)
+      : SwaggerComponents.push(target as unknown as ClassDeclaration);
   };
 };
 
 export const swaggerTagBuilder = (tag: string[]): ClassDecorator => {
-  return (target: any) => {
+  return (target): void => {
     Reflect.defineMetadata(DECORATORS.metadata.swagger.TAGS, tag, target);
 
     if (!Reflect.hasMetadata(DECORATORS.metadata.swagger.ROUTES, target)) {
@@ -28,11 +29,8 @@ export const swaggerTagBuilder = (tag: string[]): ClassDecorator => {
   };
 };
 
-export const swaggerDtoPropertyBuilder = (
-  options: SwaggerPropertyOptions,
-  object: any = undefined,
-): PropertyDecorator => {
-  return (target, propertyKey: string | symbol): void => {
+export const swaggerDtoPropertyBuilder = (options: SwaggerPropertyOptions, object?: unknown): PropertyDecorator => {
+  return (target, propertyKey): void => {
     let ref,
       multipleRefs = false;
     if (Array.isArray(object)) {
@@ -41,6 +39,7 @@ export const swaggerDtoPropertyBuilder = (
         refPath: `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', el.name)}`,
       }));
     }
+
     const property = {
       name: propertyKey,
       type: options.type,
@@ -51,12 +50,13 @@ export const swaggerDtoPropertyBuilder = (
       example: options.example !== undefined ? JSON.stringify(options.example) : undefined,
       description: options.description ? options.description : undefined,
       multipleRefs,
-      ref: ref || (object ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', object.name)}` : undefined),
+      ref: ref || (object ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', (object as any).name)}` : undefined),
       isRef: object !== undefined, // Inverted logic for Mustache template.
       isArray: options.type === 'array',
       required: options.required,
       object,
     };
+
     const key = `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${target.constructor.name}`;
     const properties = Reflect.getMetadata(key, target.constructor) || [];
     properties.push(property);
@@ -68,7 +68,7 @@ export const swaggerResponseBuilder = (
   options: RouteOptions,
   responseTypes: SwaggerResponseType[],
 ): MethodDecorator => {
-  return (target: any): void => {
+  return (target): void => {
     if (!Reflect.hasMetadata(DECORATORS.metadata.swagger.ROUTES, target.constructor)) {
       Reflect.defineMetadata(DECORATORS.metadata.swagger.ROUTES, [], target.constructor);
     }
@@ -86,9 +86,7 @@ export const swaggerResponseBuilder = (
         description: responseType.description,
         statusCode: responseType.statusCode,
         object: responseType.object ? responseType.object.name : undefined,
-        refPath: responseType.object
-          ? SWAGGER.refs.PATHS_SCHEMA.replace('{{DTO}}', responseType.object.name)
-          : undefined,
+        refPath: responseType.object ? SWAGGER.refs.PATHS_SCHEMA.replace('{{DTO}}', responseType.object.name) : '',
         example: responseType.example,
       });
     });
@@ -114,13 +112,13 @@ export const swaggerResponseBuilder = (
 };
 
 export const swaggerParameterBuilder = (): ClassDecorator => {
-  return (target: any) => {
-    SwaggerParameters.push(target);
+  return (target): void => {
+    SwaggerParameters.push(target as unknown as ClassDeclaration);
   };
 };
 
 export const swaggerSecuritySchemaBuilder = (): ClassDecorator => {
   return (target): void => {
-    SwaggerSecuritySchemas.push(target);
+    SwaggerSecuritySchemas.push(target as unknown as ClassDeclaration);
   };
 };

@@ -10,13 +10,14 @@ export class SchedulerService {
 
   constructor() {
     const scheduleMap: Map<string, SchedulerConfig> =
-      Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) || new Map<string, SchedulerConfig>();
+      Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) ?? new Map<string, SchedulerConfig>();
+
     scheduleMap.forEach((value) => {
       this.tasks.set(value.name, cron.schedule(value.cron, value.listener));
     });
   }
 
-  getScheduler(name: string): ScheduledTask {
+  getScheduler(name: string): ScheduledTask | undefined {
     return this.tasks.get(name);
   }
 

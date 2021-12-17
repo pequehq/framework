@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '../../decorators/_index';
 import { HttpEvent } from '../../models/_index';
 
-export const httpEventQueue = new BehaviorSubject(null);
+export const httpEventQueue = new BehaviorSubject<HttpEvent | undefined>(undefined);
 
 @Injectable()
 export class HttpEventService {
@@ -11,7 +11,7 @@ export class HttpEventService {
     httpEventQueue.next(event);
   }
 
-  observable(): Observable<any> {
+  observable(): Observable<HttpEvent | undefined> {
     return httpEventQueue.asObservable();
   }
 }

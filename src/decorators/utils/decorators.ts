@@ -2,6 +2,7 @@ import {
   ControllerDefinition,
   ExpressMethods,
   MiddlewareHandler,
+  ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
@@ -122,7 +123,7 @@ export const paramBuilder = (param: ParamType, paramName?: string): ParameterDec
 
 export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target): void => {
-    Modules.push(target);
+    Modules.push(target as unknown as ModuleClass);
 
     if (module.controllers) {
       module.controllers.forEach((controller) => Controllers.push(controller));
@@ -132,8 +133,8 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
     (module.providers ?? []).forEach((provider) => {
       if (provider.useClass) {
         Providers.push({
-          name: provider.provider.name,
-          clazz: provider.useClass as any, // @TODO check type
+          name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
+          clazz: provider.useClass as any, // @TODO check which type should use
         });
       }
     });

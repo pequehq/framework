@@ -11,6 +11,7 @@ import { SWAGGER } from '../models/constants/swagger';
 import { ControllerDefinition } from '../models/controller-definition.interface';
 import { Controllers } from '../models/dependency-injection/controller.service';
 import { SwaggerRouteDefinition } from '../models/interfaces/swagger/swagger-route-definition.interface';
+import { ExpressMethods } from '../models/interfaces/types';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../utils/express/factory';
 import { appendFile, getFile, getPath, removeFolder, writeFile } from '../utils/fs.utils';
 import { ExpressFactory } from './express-factory';
@@ -57,7 +58,7 @@ export class SwaggerFactory {
     BASE_DOC.securitySchemes = false;
   }
 
-  private static render(templatePath: string, outputPath: string, object: any, append = false): string {
+  private static render(templatePath: string, outputPath: string, object, append = false): string {
     const template = getFile(templatePath);
     const content = mustache.render(template, object);
     if (append) {
@@ -65,32 +66,37 @@ export class SwaggerFactory {
     } else {
       writeFile(outputPath, content);
     }
+
     return content;
   }
 
   private static appendSchemaObject(object, objectPath): void {
-    const schemaObject = {
-      name: object.name,
-      ref: `${objectPath}${object.name}.yaml`,
-    };
-    SwaggerFactory.render(SCHEMAS_TEMPLATE_PATH, getPath(SCHEMAS_GENERATED_PATH), schemaObject, true);
+    SwaggerFactory.render(
+      SCHEMAS_TEMPLATE_PATH,
+      getPath(SCHEMAS_GENERATED_PATH),
+      {
+        name: object.name,
+        ref: `${objectPath}${object.name}.yaml`,
+      },
+      true,
+    );
   }
 
   private static createInfoFile(): void {
     SwaggerFactory.render(INFO_TEMPLATE_PATH, getPath(INFO_GENERATED_PATH), {
-      info: ExpressFactory.getServerOptions().swagger.info,
+      info: ExpressFactory.getServerOptions().swagger?.info,
     });
   }
 
   private static createTagsFile(): void {
     SwaggerFactory.render(TAGS_TEMPLATE_PATH, getPath(TAGS_GENERATED_PATH), {
-      tags: ExpressFactory.getServerOptions().swagger.tags,
+      tags: ExpressFactory.getServerOptions().swagger?.tags,
     });
   }
 
   private static createServersFile(): void {
     SwaggerFactory.render(SERVERS_TEMPLATE_PATH, getPath(SERVERS_GENERATED_PATH), {
-      servers: ExpressFactory.getServerOptions().swagger.servers,
+      servers: ExpressFactory.getServerOptions().swagger?.servers,
     });
   }
 
@@ -178,23 +184,19 @@ export class SwaggerFactory {
       const tags = Reflect.getMetadata(DECORATORS.metadata.swagger.TAGS, controller);
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: SwaggerRouteDefinition[] =
-        Reflect.getMetadata(DECORATORS.metadata.swagger.ROUTES, controller) || [];
+        Reflect.getMetadata(DECORATORS.metadata.swagger.ROUTES, controller) ?? [];
 
       const controllerName = controller.name.replace('Controller', '').toLocaleLowerCase();
 
-      const routesByPath = routes.reduce((acc, route) => {
-        (acc[route.route.path] = acc[route.route.path] || []).push(route);
+      const routesByPath = routes.reduce<Record<string, SwaggerRouteDefinition[]>>((acc, route) => {
+        (acc[route.route.path] = acc[route.route.path] ?? []).push(route);
         return acc;
       }, {});
 
       Object.entries(routesByPath).forEach(([actualPath, actualRoutes]: [string, SwaggerRouteDefinition[]]) => {
         // Replace parameters colon with curly brackets.
-        const pathUrl = swaggerReplaceQueryParamsWithCurlyBrackets(`${controllerMeta.prefix}${actualPath}`);
-
-        const pathObject = {
-          path: pathUrl,
-          routes: [],
-        };
+        const path = swaggerReplaceQueryParamsWithCurlyBrackets(`${controllerMeta.prefix}${actualPath}`);
+        const routes: { ref: string; method: ExpressMethods }[] = [];
 
         actualRoutes.forEach((route) => {
           const fileName = `${controllerName}-${route.options.operationId}.yaml`;
@@ -207,7 +209,7 @@ export class SwaggerFactory {
             isSecurityOptional: route.options.security === undefined,
           };
 
-          pathObject.routes.push({
+          routes.push({
             ref: `${SWAGGER.refs.PATHS_CONTROLLERS}${controllerName}/${fileName}`,
             method: route.route.requestMethod,
           });
@@ -218,7 +220,8 @@ export class SwaggerFactory {
             methodObject,
           );
         });
-        SwaggerFactory.render(PATHS_PATH_TEMPLATE_PATH, getPath(PATHS_GENERATED_PATH), pathObject, true);
+
+        SwaggerFactory.render(PATHS_PATH_TEMPLATE_PATH, getPath(PATHS_GENERATED_PATH), { path, routes }, true);
       });
     });
   }

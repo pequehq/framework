@@ -1,8 +1,8 @@
 import cluster, { Worker } from 'cluster';
-import * as os from 'os';
+import { cpus } from 'os';
 
-const numCPUs = os.cpus().length;
-const workers = [];
+const numCPUs = cpus().length;
+const workers: Record<string, Worker> = {};
 
 const spawn = (): Worker => {
   const worker = cluster.fork();
@@ -11,13 +11,14 @@ const spawn = (): Worker => {
 };
 
 export const isMaster = (): boolean => {
-  return cluster.isMaster;
+  return cluster.isMaster; // @TODO replace: "isMaster" seems to be deprecate
 };
 
 export const setupWorkers = (): void => {
   for (let i = 0; i < numCPUs; i++) {
     spawn();
   }
+
   cluster.on('exit', (worker) => {
     delete workers[worker.id];
     spawn();

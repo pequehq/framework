@@ -34,6 +34,10 @@ export class ControllerService {
   async initControllers(options: ServerOptions): Promise<Application> {
     const logService = Injector.resolve<LoggerService>(NATIVE_SERVICES.LOGGER);
 
+    if (!options.existingApp) {
+      throw new Error('existingApp not defined'); // @TODO remove after existingApp refactoring
+    }
+
     // Iterate controllers.
     for (const controller of this.controllers) {
       const instance = new controller(...getClassDependencies(controller));
@@ -66,7 +70,8 @@ export class ControllerService {
         });
 
         const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
-          const result = async (): Promise<unknown> => instance[route.method.name](...buildParameters(req, res, route));
+          const result = async (): Promise<unknown> =>
+            (instance as object)[route.method.name](...buildParameters(req, res, route));
 
           if (route.noRestWrapper) {
             return result();
@@ -76,7 +81,7 @@ export class ControllerService {
             const data = await result();
 
             res.setHeader('Content-Type', 'application/json');
-            res.status(data['statusCode'] ?? 200);
+            res.status((data as object)['statusCode'] ?? 200);
             res.send(data);
             res.end();
           } catch (error) {
