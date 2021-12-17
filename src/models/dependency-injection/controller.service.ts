@@ -72,7 +72,6 @@ export class ControllerService {
         const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
           const result = async (): Promise<unknown> =>
             (instance as object)[route.method.name](...buildParameters(req, res, route));
-
           if (route.noRestWrapper) {
             return result();
           }

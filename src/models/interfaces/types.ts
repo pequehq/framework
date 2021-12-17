@@ -1,3 +1,7 @@
+export interface Type<T = any> extends Function {
+  new (...args: any[]): T;
+}
+
 export type MiddlewareHandler = any | any[]; // @TODO use Express type
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
@@ -20,7 +24,7 @@ export type NativeEventsType =
   | 'http'
   | 'logger';
 
-export type ClassDeclaration = { new (...args: unknown[]): unknown };
+export type ClassDeclaration = Type<any>;
 
 export type ModuleClass = ClassDeclaration;
 export type ModuleInstance = InstanceType<ModuleClass>;
