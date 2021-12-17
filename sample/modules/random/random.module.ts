@@ -1,7 +1,7 @@
 import { Module } from '../../../src/decorators/_index';
+import { OnModuleInit } from '../../../src/models/interfaces/life-cycle.interface';
 import { RandomController } from './controllers/random.controller';
 import { EchoModule } from './echo/echo.module';
-import { OnModuleInit } from '../../../src/models/interfaces/life-cycle.interface';
 
 @Module({
   modules: [EchoModule],

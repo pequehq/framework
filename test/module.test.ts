@@ -11,7 +11,10 @@ describe('@Module() decorator', () => {
   beforeAll(async () => await loadInjectables());
 
   it('should contain TestModule ModuleDefinition', async () => {
-    const testMiddleware = () => {};
+    const testMiddleware = () => {
+      // no-op
+    };
+
     const testController: ControllerDefinition = {
       prefix: '/test-controller',
       middlewares: [testMiddleware],

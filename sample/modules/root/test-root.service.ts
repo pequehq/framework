@@ -1,11 +1,11 @@
 import { Injectable } from '../../../src/decorators/_index';
-import { HttpEventService } from '../../../src/services/_index';
 import { HttpEvent } from '../../../src/models/_index';
 import {
   OnProviderDestroy,
   OnProviderInit,
-  OnServerShutdown
+  OnServerShutdown,
 } from '../../../src/models/interfaces/life-cycle.interface';
+import { HttpEventService } from '../../../src/services/_index';
 
 @Injectable()
 export class TestRootService implements OnProviderInit, OnProviderDestroy, OnServerShutdown {

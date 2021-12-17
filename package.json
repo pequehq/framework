@@ -8,7 +8,7 @@
     "start:sample": "rimraf dist && ts-node sample/main.ts",
     "test": "jest --clearCache && jest --no-cache --coverage",
     "build": "rimraf dist && tsc && node post-build-actions.js",
-    "lint": "eslint \"src/**/*.ts\" --fix"
+    "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
   },
   "author": "Simone Di Cicco",
   "license": "ISC",
