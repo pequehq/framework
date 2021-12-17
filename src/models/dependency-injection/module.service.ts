@@ -1,20 +1,21 @@
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { NATIVE_SERVICES } from '../constants/native-services';
+import { ModuleClass, ModuleInstance } from '../interfaces/types';
 import { Injector } from './injector.service';
 
 export class ModuleService {
-  private modules = [];
-  private instances = [];
+  private modules: ModuleClass[] = [];
+  private instances: ModuleInstance[] = [];
 
-  push(modules: any): void {
-    this.modules.push(modules);
+  push(module: ModuleClass): void {
+    this.modules.push(module);
   }
 
-  getAll(): any[] {
+  getAll(): ModuleClass[] {
     return this.modules;
   }
 
-  getInstances(): any[] {
+  getInstances(): ModuleInstance[] {
     return this.instances;
   }
 
@@ -34,4 +35,5 @@ export class ModuleService {
 }
 
 Injector.setNative(NATIVE_SERVICES.MODULE, ModuleService);
+
 export const Modules = Injector.resolve<ModuleService>(NATIVE_SERVICES.MODULE);

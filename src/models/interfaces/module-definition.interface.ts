@@ -1,7 +1,8 @@
 import { ProviderDefinition } from './provider-definition.interface';
+import { ControllerClass, ModuleClass } from './types';
 
 export interface ModuleDefinition {
-  modules?: any[];
-  providers?: ProviderDefinition[] | any[];
-  controllers: any[];
+  modules?: ModuleClass[];
+  providers?: ProviderDefinition[];
+  controllers: ControllerClass[];
 }

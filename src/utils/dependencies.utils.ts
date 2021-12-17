@@ -4,7 +4,7 @@ import { Injector } from '../models/dependency-injection/injector.service';
 import { ModuleService } from '../models/dependency-injection/module.service';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 
-export const getClassDependencies = (clazz: unknown): unknown[] => {
+export const getClassDependencies = (clazz: any): unknown[] => {
   // Getting the params to be injected declared inside the constructor.
   const providers = Reflect.getMetadata('design:paramtypes', clazz) || [];
   return providers.map((provider) => Injector.resolve(provider.name));

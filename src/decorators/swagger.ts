@@ -18,7 +18,7 @@ export const SwaggerResponseBody = (): ClassDecorator => {
   return swaggerComponentBuilder(true);
 };
 
-export const SwaggerDtoProperty = (options: SwaggerPropertyOptions, object: any = undefined): PropertyDecorator => {
+export const SwaggerDtoProperty = (options: SwaggerPropertyOptions, object: unknown): PropertyDecorator => {
   return swaggerDtoPropertyBuilder(options, object);
 };
 

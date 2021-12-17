@@ -1,6 +1,7 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import cookieParser from 'cookie-parser';
 import express, { Application } from 'express';
+import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -69,7 +70,7 @@ export class Server {
     await Server.loadModules();
 
     // Load existing app or one from scratch.
-    this.options.existingApp = this.options.existingApp ? this.options.existingApp : express();
+    this.options.existingApp = this.options.existingApp ?? express();
 
     // Session.
     if (this.options.session) {
@@ -80,14 +81,15 @@ export class Server {
     this.options.existingApp.use(cookieParser());
 
     // Global guards.
-    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) || [];
+    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) ?? [];
     this.options.existingApp.use(...guards);
 
     // Push HTTP event.
     this.options.existingApp.use(pushHttpEvents);
 
     // Add pre-route Middlewares.
-    this.addMiddlewares(this.options.globalMiddlewares.preRoutes);
+    const preRoutes = this.options.globalMiddlewares?.preRoutes ?? [];
+    this.addMiddlewares(preRoutes);
 
     this.options.existingApp = await this.loadControllers();
 
@@ -106,12 +108,13 @@ export class Server {
     this.options.existingApp.use(fallback);
 
     // Add post-route Middlewares.
-    this.addMiddlewares([...this.options.globalMiddlewares.postRoutes, logError, errorHandler]);
+    const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
+    this.addMiddlewares([...postRoutes, logError, errorHandler]);
 
     return this.options.existingApp;
   }
 
-  private async loadControllers(): Promise<void> {
+  private async loadControllers(): Promise<Application> {
     return await Controllers.initControllers(this.options);
   }
 
@@ -143,14 +146,17 @@ export class Server {
     await LifeCycleService.triggerServerListenStop();
   }
 
-  private addMiddlewares(middlewares: any[]): void {
+  private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.options.existingApp.use(middleware);
+      this.options.existingApp!.use(middleware); // @TODO existingApp must be always defined
     });
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
     process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
-    process.on('unhandledRejection', async (error) => await LifeCycleService.triggerUncaughtRejection(error));
+    process.on(
+      'unhandledRejection',
+      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
+    );
   }
 }

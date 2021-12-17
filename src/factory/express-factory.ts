@@ -1,10 +1,10 @@
-import * as http from 'http';
+import http from 'http';
 import { Socket } from 'net';
 
 import { ServerOptions } from '../models/_index';
 import { Server } from '../server';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
-import * as clusterUtils from '../utils/cluster.utils';
+import { isMaster, setupWorkers } from '../utils/cluster.utils';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;
@@ -13,32 +13,34 @@ export class ExpressFactory {
 
   static createServer = async (options: ServerOptions): Promise<http.Server> => {
     ExpressFactory.sharedOptions = options;
-    if (options.isCpuClustered && clusterUtils.isMaster()) {
-      clusterUtils.setupWorkers();
-    } else {
-      await LifeCycleService.triggerServerBootstrap();
 
-      const server = new Server(options);
-      const app = await server.bootstrap();
-      const port = options.port || 8888;
-      const hostname = options.hostname || 'localhost';
-
-      await LifeCycleService.triggerServerListen();
-
-      ExpressFactory.expressServer = app.listen(port, hostname, async () => {
-        server.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
-        server.logger().log({ level: 'debug', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}` });
-        await LifeCycleService.triggerServerStarted();
-      });
-
-      // Connections management.
-      ExpressFactory.expressServer.on('connection', (socket) => {
-        ExpressFactory.expressServer.once('close', () => ExpressFactory.sockets.delete(socket));
-        ExpressFactory.sockets.add(socket);
-      });
-
+    if (options.isCpuClustered && isMaster()) {
+      setupWorkers();
       return ExpressFactory.expressServer;
     }
+
+    await LifeCycleService.triggerServerBootstrap();
+
+    const server = new Server(options);
+    const app = await server.bootstrap();
+    const port = options.port || 8888;
+    const hostname = options.hostname || 'localhost';
+
+    await LifeCycleService.triggerServerListen();
+
+    ExpressFactory.expressServer = app.listen(port, hostname, async () => {
+      server.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
+      server.logger().log({ level: 'debug', data: `CPU Clustering is ${options.isCpuClustered ? 'ON' : 'OFF'}` });
+      await LifeCycleService.triggerServerStarted();
+    });
+
+    // Connections management.
+    ExpressFactory.expressServer.on('connection', (socket) => {
+      ExpressFactory.expressServer.once('close', () => ExpressFactory.sockets.delete(socket));
+      ExpressFactory.sockets.add(socket);
+    });
+
+    return ExpressFactory.expressServer;
   };
 
   static getServerOptions(): ServerOptions {

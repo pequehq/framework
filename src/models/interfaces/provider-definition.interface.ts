@@ -1,4 +1,6 @@
-export class ProviderDefinition {
-  useClass: any;
-  provider: any;
+import { ProviderClass } from './types';
+
+export interface ProviderDefinition {
+  useClass: ProviderClass | string;
+  provider: ProviderClass | string;
 }

@@ -1,16 +1,16 @@
-import { CacheManager } from '../src/models/interfaces/cache/cache-client.abstract';
-import { Injector } from '../src/models/dependency-injection/injector.service';
 import { Cacheable } from '../src/decorators/cacheable';
+import { Injector } from '../src/models/dependency-injection/injector.service';
+import { CacheManager } from '../src/models/interfaces/cache/cache-client.abstract';
 import { loadInjectables } from '../src/utils/dependencies.utils';
 
 class MockCacheService implements CacheManager {
-  cache: { [key: string]: any } = {}
+  cache: Record<string, unknown> = {};
 
-  get(key: string) {
-    return this.cache[key];
+  async get<T>(key: string): Promise<T> {
+    return this.cache[key] as T;
   }
 
-  set(key: string, value: string, ttl: number) {
+  async set<T>(key: string, value: T): Promise<void> {
     this.cache[key] = value;
   }
 }
@@ -33,10 +33,10 @@ describe('@Cacheable decorator', () => {
 
     const testClass = new TestClass();
 
-    expect(mockCacheService.get('testKey')).toBeUndefined();
+    expect(await mockCacheService.get('testKey')).toBeUndefined();
     const firstRead = await testClass.testMethod();
     expect(firstRead).toBe('test value');
-    expect(mockCacheService.get('testKey')).toBe('test value');
+    expect(await mockCacheService.get('testKey')).toBe('test value');
 
     const secondRead = await testClass.testMethod();
     expect(secondRead).toBe('test value');

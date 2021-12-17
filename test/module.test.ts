@@ -1,22 +1,22 @@
-import { ControllerDefinition } from '../src/models/controller-definition.interface';
+import { SERVICES } from '../jest.setup';
 import { Injectable } from '../src/decorators/injectable';
-import { ProviderDefinition } from '../src/models/interfaces/provider-definition.interface';
 import { Module } from '../src/decorators/module';
+import { ControllerDefinition } from '../src/models/controller-definition.interface';
 import { Controllers } from '../src/models/dependency-injection/controller.service';
 import { Injector } from '../src/models/dependency-injection/injector.service';
+import { ProviderDefinition } from '../src/models/interfaces/provider-definition.interface';
 import { loadInjectables } from '../src/utils/dependencies.utils';
-import { SERVICES } from '../jest.setup';
 
-describe('@Module() decorator',() => {
+describe('@Module() decorator', () => {
   beforeAll(async () => await loadInjectables());
 
-  it ('should contain TestModule ModuleDefinition', async () => {
+  it('should contain TestModule ModuleDefinition', async () => {
     const testMiddleware = () => {};
     const testController: ControllerDefinition = {
       prefix: '/test-controller',
       middlewares: [testMiddleware],
-      guards: []
-    }
+      guards: [],
+    };
 
     const testControllers = [testController];
 
@@ -30,8 +30,8 @@ describe('@Module() decorator',() => {
 
     const testProviderService: ProviderDefinition = {
       provider: 'TestProviderUseClassTwo',
-      useClass: TestServiceOne
-    }
+      useClass: TestServiceOne,
+    };
 
     const serviceMap = new Map<string, any>();
     serviceMap.set('TestProviderUseClassTwo', new TestServiceOne());
@@ -40,16 +40,16 @@ describe('@Module() decorator',() => {
 
     @Module({
       controllers: [testController],
-      providers: [testProviderService, TestServiceTwo]
+      providers: [testProviderService, TestServiceTwo],
     })
-    class TestModule { }
+    class TestModule {}
 
     await loadInjectables();
 
     const controllers = Controllers.getAll();
     expect(controllers).toEqual(testControllers);
 
-    SERVICES.forEach(service => Injector.getProviders().delete(service));
+    SERVICES.forEach((service) => Injector.getProviders().delete(service));
     expect(Injector.getProviders()).toEqual(serviceMap);
   });
 });
