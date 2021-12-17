@@ -13,7 +13,6 @@ export class RandomController implements OnControllerInit, OnControllerDestroy {
 
   @Cacheable({
     key: 'testKey',
-    server: 'server',
   })
   @Get('/number')
   getRandomNumber(@Request() req, @Response() res, @Query('ciaone') ciaone) {

@@ -22,7 +22,7 @@ export class TestRootService implements OnProviderInit, OnProviderDestroy, OnSer
   }
 
   constructor(private readonly httpEvents: HttpEventService) {
-    this.httpEvents.observable().subscribe((data: HttpEvent) => {
+    this.httpEvents.observable().subscribe((data: HttpEvent | undefined) => {
       if (data) {
         console.log('received', data.req.path);
       }
