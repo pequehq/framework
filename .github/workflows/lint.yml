@@ -8,10 +8,6 @@ on:
       - synchronize
       - opened
 
-  push:
-    branches:
-      - main
-
 jobs:
 
   lint:
@@ -35,4 +31,3 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Resolve eslint violations"
-          branch: ${{ github.head_ref }}

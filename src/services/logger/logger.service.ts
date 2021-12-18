@@ -1,11 +1,11 @@
 import { Injectable } from '../../decorators/injectable';
 import { ExpressFactory } from '../../factory/express-factory';
 import { LogLevelsType } from '../../models/interfaces/types';
-import { EventData, EventManagerService } from '../events/event-manager.service';
+import { EventManagerService, EventPayload } from '../events/event-manager.service';
 
-interface LogEvent {
+interface LogEvent<TData> {
   level: LogLevelsType;
-  data: any;
+  data: TData;
 }
 
 const LOG_LEVELS_MAPPING = {
@@ -15,29 +15,29 @@ const LOG_LEVELS_MAPPING = {
   info: { level: 'info', order: 4 },
 };
 
-const calculateLogLevel = (level: LogLevelsType) => LOG_LEVELS_MAPPING[level].order;
+const calculateLogLevel = (level: LogLevelsType): number => LOG_LEVELS_MAPPING[level].order;
 
 @Injectable()
 export class LoggerService {
   constructor(private readonly eventManager: EventManagerService) {
-    this.subscribe((value: EventData) => {
+    this.subscribe((value) => {
       const serverOptions = ExpressFactory.getServerOptions();
       if (
         serverOptions.logger &&
         calculateLogLevel(value.data.level) >= calculateLogLevel(serverOptions.logger.level)
       ) {
         if (serverOptions.logger.consoleOutput) {
-          console[value.data.level](`[${value.data.timestamp}]`, `[${value.data.level}]`, value.data.data);
+          console[value.data.level](`[${value.timestamp}]`, `[${value.data.level}]`, value.data.data);
         }
       }
     });
   }
 
-  log(event: LogEvent): void {
-    this.eventManager.push('logger', { ...event, timestamp: Date.now() });
+  log<TData>(event: LogEvent<TData>): void {
+    this.eventManager.push('logger', event);
   }
 
-  subscribe(listener: (...args: any[]) => void): void {
+  subscribe(listener: (payload: EventPayload<LogEvent<never>>) => void): void {
     this.eventManager.subscribe('logger', listener);
   }
 }

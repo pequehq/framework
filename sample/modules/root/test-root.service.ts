@@ -1,11 +1,11 @@
 import { Injectable } from '../../../src/decorators/_index';
-import { HttpEventService } from '../../../src/services/_index';
 import { HttpEvent } from '../../../src/models/_index';
 import {
   OnProviderDestroy,
   OnProviderInit,
-  OnServerShutdown
+  OnServerShutdown,
 } from '../../../src/models/interfaces/life-cycle.interface';
+import { HttpEventService } from '../../../src/services/_index';
 
 @Injectable()
 export class TestRootService implements OnProviderInit, OnProviderDestroy, OnServerShutdown {
@@ -22,7 +22,7 @@ export class TestRootService implements OnProviderInit, OnProviderDestroy, OnSer
   }
 
   constructor(private readonly httpEvents: HttpEventService) {
-    this.httpEvents.observable().subscribe((data: HttpEvent) => {
+    this.httpEvents.observable().subscribe((data: HttpEvent | undefined) => {
       if (data) {
         console.log('received', data.req.path);
       }

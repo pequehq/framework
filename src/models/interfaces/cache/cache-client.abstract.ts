@@ -1,4 +1,4 @@
 export interface CacheManager {
-  get(key: string);
-  set(key: string, value: string, ttl: number);
+  get<T>(key: string): Promise<T>;
+  set<T>(key: string, value: T, ttl?: number): Promise<void>;
 }

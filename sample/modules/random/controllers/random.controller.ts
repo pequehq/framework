@@ -3,7 +3,6 @@ import { OnControllerDestroy, OnControllerInit } from '../../../../src/models/in
 
 @Controller('/random')
 export class RandomController implements OnControllerInit, OnControllerDestroy {
-
   onControllerInit() {
     console.log('I have been initialized', RandomController.name);
   }
@@ -14,14 +13,9 @@ export class RandomController implements OnControllerInit, OnControllerDestroy {
 
   @Cacheable({
     key: 'testKey',
-    server: 'server'
   })
   @Get('/number')
-  getRandomNumber(
-    @Request() req,
-    @Response() res,
-    @Query('ciaone') ciaone
-  ) {
+  getRandomNumber(@Request() req, @Response() res, @Query('ciaone') ciaone) {
     return { random: Math.random() };
   }
 }

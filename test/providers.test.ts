@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '../src/decorators/injectable';
-import { loadInjectables } from '../src/utils/dependencies.utils';
-import { Injector } from '../src/models/dependency-injection/injector.service';
 import { SERVICES } from '../jest.setup';
+import { Inject, Injectable } from '../src/decorators/injectable';
+import { Injector } from '../src/models/dependency-injection/injector.service';
+import { loadInjectables } from '../src/utils/dependencies.utils';
 
 describe('Decorators utils', () => {
   beforeAll(async () => await loadInjectables());
 
   it('it should contain the defined providers', async () => {
     @Injectable()
-    class TestServiceOne { }
+    class TestServiceOne {}
 
     @Injectable()
-    class TestServiceTwo { }
+    class TestServiceTwo {}
 
     const serviceMap = new Map<string, any>();
     serviceMap.set(TestServiceOne.name, new TestServiceOne());
@@ -19,19 +19,19 @@ describe('Decorators utils', () => {
 
     await loadInjectables();
 
-    SERVICES.forEach(service => Injector.getProviders().delete(service));
+    SERVICES.forEach((service) => Injector.getProviders().delete(service));
     expect(Injector.getProviders()).toEqual(serviceMap);
   });
 
   it('should inject the service into the property', async () => {
     @Injectable()
-    class TestServiceOne { }
+    class TestServiceOne {}
 
     await loadInjectables();
 
     class TestInject {
       @Inject('TestServiceOne')
-      testServiceOne: TestServiceOne
+      testServiceOne: TestServiceOne;
     }
 
     const testInject = new TestInject();

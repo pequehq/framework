@@ -1,21 +1,24 @@
 import 'reflect-metadata';
+
+import { HelloWorldDto } from '../../sample/models/dto/hello-world.dto';
+import { Controller } from '../../src/decorators/controller';
+import { Get } from '../../src/decorators/express-methods';
 import {
   SwaggerComponent,
-  SwaggerDtoProperty, SwaggerParameter,
+  SwaggerDtoProperty,
+  SwaggerParameter,
   SwaggerResponse,
-  SwaggerResponseBody, SwaggerSecuritySchema,
-  SwaggerTag
+  SwaggerResponseBody,
+  SwaggerSecuritySchema,
+  SwaggerTag,
 } from '../../src/decorators/swagger';
 import {
   SwaggerComponents,
   SwaggerParameters,
   SwaggerResponseBodies,
-  SwaggerSecuritySchemas
+  SwaggerSecuritySchemas,
 } from '../../src/decorators/utils/swagger';
 import { DECORATORS } from '../../src/models/constants/decorators';
-import { Controller } from '../../src/decorators/controller';
-import { HelloWorldDto } from '../../sample/models/dto/hello-world.dto';
-import { Get } from '../../src/decorators/express-methods';
 import { SwaggerRouteDefinition } from '../../src/models/interfaces/swagger/swagger-route-definition.interface';
 import { loadInjectables } from '../../src/utils/dependencies.utils';
 
@@ -41,27 +44,29 @@ describe('Swagger decorators', () => {
   }
 
   @SwaggerParameter()
-  class TestParameter { }
+  class TestParameter {}
 
   @SwaggerSecuritySchema()
-  class TestSecurityScheme { }
+  class TestSecurityScheme {}
 
   @SwaggerTag(['Test'])
   @Controller()
   class TestController {
-
-    @SwaggerResponse({
-      summary: 'Hello World',
-      operationId: 'helloWorld',
-      parameters: []
-    }, [
+    @SwaggerResponse(
       {
-        statusCode: 200,
-        object: HelloWorldDto,
-        content: 'application/json; charset=utf-8',
-        description: 'Hello World returned'
-      }
-    ])
+        summary: 'Hello World',
+        operationId: 'helloWorld',
+        parameters: [],
+      },
+      [
+        {
+          statusCode: 200,
+          object: HelloWorldDto,
+          content: 'application/json; charset=utf-8',
+          description: 'Hello World returned',
+        },
+      ],
+    )
     @Get('/hello-world')
     async helloWorld() {
       return { test: 'hello world' };
@@ -109,7 +114,7 @@ describe('Swagger decorators', () => {
           isRef: false,
           isArray: false,
           required: undefined,
-          object: undefined
+          object: undefined,
         },
         {
           name: 'stringProperty',
@@ -125,9 +130,9 @@ describe('Swagger decorators', () => {
           isRef: false,
           isArray: false,
           required: undefined,
-          object: undefined
-        }
-      ]
+          object: undefined,
+        },
+      ];
       const key = `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${TestComponent.name}`;
       const properties = Reflect.getMetadata(key, TestComponent) || [];
       expect(properties).toEqual(testProperties);
@@ -147,7 +152,7 @@ describe('Swagger decorators', () => {
           content: 'application/json; charset=utf-8',
           operationId: 'helloWorld',
           parameters: [],
-          summary: 'Hello World'
+          summary: 'Hello World',
         },
         responses: [
           {
@@ -155,8 +160,8 @@ describe('Swagger decorators', () => {
             description: 'Hello World returned',
             object: 'HelloWorldDto',
             refPath: '../../../components/schemas/schemas-generated.yaml#/HelloWorldDto',
-            statusCode: 200
-          }
+            statusCode: 200,
+          },
         ],
         route: {
           documentOnly: false,
@@ -174,10 +179,10 @@ describe('Swagger decorators', () => {
           middlewareFunctions: [],
           noRestWrapper: false,
           path: '/hello-world',
-          requestMethod: 'get'
-        }
-      }
-    ]
+          requestMethod: 'get',
+        },
+      },
+    ];
     it('should contain all the decorated components', () => {
       expect(Reflect.getMetadata(DECORATORS.metadata.swagger.ROUTES, TestController)).toEqual(testResponse);
     });
