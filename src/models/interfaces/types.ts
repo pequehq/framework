@@ -1,7 +1,6 @@
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
 }
-
 export type MiddlewareHandler = any | any[]; // @TODO use Express type
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
@@ -12,9 +11,11 @@ export type NativeEventsType =
   | 'lifecycle.init.provider'
   | 'lifecycle.init.module'
   | 'lifecycle.init.controller'
+  | 'lifecycle.init.websocket'
   | 'lifecycle.server.listening'
   | 'lifecycle.server.started'
   | 'lifecycle.destroy.controller'
+  | 'lifecycle.destroy.websocket'
   | 'lifecycle.destroy.module'
   | 'lifecycle.destroy.provider'
   | 'lifecycle.server.listening.stop'
@@ -37,3 +38,6 @@ export type ControllerInstance = InstanceType<ControllerClass>;
 
 export type GuardClass = ClassDeclaration;
 export type GuardInstance = InstanceType<GuardClass>;
+
+export type WebSocketClass = ClassDeclaration;
+export type WebSocketInstance = InstanceType<WebSocketClass>;

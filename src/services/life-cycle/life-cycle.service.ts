@@ -41,6 +41,16 @@ class LifeCycleManagerService {
     LifeCycleManagerService.pushEvent('lifecycle.destroy.module', { instance: instance.name });
   }
 
+  async triggerWebSocketsInit(instance: any): Promise<void> {
+    await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketInit');
+    LifeCycleManagerService.pushEvent('lifecycle.init.websocket', { instance: instance.name });
+  }
+
+  async triggerWebSocketsDestroy(instance: any): Promise<void> {
+    await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketDestroy');
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.websocket', { instance: instance.name });
+  }
+
   async triggerControllerInit(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onControllerInit');
     LifeCycleManagerService.pushEvent('lifecycle.init.controller', { instance: instance.name });

@@ -22,6 +22,7 @@ import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { LoggerService } from './services/logger/logger.service';
 import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
+import { WebSockets } from './models/dependency-injection/websockets.service';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];
@@ -42,6 +43,7 @@ export class Server {
 
   async terminator(): Promise<void> {
     await Server.destroyControllers();
+    await Server.destroyWebSockets();
     await Server.destroyModules();
     await Server.destroyInjectables();
 
@@ -92,6 +94,7 @@ export class Server {
     this.addMiddlewares(preRoutes);
 
     this.options.existingApp = await this.loadControllers();
+    await Server.loadWebSockets();
 
     // OpenAPI.
     if (this.options.swagger) {
@@ -128,6 +131,14 @@ export class Server {
 
   private static async destroyModules(): Promise<void> {
     await Modules.destroyModules();
+  }
+
+  private static async loadWebSockets(): Promise<void> {
+    await WebSockets.initWebSockets();
+  }
+
+  private static async destroyWebSockets(): Promise<void> {
+    await WebSockets.destroyWebSockets();
   }
 
   private static async loadInjectables(): Promise<void> {

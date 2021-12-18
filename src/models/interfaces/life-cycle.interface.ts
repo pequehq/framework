@@ -14,6 +14,14 @@ export interface OnControllerDestroy {
   onControllerDestroy();
 }
 
+export interface OnWebSocketInit {
+  onWebSocketInit();
+}
+
+export interface OnWebSocketDestroy {
+  onWebSocketDestroy();
+}
+
 export interface OnProviderInit {
   onProviderInit();
 }
