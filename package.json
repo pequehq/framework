@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && ts-node sample/main.ts",
-    "test": "jest --clearCache && jest --no-cache --coverage",
+    "test": "uvu -r tsm src .test.ts",
+    "test:coverage": "c8 npm run test",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
   },
@@ -34,7 +35,6 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.4",
-    "@types/jest": "^27.0.3",
     "@types/mustache": "^4.1.2",
     "@types/node": "^17.0.0",
     "@types/node-cron": "^3.0.0",
@@ -46,17 +46,18 @@
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "body-parser": "^1.19.1",
+    "c8": "^7.10.0",
     "cors": "^2.8.5",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "jest": "^27.4.5",
     "ncp": "^2.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "tsm": "^2.2.1",
+    "typescript": "^4.5.4",
+    "uvu": "^0.5.2"
   }
 }

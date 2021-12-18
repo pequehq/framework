@@ -9,20 +9,16 @@ export const Guard = (guard: GuardClass): MethodDecorator & ClassDecorator => {
 
     if (isClassDecorator) {
       const controller: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, target);
-      controller.guards.push(guard);
+      controller.guards?.push(guard);
       Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controller, target);
     }
 
-    const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor) || [];
+    const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor) ?? [];
 
     if (routes.length > 0) {
-      if (routes[routes.length - 1].guards) {
-        // @TODO check why ts complains if optional chaining operator is removed
-        // since the value has been asserted as not undefined in the previous statement
-        routes[routes.length - 1].guards?.push(guard);
-      } else {
-        routes[routes.length - 1].guards = [guard];
-      }
+      const index = routes.length - 1;
+      routes[index].guards ??= [];
+      routes[index].guards?.push(guard);
     }
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
