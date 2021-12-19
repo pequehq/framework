@@ -1,4 +1,4 @@
-import { RouteOptions } from '../models/_index';
+import { RouteOptions } from '../models';
 import { SwaggerPropertyOptions } from '../models/interfaces/swagger/swagger-property-options.interface';
 import { SwaggerResponseType } from '../models/interfaces/swagger/swagger-response-type.interface';
 import {

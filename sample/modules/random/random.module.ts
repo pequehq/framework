@@ -1,4 +1,4 @@
-import { Module } from '../../../src/decorators/_index';
+import { Module } from '../../../src/decorators';
 import { OnModuleInit } from '../../../src/models/interfaces/life-cycle.interface';
 import { RandomController } from './controllers/random.controller';
 import { EchoModule } from './echo/echo.module';

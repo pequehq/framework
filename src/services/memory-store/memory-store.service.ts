@@ -1,4 +1,4 @@
-import { Injectable } from '../../decorators/_index';
+import { Injectable } from '../../decorators';
 
 @Injectable()
 export class MemoryStoreService {

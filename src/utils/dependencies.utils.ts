@@ -1,4 +1,4 @@
-import { Providers } from '../decorators/_index';
+import { Providers } from '../decorators';
 import { ControllerService } from '../models/dependency-injection/controller.service';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { ModuleService } from '../models/dependency-injection/module.service';
