@@ -1,6 +1,6 @@
-import { Module } from '../../../src/decorators/_index';
+import { Module } from '../../../src/decorators';
 import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../src/services/_index';
+import { HttpService } from '../../../src/services';
 import { LoggerService } from '../../../src/services/logger/logger.service';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';

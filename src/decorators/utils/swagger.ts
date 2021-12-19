@@ -1,4 +1,4 @@
-import { ClassDeclaration, RouteDefinition, RouteOptions } from '../../models/_index';
+import { ClassDeclaration, RouteDefinition, RouteOptions } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { SWAGGER } from '../../models/constants/swagger';
 import { SwaggerPropertyOptions } from '../../models/interfaces/swagger/swagger-property-options.interface';

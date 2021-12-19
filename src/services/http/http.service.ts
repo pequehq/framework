@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { Injectable } from '../../decorators/_index';
+import { Injectable } from '../../decorators';
 import { HttpClient } from '../../models/interfaces/http-client.interface';
 
 @Injectable()

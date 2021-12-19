@@ -1,6 +1,6 @@
-import { Injectable } from '../../../src/decorators/_index';
+import { Injectable } from '../../../src/decorators';
 import { OnProviderInit } from '../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../src/services/_index';
+import { HttpService } from '../../../src/services';
 
 @Injectable()
 export class ExternalTestService implements OnProviderInit {

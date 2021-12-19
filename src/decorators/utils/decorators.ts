@@ -8,7 +8,7 @@ import {
   ParamType,
   ProviderClass,
   RouteDefinition,
-} from '../../models/_index';
+} from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';

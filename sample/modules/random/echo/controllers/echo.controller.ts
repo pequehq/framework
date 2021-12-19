@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '../../../../../src/decorators/_index';
+import { Controller, Get, Param } from '../../../../../src/decorators';
 
 @Controller('/random/echo')
 export class EchoController {
