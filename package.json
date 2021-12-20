@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && ts-node sample/main.ts",
-    "test": "uvu -r tsm src .test.ts",
+    "test": "node --trace-warnings ./node_modules/uvu/bin.js -r tsm src .test.ts",
     "test:coverage": "c8 npm run test",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"

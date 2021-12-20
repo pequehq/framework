@@ -20,7 +20,7 @@ class InjectorService {
     }
 
     const instance = new target(...dependencies);
-    await Promise.resolve(LifeCycleService.triggerProviderInit(instance));
+    await LifeCycleService.triggerProviderInit(instance);
     this.providers.set(provider, instance);
   }
 
