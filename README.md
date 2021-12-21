@@ -20,8 +20,8 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 import { TestRootModule } from './modules/root/test-root.module';
 import { ExpressFactory } from 'peque.ts';
 
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 
 async function startUp() {
   await ExpressFactory.createServer({
