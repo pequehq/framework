@@ -7,7 +7,7 @@
   "scripts": {
     "start:sample": "rimraf dist && ts-node sample/main.ts",
     "test": "uvu -r tsm src .test.ts",
-    "test:coverage": "c8 npm run test",
+    "test:coverage": "c8 npm run test && make-coverage-badge --output-path=.badge-coverage.svg",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
   },
@@ -51,6 +51,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "make-coverage-badge": "^1.2.0",
     "ncp": "^2.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
