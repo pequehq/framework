@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { Injectable } from '../../decorators/_index';
-import { HttpEvent } from '../../models/_index';
+import { Injectable } from '../../decorators';
+import { HttpEvent } from '../../models';
 
 export const httpEventQueue = new BehaviorSubject<HttpEvent | undefined>(undefined);
 

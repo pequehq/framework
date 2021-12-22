@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 
-import { MiddlewareHandler } from '../models/_index';
+import { MiddlewareHandler } from '../models';
 import { methodBuilder } from './utils/decorators';
 
 export const Get = (

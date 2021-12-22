@@ -1,7 +1,7 @@
-import { Controller, Cookie, Get, Session, SwaggerResponse, SwaggerTag } from '../../../../src/decorators/_index';
+import { Controller, Cookie, Get, Session, SwaggerResponse, SwaggerTag } from '../../../../src/decorators';
 import { Guard } from '../../../../src/decorators/authorization';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../../src/services/_index';
+import { HttpService } from '../../../../src/services';
 import { LoggerService } from '../../../../src/services/logger/logger.service';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';

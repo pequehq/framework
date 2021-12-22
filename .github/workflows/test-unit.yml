@@ -1,4 +1,4 @@
-name: Lint
+name: Test Unit
 
 on:
   pull_request:
@@ -7,12 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  test-unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version:
           - 16.x
+    concurrency:
+      group: ${{ github.head_ref }}-test-unit
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -21,8 +24,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm ci
-      - name: Lint
-        run: npm run lint
+      - name: Test
+        run: npm run test:coverage
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "resolve style guide violations"
+          commit_message: "test: update coverage badge"
