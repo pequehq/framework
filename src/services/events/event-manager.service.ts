@@ -1,11 +1,10 @@
 import 'reflect-metadata';
-
 import EventEmitter from 'events';
-
 import { OnEventInterface } from '../../decorators/events';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { NativeEventsType } from '../../models/interfaces/types';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -13,8 +12,23 @@ export interface EventPayload<TData> {
   data: TData;
 }
 
+export interface LifeCycleEvent<TData> {
+  event: NativeEventsType;
+  data: TData;
+}
+
+export const LifeCycleEventEmitter = new Subject<LifeCycleEvent<unknown>>();
+
 export class EventManagerService {
   private emitter = new EventEmitter();
+
+  constructor() {
+    LifeCycleEventEmitter.subscribe((event: LifeCycleEvent<unknown>) => {
+      if (event) {
+        this.push(event.event, event.data);
+      }
+    });
+  }
 
   register(value: OnEventInterface) {
     this.emitter.addListener(value.event, value.listener)
@@ -28,12 +42,8 @@ export class EventManagerService {
   subscribe<TData>(event: string | NativeEventsType, listener: (data: EventPayload<TData>) => void): void {
     this.emitter.on(event, listener);
   }
-
-  ciao() {
-    console.log('ciso');
-  }
 }
 
-Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, EventManagerService);
+Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, new EventManagerService(), [], false);
 
 export const EventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);

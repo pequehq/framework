@@ -5,13 +5,13 @@ import { Injector } from './injector.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { WebSocketDefinition } from '../interfaces/websocket-definition.interface';
 import { DECORATORS } from '../constants/decorators';
-import { Server, Socket } from 'socket.io';
-import { EventManager } from '../../services/events/event-manager.service';
+import { WebSocketAdapter } from '../interfaces/web-sockets/websocket-adapter.interface';
 
-export class WebSocketsService {
+export class WebSocketsService<TServer = any> {
   private websockets: WebSocketClass[] = [];
   private instances: WebSocketInstance[] = [];
-  private sockets = new Set<Socket>();
+  private adapterService: WebSocketAdapter;
+  private server: TServer;
 
   push(websockets: WebSocketClass): void {
     this.websockets.push(websockets);
@@ -30,31 +30,23 @@ export class WebSocketsService {
       const instance = new webSocket(...getClassDependencies(webSocket));
       this.instances.push(instance);
 
-      const webSocketDefinition: WebSocketDefinition = Reflect.getMetadata(DECORATORS.metadata.WEBSOCKETS, webSocket);
-      const io = new Server(webSocketDefinition.options);
-      io.on('connection', (socket => {
-        this.sockets.add(socket);
-        socket.on('disconnect', reason => this.sockets.delete(socket));
-        socket.onAny((event, args) => {
-          EventManager.push(`ws.${event}`, args);
-        })
-      }));
-      io.listen(webSocketDefinition.port);
+      const webSocketDefinition: WebSocketDefinition<any, any> = Reflect.getMetadata(DECORATORS.metadata.WEBSOCKETS.CONFIG, webSocket);
+      this.adapterService = Injector.resolve<WebSocketAdapter>(webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER);
 
+      this.server = this.adapterService.create(webSocketDefinition.port, webSocketDefinition.config?.options);
       await LifeCycleService.triggerWebSocketsInit(instance);
     }
   }
 
   async destroyWebSockets(): Promise<void> {
-    // Ending all the open connections first.
-    for (const socket of this.sockets) {
-      socket.disconnect(true);
-      this.sockets.delete(socket);
-    }
-
+    this.adapterService.close();
     for (const module of this.instances) {
       await LifeCycleService.triggerWebSocketsDestroy(module);
     }
+  }
+
+  getServer(): TServer {
+    return this.server;
   }
 }
 

@@ -11,7 +11,10 @@ export const DECORATORS = {
     QUERY: 'queries',
     COOKIES: 'cookies',
     SESSION: 'session',
-    WEBSOCKETS: 'websockets',
+    WEBSOCKETS: {
+      CONFIG: 'websocket_config',
+      SERVER: 'websocket_server'
+    },
     swagger: {
       ROUTES: 'swagger_route',
       DTO_CLASS: 'swagger_dto-class',

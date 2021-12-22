@@ -1,6 +1,9 @@
 import { ServerOptions } from 'socket.io';
 
-export interface WebSocketDefinition {
+export interface WebSocketDefinition<TOptions, TAdapter> {
   port: number;
-  options: ServerOptions
+  config: {
+    options?: TOptions;
+    adapter?: TAdapter
+  }
 }

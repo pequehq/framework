@@ -41,3 +41,5 @@ export type GuardInstance = InstanceType<GuardClass>;
 
 export type WebSocketClass = ClassDeclaration;
 export type WebSocketInstance = InstanceType<WebSocketClass>;
+
+export type WebSocketAdapterClass = ClassDeclaration;

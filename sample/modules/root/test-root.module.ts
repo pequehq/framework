@@ -7,11 +7,12 @@ import { TestController } from './controllers/test.controller';
 import { ExternalTestService } from './external-test.service';
 import { TestRootService } from './test-root.service';
 import { TestWebsocket } from './ws/test-ws.websocket';
+import { SocketIoServiceAdapter } from '../../../src/services/web-sockets/socket-io.service';
 
 @Module({
   modules: [RandomModule],
   controllers: [TestController],
-  providers: [HttpService, ExternalTestService, TestRootService, LoggerService],
+  providers: [HttpService, ExternalTestService, TestRootService, LoggerService, SocketIoServiceAdapter],
   webSockets: [TestWebsocket]
 })
 export class TestRootModule implements OnModuleInit, OnModuleDestroy, OnServerShutdown {
