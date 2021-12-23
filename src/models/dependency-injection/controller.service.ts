@@ -1,8 +1,8 @@
 import { Application, RequestHandler } from 'express';
 
 import { guardExecutor } from '../../middlewares/guard.middleware';
+import { LoggerService } from '../../services';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
-import { LoggerService } from '../../services/logger/logger.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { DECORATORS } from '../constants/decorators';
@@ -121,5 +121,4 @@ export class ControllerService {
 }
 
 Injector.setNative(NATIVE_SERVICES.CONTROLLER, ControllerService);
-
 export const Controllers = Injector.resolve<ControllerService>(NATIVE_SERVICES.CONTROLLER);

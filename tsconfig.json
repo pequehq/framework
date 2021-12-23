@@ -10,35 +10,20 @@
         "isolatedModules": true,
         "module": "commonjs",
         "moduleResolution": "node",
-        "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false,
         "outDir": "./dist",
         "removeComments": true,
         "resolveJsonModule": true,
-        "rootDir": "./",
+        "rootDirs": ["./src", "./sample"],
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
         "strictPropertyInitialization": false,
         "target": "es6",
-        "types": ["jest", "node"],
+        "types": ["node"],
         "useUnknownInCatchVariables": false
     },
-    "include": [
-        "**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.test.ts",
-        "build",
-        "dist",
-        "test",
-        "sample",
-        "coverage",
-        "docs",
-        ".circleci",
-        "post-build-actions.js"
-    ]
+    "include": ["./src"],
+    "exclude": ["./**/*.test.ts", "./sample"]
 }

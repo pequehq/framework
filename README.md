@@ -1,7 +1,8 @@
 # Peque.ts
 
-[![CircleCI](https://circleci.com/gh/ukaoskid/peque-fwork.svg?style=shield)]() 
-[![codecov](https://codecov.io/gh/ukaoskid/peque-fwork/branch/main/graph/badge.svg?token=VGIM3BAZ80)](https://codecov.io/gh/ukaoskid/peque-fwork)
+[coverage](https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/.badge-coverage.svg)
+
+<img src="./docs/images/logo_blue.png" width="150" />
 
 This framework is built on-top of **Express** and is intended to provide a **standard** to help the **design**, **development**,
 and **life-cycle management** of **scalable** and **efficient** server-side web application (with **Node.js**).
@@ -10,16 +11,19 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 ## Install
 `npm i peque.ts`
 
+### Node version
+The usage of the Node.js LTS version is required.
+
 ## Documentation
-[Documentation](https://ukaoskid.github.io/peque-fwork/)
+[Documentation](https://www.peque.tech)
 
 ## Server
 ```typescript
 import { TestRootModule } from './modules/root/test-root.module';
 import { ExpressFactory } from 'peque.ts';
 
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 
 async function startUp() {
   await ExpressFactory.createServer({

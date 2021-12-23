@@ -1,6 +1,6 @@
 import cron, { ScheduledTask } from 'node-cron';
 
-import { Injectable } from '../../decorators/injectable';
+import { Injectable } from '../../decorators';
 import { SchedulerConfig } from '../../decorators/scheduler';
 import { DECORATORS } from '../../models/constants/decorators';
 

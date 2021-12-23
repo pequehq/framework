@@ -1,6 +1,6 @@
-import { Injectable } from '../../decorators/injectable';
-import { ExpressFactory } from '../../factory/express-factory';
-import { LogLevelsType } from '../../models/interfaces/types';
+import { Injectable } from '../../decorators';
+import { ExpressFactory } from '../../factory';
+import { LogLevelsType } from '../../models';
 import { EventManagerService, EventPayload } from '../events/event-manager.service';
 
 interface LogEvent<TData> {

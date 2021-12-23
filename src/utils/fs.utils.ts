@@ -18,5 +18,5 @@ export const appendFile = (filePath: string, data: string | Uint8Array): void =>
 };
 
 export const removeFolder = (folderPath: string): void => {
-  fs.rmdirSync(getPath(folderPath), { recursive: true });
+  fs.rmSync(getPath(folderPath), { recursive: true, force: true });
 };

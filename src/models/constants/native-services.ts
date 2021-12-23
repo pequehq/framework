@@ -4,4 +4,6 @@ export const NATIVE_SERVICES = {
   EVENT_MANAGER: 'EventManagerService',
   SCHEDULER: 'SchedulerService',
   LOGGER: 'LoggerService',
+  WEBSOCKETS: 'WebSocketsService',
+  SOCKETIO_ADAPTER: 'SocketIoServiceAdapter',
 };
