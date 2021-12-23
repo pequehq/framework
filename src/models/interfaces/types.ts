@@ -1,7 +1,9 @@
+import type { Handler } from 'express';
+
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
 }
-export type MiddlewareHandler = any | any[]; // @TODO use Express type
+export type MiddlewareHandler = Handler | Handler[];
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
