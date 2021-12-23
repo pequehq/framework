@@ -1,5 +1,5 @@
+import { CacheManager } from '../models';
 import { Injector } from '../models/dependency-injection/injector.service';
-import { CacheManager } from '../models/interfaces/cache/cache-client.abstract';
 
 interface CacheOptions {
   key: string | ((...args: unknown[]) => string);

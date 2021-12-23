@@ -1,7 +1,7 @@
+import { ControllerDefinition } from '../models';
+import { RouteDefinition } from '../models';
+import { GuardClass } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { ControllerDefinition } from '../models/controller-definition.interface';
-import { RouteDefinition } from '../models/interfaces/route-definition.interface';
-import { GuardClass } from '../models/interfaces/types';
 
 export const Guard = (guard: GuardClass): MethodDecorator & ClassDecorator => {
   return (target, propertyKey?, descriptor?): void => {

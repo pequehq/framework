@@ -1,9 +1,9 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { Injectable } from '../../decorators';
 import { HttpEvent } from '../../models';
 
-export const httpEventQueue = new BehaviorSubject<HttpEvent | undefined>(undefined);
+export const httpEventQueue = new Subject<HttpEvent>();
 
 @Injectable()
 export class HttpEventService {

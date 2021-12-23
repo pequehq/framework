@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { Injectable } from '../../decorators';
-import { HttpClient } from '../../models/interfaces/http-client.interface';
+import { HttpClient } from '../../models';
 
 @Injectable()
 export class HttpService implements HttpClient {
