@@ -1,25 +1,16 @@
 import 'reflect-metadata';
-
 import EventEmitter from 'events';
-import { Subject } from 'rxjs';
-
 import { OnEventInterface } from '../../decorators';
 import { NativeEventsType } from '../../models';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
+import { LifeCycleEvent, LifeCycleEventEmitter } from '../life-cycle/life-cycle-event-emitter';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
   timestamp: number;
   data: TData;
 }
-
-export interface LifeCycleEvent<TData> {
-  event: NativeEventsType;
-  data: TData;
-}
-
-export const LifeCycleEventEmitter = new Subject<LifeCycleEvent<unknown>>();
 
 export class EventManagerService {
   private emitter = new EventEmitter();
@@ -47,5 +38,4 @@ export class EventManagerService {
 }
 
 Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, new EventManagerService(), [], false);
-
 export const EventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);

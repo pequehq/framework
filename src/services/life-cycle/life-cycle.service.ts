@@ -1,6 +1,6 @@
 import { NativeEventsType } from '../../models';
 import { getAllInstances } from '../../utils/dependencies.utils';
-import { LifeCycleEventEmitter } from '../events/event-manager.service';
+import { LifeCycleEventEmitter } from './life-cycle-event-emitter';
 
 export class LifeCycleManagerService {
   private static async triggerLifeCycleEvent(instance: any, method: string): Promise<void> {
