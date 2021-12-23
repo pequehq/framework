@@ -1,8 +1,10 @@
 # Peque.ts
 
-[coverage](https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/.badge-coverage.svg)
+![coverage](https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/.badge-coverage.svg)
 
-<img src="./docs/images/logo_blue.png" width="150" />
+<center>
+    <img src="https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/docs/images/logo_blue.png" width="150" />
+</center>
 
 This framework is built on-top of **Express** and is intended to provide a **standard** to help the **design**, **development**,
 and **life-cycle management** of **scalable** and **efficient** server-side web application (with **Node.js**).
