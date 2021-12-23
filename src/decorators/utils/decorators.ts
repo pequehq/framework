@@ -45,7 +45,7 @@ const extractParameters = (param: ParamType, target: object, propertyKey: string
     .filter(Boolean);
 };
 
-export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler = []): ClassDecorator => {
+export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler): ClassDecorator => {
   return (target): void => {
     const controllerDefinition: ControllerDefinition = {
       prefix,
@@ -65,7 +65,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
 export const methodBuilder = (
   method: ExpressMethods,
   path: string,
-  middleware: MiddlewareHandler = [],
+  middleware: MiddlewareHandler,
   documentOnly: boolean,
   noRestWrapper: boolean,
 ): MethodDecorator => {

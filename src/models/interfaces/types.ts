@@ -27,7 +27,7 @@ export type NativeEventsType =
   | 'http'
   | 'logger';
 
-export type ClassDeclaration = Type<any>;
+export type ClassDeclaration = Type;
 
 export type ModuleClass = ClassDeclaration;
 export type ModuleInstance = InstanceType<ModuleClass>;

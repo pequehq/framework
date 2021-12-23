@@ -5,7 +5,7 @@ export interface RouteDefinition {
   path: string;
   requestMethod: ExpressMethods;
   method: MethodDefinition;
-  middlewareFunctions: MiddlewareHandler[];
+  middlewareFunctions: MiddlewareHandler;
   documentOnly: boolean;
   noRestWrapper: boolean;
   guards?: GuardClass[];

@@ -96,8 +96,10 @@ export class ControllerService {
           routeGuards = route.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name)));
         }
 
-        if (route.middlewareFunctions?.length) {
-          routeMiddlewares = [...route.middlewareFunctions];
+        if (route.middlewareFunctions) {
+          routeMiddlewares = Array.isArray(route.middlewareFunctions)
+            ? [...route.middlewareFunctions]
+            : [route.middlewareFunctions];
         }
 
         // Route registration.
