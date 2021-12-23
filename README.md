@@ -2,7 +2,7 @@
 
 [coverage](https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/.badge-coverage.svg)
 
-<img alt"Logo" src="./docs/images/logo_blue.png" width="150" />
+<img src="./docs/images/logo_blue.png" width="150" />
 
 This framework is built on-top of **Express** and is intended to provide a **standard** to help the **design**, **development**,
 and **life-cycle management** of **scalable** and **efficient** server-side web application (with **Node.js**).
@@ -10,6 +10,9 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 
 ## Install
 `npm i peque.ts`
+
+### Node version
+The usage of the Node.js LTS version is required.
 
 ## Documentation
 [Documentation](https://www.peque.tech)
