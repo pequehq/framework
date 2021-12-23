@@ -1,11 +1,11 @@
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { getClassDependencies } from '../../utils/dependencies.utils';
+import { DECORATORS } from '../constants/decorators';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { WebSocketClass, WebSocketInstance } from '../interfaces/types';
-import { Injector } from './injector.service';
-import { getClassDependencies } from '../../utils/dependencies.utils';
-import { WebSocketDefinition } from '../interfaces/websocket-definition.interface';
-import { DECORATORS } from '../constants/decorators';
 import { WebSocketAdapter } from '../interfaces/web-sockets/websocket-adapter.interface';
+import { WebSocketDefinition } from '../interfaces/websocket-definition.interface';
+import { Injector } from './injector.service';
 
 export class WebSocketsService<TServer = any> {
   private websockets: WebSocketClass[] = [];
@@ -30,8 +30,13 @@ export class WebSocketsService<TServer = any> {
       const instance = new webSocket(...getClassDependencies(webSocket));
       this.instances.push(instance);
 
-      const webSocketDefinition: WebSocketDefinition<any, any> = Reflect.getMetadata(DECORATORS.metadata.WEBSOCKETS.CONFIG, webSocket);
-      this.adapterService = Injector.resolve<WebSocketAdapter>(webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER);
+      const webSocketDefinition: WebSocketDefinition<any, any> = Reflect.getMetadata(
+        DECORATORS.metadata.WEBSOCKETS.CONFIG,
+        webSocket,
+      );
+      this.adapterService = Injector.resolve<WebSocketAdapter>(
+        webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER,
+      );
 
       this.server = this.adapterService.create(webSocketDefinition.port, webSocketDefinition.config?.options);
       await LifeCycleService.triggerWebSocketsInit(instance);

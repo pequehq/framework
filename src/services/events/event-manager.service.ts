@@ -1,10 +1,12 @@
 import 'reflect-metadata';
+
 import EventEmitter from 'events';
+import { Subject } from 'rxjs';
+
 import { OnEventInterface } from '../../decorators';
+import { NativeEventsType } from '../../models';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
-import { NativeEventsType } from '../../models';
-import { Subject } from 'rxjs';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -31,7 +33,7 @@ export class EventManagerService {
   }
 
   register(value: OnEventInterface) {
-    this.emitter.addListener(value.event, value.listener)
+    this.emitter.addListener(value.event, value.listener);
   }
 
   push<TData>(event: string | NativeEventsType, data: TData): void {

@@ -13,7 +13,7 @@ export const DECORATORS = {
     SESSION: 'session',
     WEBSOCKETS: {
       CONFIG: 'websocket_config',
-      SERVER: 'websocket_server'
+      SERVER: 'websocket_server',
     },
     swagger: {
       ROUTES: 'swagger_route',

@@ -1,14 +1,17 @@
-import { WebSockets, WebSocketsService } from '../models/dependency-injection/websockets.service'
 import { WebSocketClass } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { Injector } from '../models/dependency-injection/injector.service';
 import { NATIVE_SERVICES } from '../models/constants/native-services';
+import { Injector } from '../models/dependency-injection/injector.service';
+import { WebSockets, WebSocketsService } from '../models/dependency-injection/websockets.service';
 
-export function WebSocketServer<TOptions, TAdapter>(port: number, config?: { options?: TOptions, adapter: TAdapter }): ClassDecorator {
+export function WebSocketServer<TOptions, TAdapter>(
+  port: number,
+  config?: { options?: TOptions; adapter: TAdapter },
+): ClassDecorator {
   return (target) => {
     Reflect.defineMetadata(DECORATORS.metadata.WEBSOCKETS.CONFIG, { port, config }, target);
     WebSockets.push(target as unknown as WebSocketClass);
-  }
+  };
 }
 
 export const GetWebSocketServer = (): PropertyDecorator => {
@@ -18,5 +21,5 @@ export const GetWebSocketServer = (): PropertyDecorator => {
       enumerable: true,
       configurable: true,
     });
-  }
-}
+  };
+};

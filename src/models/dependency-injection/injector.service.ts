@@ -22,7 +22,12 @@ class InjectorService {
     }
   }
 
-  setNative(provider: string, target: ProviderClass | ProviderInstance, dependencies: ProviderInstance[] = [], createInstance = true): void {
+  setNative(
+    provider: string,
+    target: ProviderClass | ProviderInstance,
+    dependencies: ProviderInstance[] = [],
+    createInstance = true,
+  ): void {
     if (!this.providers.get(provider)) {
       const instance = createInstance ? new target(...dependencies) : target;
       this.providers.set(provider, instance);

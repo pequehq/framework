@@ -5,5 +5,5 @@ export const NATIVE_SERVICES = {
   SCHEDULER: 'SchedulerService',
   LOGGER: 'LoggerService',
   WEBSOCKETS: 'WebSocketsService',
-  SOCKETIO_ADAPTER: 'SocketIoServiceAdapter'
+  SOCKETIO_ADAPTER: 'SocketIoServiceAdapter',
 };

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { NativeEventsType } from '../models';
 import { EventManager } from '../services/events/event-manager.service';
 

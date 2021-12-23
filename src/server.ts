@@ -5,6 +5,7 @@ import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+
 import { Inject } from './decorators';
 import { ExpressFactory } from './factory';
 import { SwaggerFactory } from './factory/swagger-factory';
@@ -16,12 +17,12 @@ import { ServerOptions } from './models';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
+import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
-import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { LoggerService } from './services';
+import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
-import { WebSockets } from './models/dependency-injection/websockets.service';
 
 export interface GlobalMiddlewares {
   preRoutes?: any[];

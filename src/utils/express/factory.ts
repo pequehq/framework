@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { RouteDefinition } from '../../models';
 
 export const buildParameters = (req: Request, res: Response, route: RouteDefinition): unknown[] => {

@@ -2,18 +2,18 @@ import { Module } from '../../../src/decorators';
 import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
 import { HttpService } from '../../../src/services';
 import { LoggerService } from '../../../src/services/logger/logger.service';
+import { SocketIoServiceAdapter } from '../../../src/services/web-sockets/socket-io.service';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';
 import { ExternalTestService } from './external-test.service';
 import { TestRootService } from './test-root.service';
 import { TestWebsocket } from './ws/test-ws.websocket';
-import { SocketIoServiceAdapter } from '../../../src/services/web-sockets/socket-io.service';
 
 @Module({
   modules: [RandomModule],
   controllers: [TestController],
   providers: [HttpService, ExternalTestService, TestRootService, LoggerService, SocketIoServiceAdapter],
-  webSockets: [TestWebsocket]
+  webSockets: [TestWebsocket],
 })
 export class TestRootModule implements OnModuleInit, OnModuleDestroy, OnServerShutdown {
   async onModuleInit() {

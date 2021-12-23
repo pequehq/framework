@@ -3,7 +3,6 @@ import { getAllInstances } from '../../utils/dependencies.utils';
 import { LifeCycleEventEmitter } from '../events/event-manager.service';
 
 export class LifeCycleManagerService {
-
   private static async triggerLifeCycleEvent(instance: any, method: string): Promise<void> {
     if (typeof instance[method] === 'function') {
       await instance[method]();
