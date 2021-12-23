@@ -4,8 +4,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { ExpressFactory } from '../src/factory/express-factory';
-import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
+import { TestServerGuard } from './modules/guards/test-server.guard';
 
 async function startUp() {
   await ExpressFactory.createServer({

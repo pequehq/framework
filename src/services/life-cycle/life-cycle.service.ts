@@ -1,9 +1,9 @@
-import { Injector } from '../../models/dependency-injection/injector.service';
-import { NativeEventsType } from '../../models/interfaces/types';
+import { NativeEventsType } from '../../models';
 import { getAllInstances } from '../../utils/dependencies.utils';
-import { EventManagerService } from '../events/event-manager.service';
+import { LifeCycleEventEmitter } from '../events/event-manager.service';
 
-class LifeCycleManagerService {
+export class LifeCycleManagerService {
+
   private static async triggerLifeCycleEvent(instance: any, method: string): Promise<void> {
     if (typeof instance[method] === 'function') {
       await instance[method]();
@@ -18,7 +18,7 @@ class LifeCycleManagerService {
   }
 
   private static pushEvent(event: NativeEventsType, data = {}): void {
-    Injector.resolve<EventManagerService>('EventManagerService').push('lifecycle.controller', data);
+    LifeCycleEventEmitter.next({ event, data });
   }
 
   async triggerProviderInit(instance: any): Promise<void> {
@@ -39,6 +39,16 @@ class LifeCycleManagerService {
   async triggerModuleDestroy(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onModuleDestroy');
     LifeCycleManagerService.pushEvent('lifecycle.destroy.module', { instance: instance.name });
+  }
+
+  async triggerWebSocketsInit(instance: any): Promise<void> {
+    await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketInit');
+    LifeCycleManagerService.pushEvent('lifecycle.init.websocket', { instance: instance.name });
+  }
+
+  async triggerWebSocketsDestroy(instance: any): Promise<void> {
+    await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketDestroy');
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.websocket', { instance: instance.name });
   }
 
   async triggerControllerInit(instance: any): Promise<void> {

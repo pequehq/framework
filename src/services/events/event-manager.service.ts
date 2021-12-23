@@ -1,12 +1,10 @@
 import 'reflect-metadata';
-
 import EventEmitter from 'events';
-
-import { OnEventInterface } from '../../decorators/events';
-import { DECORATORS } from '../../models/constants/decorators';
+import { OnEventInterface } from '../../decorators';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
-import { NativeEventsType } from '../../models/interfaces/types';
+import { NativeEventsType } from '../../models';
+import { Subject } from 'rxjs';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -14,20 +12,30 @@ export interface EventPayload<TData> {
   data: TData;
 }
 
+export interface LifeCycleEvent<TData> {
+  event: NativeEventsType;
+  data: TData;
+}
+
+export const LifeCycleEventEmitter = new Subject<LifeCycleEvent<unknown>>();
+
 export class EventManagerService {
   private emitter = new EventEmitter();
 
   constructor() {
-    const eventMap: Map<string, OnEventInterface> =
-      Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ??
-      new Map<string, OnEventInterface>();
+    LifeCycleEventEmitter.subscribe((event: LifeCycleEvent<unknown>) => {
+      if (event) {
+        this.push(event.event, event.data);
+      }
+    });
+  }
 
-    eventMap.forEach((value) => this.emitter.addListener(value.event, value.listener));
+  register(value: OnEventInterface) {
+    this.emitter.addListener(value.event, value.listener)
   }
 
   push<TData>(event: string | NativeEventsType, data: TData): void {
     const payload: EventPayload<TData> = { event, timestamp: Date.now(), data };
-
     this.emitter.emit(event, payload);
   }
 
@@ -36,4 +44,6 @@ export class EventManagerService {
   }
 }
 
-Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, EventManagerService);
+Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, new EventManagerService(), [], false);
+
+export const EventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);

@@ -15,7 +15,7 @@
         "outDir": "./dist",
         "removeComments": true,
         "resolveJsonModule": true,
-        "rootDir": "./src",
+        "rootDirs": ["./src", "./sample"],
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
@@ -25,5 +25,5 @@
         "useUnknownInCatchVariables": false
     },
     "include": ["./src"],
-    "exclude": ["./**/*.test.ts"]
+    "exclude": ["./**/*.test.ts", "./sample"]
 }
