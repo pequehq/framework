@@ -28,4 +28,4 @@ jobs:
         run: npm run test:coverage
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "test: update coverage badge"
+          commit_message: "update coverage badge"
