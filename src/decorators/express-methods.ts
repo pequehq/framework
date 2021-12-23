@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-
 import { MiddlewareHandler } from '../models';
 import { methodBuilder } from './utils/decorators';
 

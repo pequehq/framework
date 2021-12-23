@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import EventEmitter from 'events';
-import { OnEventInterface } from '../../decorators/events';
+import { OnEventInterface } from '../../decorators';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
-import { NativeEventsType } from '../../models/interfaces/types';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { NativeEventsType } from '../../models';
+import { Subject } from 'rxjs';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;

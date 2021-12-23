@@ -1,5 +1,5 @@
 import { WebSockets, WebSocketsService } from '../models/dependency-injection/websockets.service'
-import { WebSocketClass } from '../models/interfaces/types';
+import { WebSocketClass } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { NATIVE_SERVICES } from '../models/constants/native-services';

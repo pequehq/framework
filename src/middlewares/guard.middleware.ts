@@ -1,5 +1,4 @@
 import express from 'express';
-
 import { HTTP_STATES } from '../models/constants/http-states';
 
 export const guardExecutor = (guard: any) => {

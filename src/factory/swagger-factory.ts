@@ -5,13 +5,13 @@ import {
   SwaggerParameters,
   SwaggerResponseBodies,
   SwaggerSecuritySchemas,
-} from '../decorators/utils/swagger';
+} from '../decorators';
 import { DECORATORS } from '../models/constants/decorators';
 import { SWAGGER } from '../models/constants/swagger';
-import { ControllerDefinition } from '../models/controller-definition.interface';
+import { ControllerDefinition } from '../models';
 import { Controllers } from '../models/dependency-injection/controller.service';
 import { SwaggerRouteDefinition } from '../models/interfaces/swagger/swagger-route-definition.interface';
-import { ExpressMethods } from '../models/interfaces/types';
+import { ExpressMethods } from '../models';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../utils/express/factory';
 import { appendFile, getFile, getPath, removeFolder, writeFile } from '../utils/fs.utils';
 import { ExpressFactory } from './express-factory';

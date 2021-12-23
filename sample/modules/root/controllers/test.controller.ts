@@ -61,6 +61,7 @@ export class TestController implements OnControllerInit {
   )
   @Get('/external')
   async external() {
+    const test = 1+1;
     return { external: await this.externalService.getExternalCall() };
   }
 }

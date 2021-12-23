@@ -1,4 +1,4 @@
-import { NativeEventsType } from '../../models/interfaces/types';
+import { NativeEventsType } from '../../models';
 import { getAllInstances } from '../../utils/dependencies.utils';
 import { LifeCycleEventEmitter } from '../events/event-manager.service';
 

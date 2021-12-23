@@ -1,5 +1,5 @@
-import { Server, ServerOptions, Socket } from 'socket.io';
-import { Injectable } from '../../decorators/injectable';
+import { Server, ServerOptions } from 'socket.io';
+import { Injectable } from '../../decorators';
 import { EventManager } from '../events/event-manager.service';
 import { WebSocketAdapter } from '../../models/interfaces/web-sockets/websocket-adapter.interface';
 
@@ -18,17 +18,5 @@ export class SocketIoServiceAdapter implements WebSocketAdapter {
     });
     this.server.listen(port);
     return this.server;
-  }
-
-  onConnect(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  onDisconnect(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  onMessage(): void {
-    throw new Error('Method not implemented.');
   }
 }
