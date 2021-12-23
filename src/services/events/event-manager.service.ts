@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+
 import EventEmitter from 'events';
+
 import { OnEventInterface } from '../../decorators';
 import { NativeEventsType } from '../../models';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';

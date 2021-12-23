@@ -1,5 +1,6 @@
-import { NativeEventsType } from '../../models';
 import { Subject } from 'rxjs';
+
+import { NativeEventsType } from '../../models';
 
 export interface LifeCycleEvent<TData> {
   event: NativeEventsType;
