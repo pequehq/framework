@@ -10,16 +10,16 @@ export function Cacheable(options: CacheOptions): MethodDecorator {
   return <TValue>(target, propertyKey, descriptor): TypedPropertyDescriptor<TValue> => {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async (...args: unknown[]): Promise<TValue> => {
+    descriptor.value = async function (...args: unknown[]): Promise<TValue> {
       const cacheService = Injector.resolve<CacheManager>('CacheService');
       const key = typeof options.key === 'function' ? options.key(args) : options.key;
-      const cache = await cacheService.get<TValue>(key);
+      const cachedValue = await cacheService.get<TValue>(key);
 
-      if (cache) {
-        return cache;
+      if (cachedValue) {
+        return cachedValue;
       }
 
-      const result = await originalMethod(args);
+      const result = await originalMethod.apply(this, args);
       cacheService.set(key, result, options.ttl);
       return result;
     };

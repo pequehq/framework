@@ -29,7 +29,7 @@ test.before(async () => {
 test('should set and read from cache', async () => {
   await Injector.set('CacheService', MockCacheService);
 
-  const cacheService: CacheManager = Injector.resolve('CacheService');
+  const cacheService = Injector.resolve<CacheManager>('CacheService');
 
   class TestClass {
     testMethodCalls = 0;
@@ -42,7 +42,6 @@ test('should set and read from cache', async () => {
   }
 
   const testClass = new TestClass();
-  console.log(testClass);
 
   assert.is(testClass.testMethodCalls, 0);
   assert.is(await cacheService.get('key'), undefined);
