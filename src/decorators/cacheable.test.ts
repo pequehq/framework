@@ -30,7 +30,7 @@ test.after.each(async () => {
 });
 
 test('should set and read from cache', async () => {
-  const cacheService = Injector.resolve<CacheManager>('CacheService');
+  const cacheService = Injector.resolve<CacheManager>('injectable', 'CacheService');
 
   class TestClass {
     testMethodCalls = 0;
@@ -61,7 +61,7 @@ test('should set and read from cache', async () => {
 test('should allow to pass a function to calculate the cache key', async () => {
   const getCacheKey = (): string => 'key';
 
-  const cacheService = Injector.resolve<CacheManager>('CacheService');
+  const cacheService = Injector.resolve<CacheManager>('injectable', 'CacheService');
 
   class TestClass {
     testMethodCalls = 0;

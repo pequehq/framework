@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 
 import { NativeEventsType } from '../models';
-import { EventManager } from '../services/events/event-manager.service';
+import { DECORATORS } from '../models/constants/decorators';
+import { EventManagerService } from '../services/events/event-manager.service';
 
 export interface OnEventInterface {
   event: string | NativeEventsType;
@@ -10,7 +11,9 @@ export interface OnEventInterface {
 
 export const OnEvent = (event: string | NativeEventsType): MethodDecorator => {
   return <T>(target, propertyKey, descriptor): TypedPropertyDescriptor<T> => {
-    EventManager.register({ event, listener: descriptor.value });
+    const events: OnEventInterface[] = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || [];
+    events.push({ event, listener: descriptor.value });
+    Reflect.defineMetadata(DECORATORS.metadata.events.ON_EVENT, events, EventManagerService);
     return descriptor;
   };
 };

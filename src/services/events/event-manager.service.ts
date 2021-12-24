@@ -1,12 +1,10 @@
 import 'reflect-metadata';
-
 import EventEmitter from 'events';
-
-import { OnEventInterface } from '../../decorators';
+import { Injectable, OnEventInterface } from '../../decorators';
 import { NativeEventsType } from '../../models';
-import { NATIVE_SERVICES } from '../../models/constants/native-services';
-import { Injector } from '../../models/dependency-injection/injector.service';
 import { LifeCycleEvent, LifeCycleEventEmitter } from '../life-cycle/life-cycle-event-emitter';
+import { DECORATORS } from '../../models/constants/decorators';
+import { OnProviderInit } from '../../models/interfaces/life-cycle.interface';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -14,10 +12,14 @@ export interface EventPayload<TData> {
   data: TData;
 }
 
-export class EventManagerService {
+@Injectable()
+export class EventManagerService implements OnProviderInit {
   private emitter = new EventEmitter();
 
-  constructor() {
+  onProviderInit() {
+    const listeners: OnEventInterface[] = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || [];
+    listeners.forEach(listener => this.register(listener));
+
     LifeCycleEventEmitter.subscribe((event: LifeCycleEvent<unknown>) => {
       if (event) {
         this.push(event.event, event.data);
@@ -38,7 +40,3 @@ export class EventManagerService {
     this.emitter.on(event, listener);
   }
 }
-
-Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, new EventManagerService(), [], false);
-
-export const EventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);

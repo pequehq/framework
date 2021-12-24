@@ -12,8 +12,10 @@ import { CanExecute } from '../interfaces/authorization.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
+import { HttpError, HttpException } from '../errors/errors';
+import { HTTP_STATES } from '../constants/http-states';
 
-type ControllerClass = { new (...args: unknown[]): unknown };
+type ControllerClass = { new(...args: unknown[]): unknown };
 
 export class ControllerService {
   private controllers: ControllerClass[] = [];
@@ -32,7 +34,7 @@ export class ControllerService {
   }
 
   async initControllers(options: ServerOptions): Promise<Application> {
-    const logService = Injector.resolve<LoggerService>(NATIVE_SERVICES.LOGGER);
+    const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
 
     if (!options.existingApp) {
       throw new Error('existingApp not defined'); // @TODO remove after existingApp refactoring
@@ -49,7 +51,7 @@ export class ControllerService {
 
       // Controller root guards.
       if (controllerMeta.guards?.length) {
-        const guards = controllerMeta.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name)));
+        const guards = controllerMeta.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)));
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 
@@ -70,11 +72,17 @@ export class ControllerService {
         });
 
         const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
-          const result = async (): Promise<unknown> =>
-            (instance as object)[route.method.name](...buildParameters(req, res, route));
+          const result = async (): Promise<unknown> => (instance as object)[route.method.name](...buildParameters(req, res, route));
           if (route.noRestWrapper) {
             return result();
           }
+
+          const handleError = (error: HttpException<unknown>): HttpError<unknown> =>
+            error.httpException ? error.httpException : {
+              statusCode: HTTP_STATES.HTTP_500,
+              error,
+              message: 'Unknown error.'
+            };
 
           try {
             const data = await result();
@@ -84,7 +92,11 @@ export class ControllerService {
             res.send(data);
             res.end();
           } catch (error) {
-            console.log(error); // @TODO handle error response
+            const handledError = handleError(error);
+            res.setHeader('Content-Type', 'application/json');
+            res.status(handledError.statusCode);
+            res.send(handledError);
+            res.end();
           }
         };
 
@@ -93,7 +105,7 @@ export class ControllerService {
         let routeMiddlewares: RequestHandler[] = [];
 
         if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name)));
+          routeGuards = route.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)));
         }
 
         if (route.middlewareFunctions) {
@@ -122,5 +134,5 @@ export class ControllerService {
   }
 }
 
-Injector.setNative(NATIVE_SERVICES.CONTROLLER, ControllerService);
-export const Controllers = Injector.resolve<ControllerService>(NATIVE_SERVICES.CONTROLLER);
+Injector.setNative('injectable', NATIVE_SERVICES.CONTROLLER, ControllerService);
+export const Controllers = Injector.resolve<ControllerService>('injectable', NATIVE_SERVICES.CONTROLLER);

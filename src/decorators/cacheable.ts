@@ -1,5 +1,6 @@
 import { CacheManager } from '../models';
 import { Injector } from '../models/dependency-injection/injector.service';
+import { NATIVE_SERVICES } from '../models/constants/native-services';
 
 interface CacheOptions {
   key: string | ((...args: unknown[]) => string);
@@ -11,7 +12,7 @@ export function Cacheable(options: CacheOptions): MethodDecorator {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]): Promise<TValue> {
-      const cacheService = Injector.resolve<CacheManager>('CacheService');
+      const cacheService = Injector.resolve<CacheManager>('injectable', NATIVE_SERVICES.CACHE_SERVICE);
       const key = typeof options.key === 'function' ? options.key(args) : options.key;
       const cachedValue = await cacheService.get<TValue>(key);
 

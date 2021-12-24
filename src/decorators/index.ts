@@ -8,3 +8,4 @@ export * from './utils/decorators';
 export * from './injectable';
 export * from './module';
 export * from './events';
+export * from './interceptor';

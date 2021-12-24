@@ -7,6 +7,7 @@ import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
 import { ExternalTestService } from '../external-test.service';
+import { ForbiddenError } from '../../../../src/models/errors/errors';
 
 @SwaggerTag(['Test'])
 @Guard(TestGuard)
@@ -62,5 +63,10 @@ export class TestController implements OnControllerInit {
   @Get('/external')
   async external() {
     return { external: await this.externalService.getExternalCall() };
+  }
+
+  @Get('/error')
+  async error() {
+    throw new ForbiddenError({ error: { test: 'payload'}, message: 'This is an error'});
   }
 }

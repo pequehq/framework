@@ -1,12 +1,13 @@
 import {
+  ClassDeclaration,
   ControllerDefinition,
-  ExpressMethods,
+  ExpressMethods, InterceptorClass, InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
-  ProviderClass,
+  ProviderClass, ProviderType,
   RouteDefinition,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
@@ -14,13 +15,20 @@ import { Controllers } from '../../models/dependency-injection/controller.servic
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
 import { CustomProvider } from '../injectable';
+import { Providers } from '../../models/dependency-injection/providers';
 
-interface ProviderInterface {
-  name: string;
-  clazz: ProviderClass;
+interface ProviderOptions {
+  type: ProviderType
 }
 
-export const Providers: ProviderInterface[] = [];
+interface InjectableInterface extends ProviderOptions {
+  customProvider?: CustomProvider;
+}
+
+interface InterceptorInterface extends ProviderOptions {
+  interceptorType: InterceptorType;
+  clazz: ClassDeclaration;
+}
 
 const metadataKeys: Record<ParamType, string> = {
   body: DECORATORS.metadata.BODY,
@@ -132,7 +140,7 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
     // Setting custom providers.
     (module.providers ?? []).forEach((provider) => {
       if (provider.useClass) {
-        Providers.push({
+        Providers.addProvider('injectable', {
           name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
           clazz: provider.useClass as any, // @TODO check which type should use
         });
@@ -141,28 +149,32 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   };
 };
 
-export const injectableBuilder = (customProvider?: CustomProvider): ClassDecorator => {
+export const interceptorBuilder = (options: InterceptorInterface): ClassDecorator => {
+  return (target): void => {
+    Providers.addProvider('interceptor', { name: target.name, clazz: target as any });
+  };
+};
+
+export const injectableBuilder = (options: InjectableInterface): ClassDecorator => {
   return (target): void => {
     let name = target.name;
 
-    if (customProvider) {
-      if (typeof customProvider.interface === 'string') {
-        name = customProvider.interface;
+    if (options.customProvider) {
+      if (typeof options.customProvider.interface === 'string') {
+        name = options.customProvider.interface;
       } else {
-        name = customProvider.interface.name;
+        name = options.customProvider.interface.name;
       }
     }
 
-    const provider: ProviderInterface = { name, clazz: target as any }; // @TODO check clazz type
-
-    Providers.push(provider);
+    Providers.addProvider('injectable', { name, clazz: target as any }); // @TODO check clazz type
   };
 };
 
 export const injectClass = (provider: string): PropertyDecorator => {
   return (target, key): void => {
     Object.defineProperty(target, key, {
-      get: () => Injector.resolve(provider),
+      get: () => Injector.resolve('injectable', provider),
       enumerable: true,
       configurable: true,
     });

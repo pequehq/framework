@@ -21,7 +21,7 @@ import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
-import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
+import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export interface GlobalMiddlewares {
@@ -45,7 +45,7 @@ export class Server {
     await Server.destroyControllers();
     await Server.destroyWebSockets();
     await Server.destroyModules();
-    await Server.destroyInjectables();
+    await Server.destroyProviders();
 
     await Server.serverListenStop();
     await ExpressFactory.closeServer();
@@ -83,7 +83,7 @@ export class Server {
     this.options.existingApp.use(cookieParser());
 
     // Global guards.
-    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) ?? [];
+    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
     this.options.existingApp.use(...guards);
 
     // Push HTTP event.
@@ -145,8 +145,8 @@ export class Server {
     await loadInjectables();
   }
 
-  private static async destroyInjectables(): Promise<void> {
-    await destroyInjectables();
+  private static async destroyProviders(): Promise<void> {
+    await destroyProviders();
   }
 
   private static async serverShutdown(): Promise<void> {
@@ -164,10 +164,13 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
+    process.on(
+      'uncaughtException',
+      async (error) => await LifeCycleService.triggerUncaughtException(error)
+    );
     process.on(
       'unhandledRejection',
-      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
+      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error))
     );
   }
 }

@@ -1,5 +1,5 @@
 import { ProviderClass } from '../models';
-import { injectableBuilder, injectClass } from './utils/decorators';
+import { injectClass, injectableBuilder } from './utils/decorators';
 
 export interface CustomProvider {
   interface: ProviderClass | string;
@@ -7,7 +7,7 @@ export interface CustomProvider {
 
 export const Injectable = (customProvider?: CustomProvider): ClassDecorator => {
   // @TODO manage custom provider name.
-  return injectableBuilder(customProvider);
+  return injectableBuilder({ type: 'injectable', customProvider });
 };
 
 export const Inject = (provider: string): PropertyDecorator => {

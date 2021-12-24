@@ -17,7 +17,7 @@ export function WebSocketServer<TOptions, TAdapter>(
 export const GetWebSocketServer = (): PropertyDecorator => {
   return (target, key) => {
     Object.defineProperty(target, key, {
-      get: () => Injector.resolve<WebSocketsService>(NATIVE_SERVICES.WEBSOCKETS).getServer(),
+      get: () => Injector.resolve<WebSocketsService>('injectable', NATIVE_SERVICES.WEBSOCKETS).getServer(),
       enumerable: true,
       configurable: true,
     });

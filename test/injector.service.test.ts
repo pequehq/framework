@@ -23,11 +23,11 @@ describe('ControllerService', () => {
   });
 
   it('should resolve the requested providers', () => {
-    expect(new TestServiceOne()).toEqual(Injector.resolve('TestServiceOne'));
-    expect(new TestServiceTwo()).toEqual(Injector.resolve('TestServiceTwo'));
+    expect(new TestServiceOne()).toEqual(Injector.resolve('injectable', 'TestServiceOne'));
+    expect(new TestServiceTwo()).toEqual(Injector.resolve('injectable', 'TestServiceTwo'));
   });
 
   it('should throw error when resolving a non-existent provider', () => {
-    expect(() => Injector.resolve('NotExistProvider')).toThrowError();
+    expect(() => Injector.resolve('injectable', 'NotExistProvider')).toThrowError();
   });
 });

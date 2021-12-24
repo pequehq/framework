@@ -8,6 +8,8 @@ export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'opti
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
 export type LogLevelsType = 'debug' | 'info' | 'warn' | 'error';
+export type InterceptorType = 'exception';
+export type ProviderType = 'injectable' | 'interceptor';
 export type NativeEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'
@@ -34,6 +36,9 @@ export type ModuleInstance = InstanceType<ModuleClass>;
 
 export type ProviderClass = ClassDeclaration;
 export type ProviderInstance = InstanceType<ProviderClass>;
+
+export type InterceptorClass = ClassDeclaration;
+export type InterceptorInstance = InstanceType<InterceptorClass>;
 
 export type ControllerClass = ClassDeclaration;
 export type ControllerInstance = InstanceType<ControllerClass>;
