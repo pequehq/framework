@@ -22,11 +22,11 @@ class MockCacheService implements CacheManager {
 }
 
 test.before.each(async () => {
-  await Injector.set('CacheService', MockCacheService);
+  await Injector.set('injectable', 'CacheService', MockCacheService);
 });
 
 test.after.each(async () => {
-  await Injector.unset('CacheService');
+  await Injector.unset('injectable', 'CacheService');
 });
 
 test('should set and read from cache', async () => {
