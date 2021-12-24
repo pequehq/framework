@@ -6,16 +6,16 @@ import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { DECORATORS } from '../constants/decorators';
+import { HTTP_STATES } from '../constants/http-states';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
+import { HttpError, HttpException } from '../errors/errors';
 import { CanExecute } from '../interfaces/authorization.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
-import { HttpError, HttpException } from '../errors/errors';
-import { HTTP_STATES } from '../constants/http-states';
 
-type ControllerClass = { new(...args: unknown[]): unknown };
+type ControllerClass = { new (...args: unknown[]): unknown };
 
 export class ControllerService {
   private controllers: ControllerClass[] = [];
@@ -51,7 +51,9 @@ export class ControllerService {
 
       // Controller root guards.
       if (controllerMeta.guards?.length) {
-        const guards = controllerMeta.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)));
+        const guards = controllerMeta.guards.map((guard) =>
+          guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)),
+        );
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 
@@ -72,17 +74,20 @@ export class ControllerService {
         });
 
         const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
-          const result = async (): Promise<unknown> => (instance as object)[route.method.name](...buildParameters(req, res, route));
+          const result = async (): Promise<unknown> =>
+            (instance as object)[route.method.name](...buildParameters(req, res, route));
           if (route.noRestWrapper) {
             return result();
           }
 
           const handleError = (error: HttpException<unknown>): HttpError<unknown> =>
-            error.httpException ? error.httpException : {
-              statusCode: HTTP_STATES.HTTP_500,
-              error,
-              message: 'Unknown error.'
-            };
+            error.httpException
+              ? error.httpException
+              : {
+                  statusCode: HTTP_STATES.HTTP_500,
+                  error,
+                  message: 'Unknown error.',
+                };
 
           try {
             const data = await result();
@@ -105,7 +110,9 @@ export class ControllerService {
         let routeMiddlewares: RequestHandler[] = [];
 
         if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)));
+          routeGuards = route.guards.map((guard) =>
+            guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)),
+          );
         }
 
         if (route.middlewareFunctions) {

@@ -6,5 +6,5 @@ export const NATIVE_SERVICES = {
   LOGGER: 'LoggerService',
   WEBSOCKETS: 'WebSocketsService',
   SOCKETIO_ADAPTER: 'SocketIoServiceAdapter',
-  CACHE_SERVICE: 'CacheService'
+  CACHE_SERVICE: 'CacheService',
 };

@@ -83,7 +83,8 @@ export class Server {
     this.options.existingApp.use(cookieParser());
 
     // Global guards.
-    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
+    const guards =
+      this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
     this.options.existingApp.use(...guards);
 
     // Push HTTP event.
@@ -164,13 +165,10 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
-    process.on(
-      'uncaughtException',
-      async (error) => await LifeCycleService.triggerUncaughtException(error)
-    );
+    process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
     process.on(
       'unhandledRejection',
-      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error))
+      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
     );
   }
 }

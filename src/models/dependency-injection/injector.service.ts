@@ -6,7 +6,6 @@ class InjectorService {
   private providers = new Map<string, ProviderInstance>();
 
   resolve<TClass extends ProviderInstance>(type: ProviderType, provider: string): TClass {
-
     const matchedProvider = Providers.getProviderInstanceByType(type, provider) as TClass;
     if (!matchedProvider) {
       throw new Error(`No provider found for ${provider}!`);
@@ -15,7 +14,12 @@ class InjectorService {
     return matchedProvider;
   }
 
-  async set(type: ProviderType, provider: string, target: ProviderClass, dependencies: ProviderInstance[] = []): Promise<void> {
+  async set(
+    type: ProviderType,
+    provider: string,
+    target: ProviderClass,
+    dependencies: ProviderInstance[] = [],
+  ): Promise<void> {
     if (!Providers.hasProviderInstance(type, provider)) {
       const instance = new target(...dependencies);
       await LifeCycleService.triggerProviderInit(instance);

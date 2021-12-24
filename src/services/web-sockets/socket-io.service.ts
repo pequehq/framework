@@ -1,4 +1,5 @@
 import { Server, ServerOptions } from 'socket.io';
+
 import { Injectable } from '../../decorators';
 import { WebSocketAdapter } from '../../models/interfaces/web-sockets/websocket-adapter.interface';
 import { EventManagerService } from '../events/event-manager.service';
@@ -7,8 +8,7 @@ import { EventManagerService } from '../events/event-manager.service';
 export class SocketIoServiceAdapter implements WebSocketAdapter {
   protected server: Server;
 
-  constructor(private readonly eventManager: EventManagerService) {
-  }
+  constructor(private readonly eventManager: EventManagerService) {}
 
   close(): void {
     this.server.disconnectSockets(true);

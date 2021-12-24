@@ -19,5 +19,5 @@ export interface ServerOptions {
   logger?: LoggerInterface;
   guards?: any[];
   session?: SessionOptions;
-  showOriginalErrorObject?: boolean
+  showOriginalErrorObject?: boolean;
 }

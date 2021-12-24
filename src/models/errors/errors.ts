@@ -1,5 +1,5 @@
-import { HTTP_STATES } from '../constants/http-states';
 import { ExpressFactory } from '../../factory';
+import { HTTP_STATES } from '../constants/http-states';
 
 // @TODO manage to add as much HTTP exceptions as possible.
 

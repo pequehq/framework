@@ -41,7 +41,7 @@ async function startUp() {
     },
     isCpuClustered: false,
     guards: [TestServerGuard],
-    showOriginalErrorObject: true
+    showOriginalErrorObject: true,
   });
 }
 

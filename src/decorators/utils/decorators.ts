@@ -1,24 +1,27 @@
 import {
   ClassDeclaration,
   ControllerDefinition,
-  ExpressMethods, InterceptorClass, InterceptorType,
+  ExpressMethods,
+  InterceptorClass,
+  InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
-  ProviderClass, ProviderType,
+  ProviderClass,
+  ProviderType,
   RouteDefinition,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { CustomProvider } from '../injectable';
 import { Providers } from '../../models/dependency-injection/providers';
+import { CustomProvider } from '../injectable';
 
 interface ProviderOptions {
-  type: ProviderType
+  type: ProviderType;
 }
 
 interface InjectableInterface extends ProviderOptions {

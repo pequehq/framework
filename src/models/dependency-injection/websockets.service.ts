@@ -35,7 +35,8 @@ export class WebSocketsService<TServer = any> {
         webSocket,
       );
       this.adapterService = Injector.resolve<WebSocketAdapter>(
-        'injectable', webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER,
+        'injectable',
+        webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER,
       );
 
       this.server = this.adapterService.create(webSocketDefinition.port, webSocketDefinition.config?.options);

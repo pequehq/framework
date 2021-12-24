@@ -1,5 +1,5 @@
 import { ProviderClass } from '../models';
-import { injectClass, injectableBuilder } from './utils/decorators';
+import { injectableBuilder, injectClass } from './utils/decorators';
 
 export interface CustomProvider {
   interface: ProviderClass | string;

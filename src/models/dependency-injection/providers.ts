@@ -18,18 +18,18 @@ export type ProviderInstances<TClass> = InjectableInstance<TClass> & Interceptor
 export class ProviderService {
   private providerMaps: Record<ProviderType, Map<string, ProviderInstance>> = {
     injectable: new Map<string, ProviderInstance>(),
-    interceptor: new Map<string, ProviderInstance>()
-  }
+    interceptor: new Map<string, ProviderInstance>(),
+  };
 
   private providerArrays: Record<ProviderType, ProviderInterface[]> = {
     injectable: [],
-    interceptor: []
-  }
+    interceptor: [],
+  };
 
   private types = new Map<string, ProviderType[]>();
 
   addProvider(type: ProviderType, provider: ProviderInterface) {
-    this.providerArrays[type].push(provider)
+    this.providerArrays[type].push(provider);
 
     const types = this.types.get(provider.name) || [];
     types.push(type);
@@ -55,8 +55,8 @@ export class ProviderService {
   getProviderInstances<TClass>(provider: string): ProviderInstances<TClass> {
     return {
       injectable: this.providerMaps.injectable.get(provider),
-      interceptor: this.providerMaps.interceptor.get(provider)
-    }
+      interceptor: this.providerMaps.interceptor.get(provider),
+    };
   }
 
   setProviderInstance(type: ProviderType, name: string, provider: ProviderInstance): void {
