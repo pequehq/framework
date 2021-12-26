@@ -11,8 +11,8 @@ import { ExpressFactory } from './factory';
 import { SwaggerFactory } from './factory/swagger-factory';
 import { fallback } from './middlewares';
 import { pushHttpEvents } from './middlewares';
-import { errorHandler, logError } from './middlewares/error-handler.middleware';
-import { guardExecutor } from './middlewares/guard.middleware';
+import { errorHandler } from './middlewares/error-handler.middleware';
+import { guardHandler } from './middlewares/guard.middleware';
 import { ServerOptions } from './models';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
@@ -83,8 +83,7 @@ export class Server {
     this.options.existingApp.use(cookieParser());
 
     // Global guards.
-    const guards =
-      this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
+    const guards = this.options.guards?.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
     this.options.existingApp.use(...guards);
 
     // Push HTTP event.
@@ -113,7 +112,10 @@ export class Server {
 
     // Add post-route Middlewares.
     const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
-    this.addMiddlewares([...postRoutes, logError, errorHandler]);
+    this.addMiddlewares([...postRoutes]);
+
+    // Add general error handling.
+    this.options.existingApp.use(errorHandler);
 
     return this.options.existingApp;
   }
@@ -165,10 +167,13 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
+    process.on(
+      'uncaughtException',
+      async (error) => await LifeCycleService.triggerUncaughtException(error)
+    );
     process.on(
       'unhandledRejection',
-      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
+      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error))
     );
   }
 }

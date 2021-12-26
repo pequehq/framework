@@ -17,6 +17,7 @@ export class HttpException<TError> extends Error {
   constructor(public httpException: HttpError<TError>) {
     super();
     this.config();
+    this.dispatchInterceptor();
   }
 
   private config() {
@@ -28,6 +29,10 @@ export class HttpException<TError> extends Error {
     if (ExpressFactory.getServerOptions().showOriginalErrorObject) {
       this.httpException.stack = this.stack;
     }
+  }
+
+  private dispatchInterceptor() {
+
   }
 }
 

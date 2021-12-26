@@ -1,4 +1,4 @@
-import { ClassDeclaration, ProviderType } from '../models';
+import { ClassDeclaration } from '../models';
 import { ControllerService } from '../models/dependency-injection/controller.service';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { ModuleService } from '../models/dependency-injection/module.service';
@@ -41,7 +41,7 @@ export const getAllInstances = (): unknown[] => {
   return [
     ...controllers.getInstances(),
     ...modules.getInstances(),
-    ...Providers.getProvidersByType('injectable').values(),
-    ...Providers.getProvidersByType('interceptor').values(),
+    ...Providers.getProviderInstancesByType('injectable').values(),
+    ...Providers.getProviderInstancesByType('interceptor').values()
   ];
 };

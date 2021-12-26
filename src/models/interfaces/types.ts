@@ -27,7 +27,10 @@ export type NativeEventsType =
   | 'lifecycle.uncaught.exception'
   | 'lifecycle.uncaught.rejection'
   | 'http'
-  | 'logger';
+  | 'logger'
+  | 'interceptor.exception';
+export type SubjectType = 'lifeCycleSubject';
+export type InterceptorStage = 'after' | 'before' | 'error';
 
 export type ClassDeclaration = Type;
 

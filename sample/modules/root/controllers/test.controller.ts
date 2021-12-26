@@ -1,15 +1,18 @@
-import { Controller, Cookie, Get, Session, SwaggerResponse, SwaggerTag } from '../../../../src/decorators';
+import { Controller, Cookie, Get, Intercept, Session, SwaggerResponse, SwaggerTag } from '../../../../src';
 import { Guard } from '../../../../src/decorators/authorization';
-import { ForbiddenError } from '../../../../src/models/errors/errors';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../../src/services';
-import { LoggerService } from '../../../../src/services/logger/logger.service';
+import { HttpService } from '../../../../src';
+import { LoggerService } from '../../../../src';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
 import { ExternalTestService } from '../external-test.service';
+import { ForbiddenError } from '../../../../src';
+import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
+import { TestControllerInterceptor } from '../../interceptor/test-controller.interceptor';
 
 @SwaggerTag(['Test'])
+@Intercept(TestControllerInterceptor)
 @Guard(TestGuard)
 @Controller('/test')
 export class TestController implements OnControllerInit {
@@ -60,13 +63,15 @@ export class TestController implements OnControllerInit {
       },
     ],
   )
+  @Intercept(TestRouteInterceptor)
   @Get('/external')
   async external() {
     return { external: await this.externalService.getExternalCall() };
   }
 
+  @Intercept(TestRouteInterceptor)
   @Get('/error')
   async error() {
-    throw new ForbiddenError({ error: { test: 'payload' }, message: 'This is an error' });
+    throw new ForbiddenError({ error: { test: 'payload'}, message: 'This is an error'});
   }
 }

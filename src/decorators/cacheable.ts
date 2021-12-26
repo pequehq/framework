@@ -12,7 +12,7 @@ export function Cacheable(options: CacheOptions): MethodDecorator {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]): Promise<TValue> {
-      const cacheService = Injector.resolve<CacheManager>('injectable', NATIVE_SERVICES.CACHE_SERVICE);
+      const cacheService = Injector.resolve<CacheManager>('injectable', NATIVE_SERVICES.CACHE);
       const key = typeof options.key === 'function' ? options.key(args) : options.key;
       const cachedValue = await cacheService.get<TValue>(key);
 

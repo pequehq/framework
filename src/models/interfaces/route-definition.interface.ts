@@ -1,5 +1,5 @@
 import { MethodDefinition } from './method-definition.interface';
-import { ExpressMethods, GuardClass, MiddlewareHandler } from './types';
+import { ExpressMethods, GuardClass, InterceptorClass, MiddlewareHandler } from './types';
 
 export interface RouteDefinition {
   path: string;
@@ -9,4 +9,5 @@ export interface RouteDefinition {
   documentOnly: boolean;
   noRestWrapper: boolean;
   guards?: GuardClass[];
+  interceptors?: InterceptorClass[];
 }

@@ -1,21 +1,22 @@
-import { Application, RequestHandler } from 'express';
+import { Application, ErrorRequestHandler, RequestHandler } from 'express';
 
-import { guardExecutor } from '../../middlewares/guard.middleware';
+import { guardHandler } from '../../middlewares/guard.middleware';
 import { LoggerService } from '../../services';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { DECORATORS } from '../constants/decorators';
-import { HTTP_STATES } from '../constants/http-states';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
-import { HttpError, HttpException } from '../errors/errors';
 import { CanExecute } from '../interfaces/authorization.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
+import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/interceptors.middleware';
+import { InterceptorHandler } from '../interfaces/interceptor.interface';
+import { responder } from '../../middlewares/responder.middleware';
 
-type ControllerClass = { new (...args: unknown[]): unknown };
+type ControllerClass = { new(...args: unknown[]): unknown };
 
 export class ControllerService {
   private controllers: ControllerClass[] = [];
@@ -49,11 +50,20 @@ export class ControllerService {
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, controller);
 
+      let controllerAfterInterceptors: RequestHandler[] = [];
+      let controllerBeforeInterceptors: RequestHandler[] = [];
+      let controllerErrorInterceptors: ErrorRequestHandler[] = [];
+
+      // Loading interceptors.
+      if (controllerMeta.interceptors?.length) {
+        controllerAfterInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'));
+        controllerBeforeInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'));
+        controllerErrorInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)));
+      }
+
       // Controller root guards.
       if (controllerMeta.guards?.length) {
-        const guards = controllerMeta.guards.map((guard) =>
-          guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)),
-        );
+        const guards = controllerMeta.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 
@@ -73,47 +83,36 @@ export class ControllerService {
           data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`,
         });
 
-        const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
-          const result = async (): Promise<unknown> =>
-            (instance as object)[route.method.name](...buildParameters(req, res, route));
-          if (route.noRestWrapper) {
-            return result();
-          }
-
-          const handleError = (error: HttpException<unknown>): HttpError<unknown> =>
-            error.httpException
-              ? error.httpException
-              : {
-                  statusCode: HTTP_STATES.HTTP_500,
-                  error,
-                  message: 'Unknown error.',
-                };
-
-          try {
-            const data = await result();
-
-            res.setHeader('Content-Type', 'application/json');
-            res.status((data as object)['statusCode'] ?? 200);
-            res.send(data);
-            res.end();
-          } catch (error) {
-            const handledError = handleError(error);
-            res.setHeader('Content-Type', 'application/json');
-            res.status(handledError.statusCode);
-            res.send(handledError);
-            res.end();
-          }
-        };
-
-        // Applying guards and middlewares.
+        // Applying interceptors, guards and middlewares.
+        let routeBeforeInterceptors: RequestHandler[] = [];
+        let routeAfterInterceptors: RequestHandler[] = [];
+        let routeErrorInterceptors: ErrorRequestHandler[] = [];
         let routeGuards: RequestHandler[] = [];
         let routeMiddlewares: RequestHandler[] = [];
 
         if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) =>
-            guardExecutor(Injector.resolve<CanExecute>('injectable', guard.name)),
-          );
+          routeGuards = route.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
         }
+
+        if (route.interceptors?.length) {
+          routeAfterInterceptors = route.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'));
+          routeBeforeInterceptors = route.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'));
+          routeErrorInterceptors = route.interceptors.map((interceptor) => interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)));
+        }
+
+        const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
+          const result = async (): Promise<any> => (instance as object)[route.method.name](...buildParameters(req, res, route));
+          if (route.noRestWrapper) {
+            return result();
+          }
+
+          try {
+            res.locals.data = await result();
+            next();
+          } catch (error) {
+            next(error);
+          }
+        };
 
         if (route.middlewareFunctions) {
           routeMiddlewares = Array.isArray(route.middlewareFunctions)
@@ -124,9 +123,16 @@ export class ControllerService {
         // Route registration.
         options.existingApp[route.requestMethod](
           controllerMeta.prefix + route.path,
+          controllerBeforeInterceptors,
+          routeBeforeInterceptors,
           routeGuards,
           routeMiddlewares,
           handler,
+          controllerAfterInterceptors,
+          routeAfterInterceptors,
+          responder,
+          controllerErrorInterceptors,
+          routeErrorInterceptors
         );
       }
     }

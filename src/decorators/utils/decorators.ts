@@ -1,27 +1,25 @@
 import {
   ClassDeclaration,
   ControllerDefinition,
-  ExpressMethods,
-  InterceptorClass,
-  InterceptorType,
+  ExpressMethods, InterceptorClass, InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
-  ProviderClass,
-  ProviderType,
+  ProviderClass, ProviderType,
   RouteDefinition,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { Providers } from '../../models/dependency-injection/providers';
 import { CustomProvider } from '../injectable';
+import { Providers } from '../../models/dependency-injection/providers';
+import { InterceptorService } from '../../services/interceptor/interceptor.service';
 
 interface ProviderOptions {
-  type: ProviderType;
+  type: ProviderType
 }
 
 interface InjectableInterface extends ProviderOptions {
@@ -62,6 +60,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
       prefix,
       middlewares: Array.isArray(middlewares) ? middlewares : [middlewares],
       guards: [],
+      interceptors: []
     };
 
     Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controllerDefinition, target);
@@ -152,7 +151,7 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   };
 };
 
-export const interceptorBuilder = (options: InterceptorInterface): ClassDecorator => {
+export const interceptorBuilder = (): ClassDecorator => {
   return (target): void => {
     Providers.addProvider('interceptor', { name: target.name, clazz: target as any });
   };

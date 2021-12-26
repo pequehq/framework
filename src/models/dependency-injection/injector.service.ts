@@ -29,7 +29,6 @@ class InjectorService {
 
   async unset(type: ProviderType, provider: string): Promise<void> {
     await LifeCycleService.triggerProviderDestroy(Providers.getProviderInstanceByType(type, provider));
-    Providers.deleteProviderInstance(type, provider);
   }
 
   setNative(
