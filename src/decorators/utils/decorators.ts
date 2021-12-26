@@ -1,13 +1,14 @@
 import {
   ClassDeclaration,
   ControllerDefinition,
-  ExpressMethods, InterceptorClass, InterceptorType,
+  ExpressMethods,
+  InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
-  ProviderClass, ProviderType,
+  ProviderType,
   RouteDefinition,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
