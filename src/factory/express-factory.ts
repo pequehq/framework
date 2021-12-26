@@ -5,7 +5,6 @@ import { ServerOptions } from '../models';
 import { Server } from '../server';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 import { isMaster, setupWorkers } from '../utils/cluster.utils';
-import { errorHandler } from '../middlewares/error-handler.middleware';
 
 export class ExpressFactory {
   private static sharedOptions: ServerOptions;

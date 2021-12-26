@@ -1,13 +1,21 @@
-import { Controller, Cookie, Get, Intercept, Session, SwaggerResponse, SwaggerTag } from '../../../../src';
+import {
+  Controller,
+  Cookie,
+  ForbiddenError,
+  Get,
+  HttpService,
+  Intercept,
+  LoggerService,
+  Session,
+  SwaggerResponse,
+  SwaggerTag
+} from '../../../../src';
 import { Guard } from '../../../../src/decorators/authorization';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../../src';
-import { LoggerService } from '../../../../src';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
 import { ExternalTestService } from '../external-test.service';
-import { ForbiddenError } from '../../../../src';
 import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
 import { TestControllerInterceptor } from '../../interceptor/test-controller.interceptor';
 

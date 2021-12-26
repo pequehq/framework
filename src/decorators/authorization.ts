@@ -1,6 +1,4 @@
-import { ControllerDefinition } from '../models';
-import { RouteDefinition } from '../models';
-import { GuardClass } from '../models';
+import { ControllerDefinition, GuardClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 
 export const Guard = (guard: GuardClass): MethodDecorator & ClassDecorator => {

@@ -1,8 +1,5 @@
-import { Module } from '../../../src';
+import { HttpService, LoggerService, Module, SocketIoServiceAdapter } from '../../../src';
 import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../src';
-import { LoggerService } from '../../../src';
-import { SocketIoServiceAdapter } from '../../../src';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';
 import { ExternalTestService } from './external-test.service';

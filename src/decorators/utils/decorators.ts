@@ -17,7 +17,6 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
 import { CustomProvider } from '../injectable';
 import { Providers } from '../../models/dependency-injection/providers';
-import { InterceptorService } from '../../services/interceptor/interceptor.service';
 
 interface ProviderOptions {
   type: ProviderType
