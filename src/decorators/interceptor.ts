@@ -1,10 +1,10 @@
-import { interceptorBuilder } from './utils/decorators';
 import { ControllerDefinition, InterceptorClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
+import { interceptorBuilder } from './utils/decorators';
 
 export const Interceptor = (): ClassDecorator => {
   return interceptorBuilder();
-}
+};
 
 export const Intercept = (interceptor: InterceptorClass): MethodDecorator & ClassDecorator => {
   return (target, propertyKey?, descriptor?) => {
@@ -12,7 +12,7 @@ export const Intercept = (interceptor: InterceptorClass): MethodDecorator & Clas
 
     if (isClassDecorator) {
       const controller: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, target);
-      controller.interceptors?.push(interceptor)
+      controller.interceptors?.push(interceptor);
       Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controller, target);
     }
 
@@ -25,5 +25,5 @@ export const Intercept = (interceptor: InterceptorClass): MethodDecorator & Clas
     }
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
-  }
-}
+  };
+};

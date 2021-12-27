@@ -15,11 +15,11 @@ import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { CustomProvider } from '../injectable';
 import { Providers } from '../../models/dependency-injection/providers';
+import { CustomProvider } from '../injectable';
 
 interface ProviderOptions {
-  type: ProviderType
+  type: ProviderType;
 }
 
 interface InjectableInterface extends ProviderOptions {
@@ -60,7 +60,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
       prefix,
       middlewares: Array.isArray(middlewares) ? middlewares : [middlewares],
       guards: [],
-      interceptors: []
+      interceptors: [],
     };
 
     Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controllerDefinition, target);

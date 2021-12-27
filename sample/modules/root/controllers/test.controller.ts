@@ -8,16 +8,16 @@ import {
   LoggerService,
   Session,
   SwaggerResponse,
-  SwaggerTag
+  SwaggerTag,
 } from '../../../../src';
 import { Guard } from '../../../../src/decorators/authorization';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
-import { ExternalTestService } from '../external-test.service';
-import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
 import { TestControllerInterceptor } from '../../interceptor/test-controller.interceptor';
+import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
+import { ExternalTestService } from '../external-test.service';
 
 @SwaggerTag(['Test'])
 @Intercept(TestControllerInterceptor)
@@ -80,6 +80,6 @@ export class TestController implements OnControllerInit {
   @Intercept(TestRouteInterceptor)
   @Get('/error')
   async error() {
-    throw new ForbiddenError({ error: { test: 'payload'}, message: 'This is an error'});
+    throw new ForbiddenError({ error: { test: 'payload' }, message: 'This is an error' });
   }
 }

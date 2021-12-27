@@ -1,11 +1,11 @@
 import { HttpService, LoggerService, Module, SocketIoServiceAdapter } from '../../../src';
 import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
+import { TestRouteInterceptor } from '../interceptor/test-route.interceptor';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';
 import { ExternalTestService } from './external-test.service';
 import { TestRootService } from './test-root.service';
 import { TestWebsocket } from './ws/test-ws.websocket';
-import { TestRouteInterceptor } from '../interceptor/test-route.interceptor';
 
 @Module({
   modules: [RandomModule],

@@ -42,6 +42,6 @@ export const getAllInstances = (): unknown[] => {
     ...controllers.getInstances(),
     ...modules.getInstances(),
     ...Providers.getProviderInstancesByType('injectable').values(),
-    ...Providers.getProviderInstancesByType('interceptor').values()
+    ...Providers.getProviderInstancesByType('interceptor').values(),
   ];
 };
