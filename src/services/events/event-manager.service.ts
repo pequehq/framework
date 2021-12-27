@@ -21,8 +21,8 @@ export class EventManagerService implements OnProviderInit {
     const listeners: OnEventInterface[] = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || [];
     listeners.forEach(listener => this.register(listener));
 
-    for (const subject in Subjects) {
-      Subjects[subject].subscribe((event: SubjectEvent<unknown>) => {
+    for (const key in Object.keys(Subjects)) {
+      Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
         if (event) {
           this.push(event.event, event.data);
         }
