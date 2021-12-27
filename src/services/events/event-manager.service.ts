@@ -1,11 +1,14 @@
 import 'reflect-metadata';
+
 import EventEmitter from 'events';
+import { Subscription } from 'rxjs';
+
 import { Injectable, OnEventInterface } from '../../decorators';
 import { NativeEventsType } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
-import { OnProviderInit } from '../../models/interfaces/life-cycle.interface';
-import { Subjects } from '../subjects/subjects';
+import { OnProviderDestroy, OnProviderInit } from '../../models/interfaces/life-cycle.interface';
 import { SubjectEvent } from '../../models/interfaces/subject.interface';
+import { Subjects } from '../subjects/subjects';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -14,24 +17,45 @@ export interface EventPayload<TData> {
 }
 
 @Injectable()
-export class EventManagerService implements OnProviderInit {
+export class EventManagerService implements OnProviderInit, OnProviderDestroy {
   private emitter = new EventEmitter();
+  private listeners: OnEventInterface[] = [];
+  private subscriptions: Subscription[] = [];
 
-  onProviderInit() {
-    const listeners: OnEventInterface[] = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || [];
-    listeners.forEach(listener => this.register(listener));
+  onProviderInit(): void {
+    this.listeners = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ?? [];
 
-    for (const key in Object.keys(Subjects)) {
-      Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
-        if (event) {
-          this.push(event.event, event.data);
-        }
-      })
+    this.registerListeners();
+
+    for (const key of Object.keys(Subjects)) {
+      this.subscriptions.push(
+        Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
+          if (event) {
+            this.push(event.event, event.data);
+          }
+        }),
+      );
     }
   }
 
-  register(value: OnEventInterface) {
-    this.emitter.addListener(value.event, value.listener);
+  onProviderDestroy(): void {
+    this.unregisterListeners();
+
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
+
+  registerListeners(): void {
+    for (const { event, listener } of this.listeners) {
+      this.emitter.addListener(event, listener);
+    }
+  }
+
+  unregisterListeners(): void {
+    for (const { event, listener } of this.listeners) {
+      this.emitter.removeListener(event, listener);
+    }
   }
 
   push<TData>(event: string | NativeEventsType, data: TData): void {

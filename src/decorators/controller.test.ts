@@ -19,6 +19,7 @@ test('should add controller metadata to the class where it is applied', async ()
     prefix: '/path',
     middlewares: [],
     guards: [],
+    interceptors: [],
   });
 });
 
@@ -34,6 +35,7 @@ test('should support passing a middleware', async () => {
     prefix: '/path',
     middlewares: [middleware],
     guards: [],
+    interceptors: [],
   });
 });
 
@@ -50,6 +52,7 @@ test('should support passing multiple middlewares', async () => {
     prefix: '/path',
     middlewares: [middleware1, middleware2],
     guards: [],
+    interceptors: [],
   });
 });
 

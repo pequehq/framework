@@ -20,7 +20,7 @@ export function Cacheable(options: CacheOptions): MethodDecorator {
         return cachedValue;
       }
 
-      const result = await originalMethod.apply(this, args);
+      const result = await Promise.resolve(originalMethod.apply(this, args));
       cacheService.set(key, result, options.ttl);
       return result;
     };

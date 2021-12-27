@@ -32,7 +32,7 @@ export class HttpException<TError> extends Error {
   }
 
   private dispatchInterceptor() {
-
+    // @TODO implement
   }
 }
 
