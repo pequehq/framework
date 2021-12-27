@@ -7,5 +7,5 @@ export const NATIVE_SERVICES = {
   WEBSOCKETS: 'WebSocketsService',
   SOCKETIO_ADAPTER: 'SocketIoServiceAdapter',
   CACHE: 'CacheService',
-  INTERCEPTOR: 'InterceptorService'
+  INTERCEPTOR: 'InterceptorService',
 };

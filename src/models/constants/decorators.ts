@@ -31,7 +31,7 @@ export const DECORATORS = {
     },
     SCHEDULER: 'scheduler',
     interceptor: {
-      INTERCEPTORS: 'interceptors'
-    }
+      INTERCEPTORS: 'interceptors',
+    },
   },
 };

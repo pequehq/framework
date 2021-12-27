@@ -6,4 +6,4 @@ export const responder: RequestHandler = (req, res, next): void => {
   res.status((data as object)['statusCode'] ?? 200);
   res.send(data);
   res.end();
-}
+};

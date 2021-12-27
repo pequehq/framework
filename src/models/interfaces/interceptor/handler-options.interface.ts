@@ -3,5 +3,5 @@ export interface HandlerBeforeOptions {
 }
 
 export interface HandlerAfterOptions<TResult> {
-  handlerResult?: TResult
+  handlerResult?: TResult;
 }
