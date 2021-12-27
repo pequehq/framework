@@ -29,4 +29,4 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           token: ${{ secrets.PAT }}
-          commit_message: "test: update coverage badge"
+          commit_message: "update coverage badge"
