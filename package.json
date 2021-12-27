@@ -1,6 +1,6 @@
 {
   "name": "peque.ts",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Peque.ts Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
