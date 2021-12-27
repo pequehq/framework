@@ -11,6 +11,7 @@ export interface OnEventInterface {
 
 export const OnEvent = (event: string | NativeEventsType): MethodDecorator => {
   return <T>(target, propertyKey, descriptor): TypedPropertyDescriptor<T> => {
+    console.log(DECORATORS.metadata.events.ON_EVENT, EventManagerService);
     const events: OnEventInterface[] =
       Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) || [];
     events.push({ event, listener: descriptor.value });
