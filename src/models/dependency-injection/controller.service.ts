@@ -1,6 +1,8 @@
 import { Application, ErrorRequestHandler, RequestHandler } from 'express';
 
 import { guardHandler } from '../../middlewares/guard.middleware';
+import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/interceptors.middleware';
+import { responder } from '../../middlewares/responder.middleware';
 import { LoggerService } from '../../services';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
@@ -9,14 +11,12 @@ import { DECORATORS } from '../constants/decorators';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
 import { CanExecute } from '../interfaces/authorization.interface';
+import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
-import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/interceptors.middleware';
-import { InterceptorHandler } from '../interfaces/interceptor.interface';
-import { responder } from '../../middlewares/responder.middleware';
 
-type ControllerClass = { new(...args: unknown[]): unknown };
+type ControllerClass = { new (...args: unknown[]): unknown };
 
 export class ControllerService {
   private controllers: ControllerClass[] = [];
@@ -56,14 +56,22 @@ export class ControllerService {
 
       // Loading interceptors.
       if (controllerMeta.interceptors?.length) {
-        controllerAfterInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'));
-        controllerBeforeInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'));
-        controllerErrorInterceptors = controllerMeta.interceptors.map((interceptor) => interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)));
+        controllerAfterInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+        );
+        controllerBeforeInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+        );
+        controllerErrorInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+        );
       }
 
       // Controller root guards.
       if (controllerMeta.guards?.length) {
-        const guards = controllerMeta.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
+        const guards = controllerMeta.guards.map((guard) =>
+          guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
+        );
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 
@@ -91,17 +99,31 @@ export class ControllerService {
         let routeMiddlewares: RequestHandler[] = [];
 
         if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
+          routeGuards = route.guards.map((guard) =>
+            guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
+          );
         }
 
         if (route.interceptors?.length) {
-          routeAfterInterceptors = route.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'));
-          routeBeforeInterceptors = route.interceptors.map((interceptor) => interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'));
-          routeErrorInterceptors = route.interceptors.map((interceptor) => interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)));
+          routeAfterInterceptors = route.interceptors.map((interceptor) =>
+            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+          );
+          routeBeforeInterceptors = route.interceptors.map((interceptor) =>
+            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+          );
+          routeErrorInterceptors = route.interceptors.map((interceptor) =>
+            interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+          );
         }
 
         const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
-          const result = async (): Promise<any> => (instance as object)[route.method.name](...buildParameters(req, res, route));
+          // Possible override from interceptor.
+          if (res.locals.handlerOptions && res.locals.handlerOptions.override) {
+            next();
+          }
+
+          const result = async (): Promise<any> =>
+            (instance as object)[route.method.name](...buildParameters(req, res, route));
           if (route.noRestWrapper) {
             return result();
           }
@@ -123,16 +145,16 @@ export class ControllerService {
         // Route registration.
         options.existingApp[route.requestMethod](
           controllerMeta.prefix + route.path,
-          controllerBeforeInterceptors,
-          routeBeforeInterceptors,
           routeGuards,
           routeMiddlewares,
+          controllerBeforeInterceptors,
+          routeBeforeInterceptors,
           handler,
           controllerAfterInterceptors,
           routeAfterInterceptors,
           responder,
           controllerErrorInterceptors,
-          routeErrorInterceptors
+          routeErrorInterceptors,
         );
       }
     }
