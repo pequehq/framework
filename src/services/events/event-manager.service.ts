@@ -1,12 +1,14 @@
 import 'reflect-metadata';
 
 import EventEmitter from 'events';
-import { Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 
-import { OnEventInterface } from '../../decorators';
+import { Injectable, OnEventInterface } from '../../decorators';
 import { NativeEventsType } from '../../models';
-import { NATIVE_SERVICES } from '../../models/constants/native-services';
-import { Injector } from '../../models/dependency-injection/injector.service';
+import { DECORATORS } from '../../models/constants/decorators';
+import { OnProviderDestroy, OnProviderInit } from '../../models/interfaces/life-cycle.interface';
+import { SubjectEvent } from '../../models/interfaces/subject.interface';
+import { Subjects } from '../subjects/subjects';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -14,26 +16,46 @@ export interface EventPayload<TData> {
   data: TData;
 }
 
-export interface LifeCycleEvent<TData> {
-  event: NativeEventsType;
-  data: TData;
-}
-
-export const LifeCycleEventEmitter = new Subject<LifeCycleEvent<unknown>>();
-
-export class EventManagerService {
+@Injectable()
+export class EventManagerService implements OnProviderInit, OnProviderDestroy {
   private emitter = new EventEmitter();
+  private listeners: OnEventInterface[] = [];
+  private subscriptions: Subscription[] = [];
 
-  constructor() {
-    LifeCycleEventEmitter.subscribe((event: LifeCycleEvent<unknown>) => {
-      if (event) {
-        this.push(event.event, event.data);
-      }
-    });
+  onProviderInit(): void {
+    this.listeners = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ?? [];
+
+    this.registerListeners();
+
+    for (const key of Object.keys(Subjects)) {
+      this.subscriptions.push(
+        Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
+          if (event) {
+            this.push(event.event, event.data);
+          }
+        }),
+      );
+    }
   }
 
-  register(value: OnEventInterface) {
-    this.emitter.addListener(value.event, value.listener);
+  onProviderDestroy(): void {
+    this.unregisterListeners();
+
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
+
+  registerListeners(): void {
+    for (const { event, listener } of this.listeners) {
+      this.emitter.addListener(event, listener);
+    }
+  }
+
+  unregisterListeners(): void {
+    for (const { event, listener } of this.listeners) {
+      this.emitter.removeListener(event, listener);
+    }
   }
 
   push<TData>(event: string | NativeEventsType, data: TData): void {
@@ -45,7 +67,3 @@ export class EventManagerService {
     this.emitter.on(event, listener);
   }
 }
-
-Injector.setNative(NATIVE_SERVICES.EVENT_MANAGER, new EventManagerService(), [], false);
-
-export const EventManager = Injector.resolve<EventManagerService>(NATIVE_SERVICES.EVENT_MANAGER);

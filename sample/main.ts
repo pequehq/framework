@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import { ExpressFactory } from '../src/factory/express-factory';
+import { ExpressFactory } from '../src';
 import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
 
@@ -41,6 +41,7 @@ async function startUp() {
     },
     isCpuClustered: false,
     guards: [TestServerGuard],
+    showOriginalErrorObject: true,
   });
 }
 

@@ -35,6 +35,6 @@ describe('Decorators utils', () => {
     }
 
     const testInject = new TestInject();
-    expect(Injector.resolve('TestServiceOne')).toEqual(testInject.testServiceOne);
+    expect(Injector.resolve('injectable', 'TestServiceOne')).toEqual(testInject.testServiceOne);
   });
 });

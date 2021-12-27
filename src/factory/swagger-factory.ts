@@ -1,8 +1,7 @@
 import * as mustache from 'mustache';
 
 import { SwaggerComponents, SwaggerParameters, SwaggerResponseBodies, SwaggerSecuritySchemas } from '../decorators';
-import { ControllerDefinition } from '../models';
-import { ExpressMethods } from '../models';
+import { ControllerDefinition, ExpressMethods } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { SWAGGER } from '../models/constants/swagger';
 import { Controllers } from '../models/dependency-injection/controller.service';

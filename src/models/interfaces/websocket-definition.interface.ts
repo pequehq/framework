@@ -1,5 +1,3 @@
-import { ServerOptions } from 'socket.io';
-
 export interface WebSocketDefinition<TOptions, TAdapter> {
   port: number;
   config: {

@@ -34,6 +34,5 @@ export class ModuleService {
   }
 }
 
-Injector.setNative(NATIVE_SERVICES.MODULE, ModuleService);
-
-export const Modules = Injector.resolve<ModuleService>(NATIVE_SERVICES.MODULE);
+Injector.setNative('injectable', NATIVE_SERVICES.MODULE, ModuleService);
+export const Modules = Injector.resolve<ModuleService>('injectable', NATIVE_SERVICES.MODULE);

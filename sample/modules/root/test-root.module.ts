@@ -1,8 +1,6 @@
-import { Module } from '../../../src/decorators';
+import { HttpService, LoggerService, Module, SocketIoServiceAdapter } from '../../../src';
 import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
-import { HttpService } from '../../../src/services';
-import { LoggerService } from '../../../src/services/logger/logger.service';
-import { SocketIoServiceAdapter } from '../../../src/services/web-sockets/socket-io.service';
+import { TestRouteInterceptor } from '../interceptor/test-route.interceptor';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';
 import { ExternalTestService } from './external-test.service';
@@ -13,6 +11,7 @@ import { TestWebsocket } from './ws/test-ws.websocket';
   modules: [RandomModule],
   controllers: [TestController],
   providers: [HttpService, ExternalTestService, TestRootService, LoggerService, SocketIoServiceAdapter],
+  interceptors: [TestRouteInterceptor, TestRouteInterceptor],
   webSockets: [TestWebsocket],
 })
 export class TestRootModule implements OnModuleInit, OnModuleDestroy, OnServerShutdown {

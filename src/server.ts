@@ -9,19 +9,19 @@ import YAML from 'yamljs';
 import { Inject } from './decorators';
 import { ExpressFactory } from './factory';
 import { SwaggerFactory } from './factory/swagger-factory';
-import { fallback } from './middlewares';
-import { pushHttpEvents } from './middlewares';
-import { errorHandler, logError } from './middlewares/error-handler.middleware';
-import { guardExecutor } from './middlewares/guard.middleware';
+import { fallback, pushHttpEvents } from './middlewares';
+import { errorHandler } from './middlewares/error-handler.middleware';
+import { guardHandler } from './middlewares/guard.middleware';
 import { ServerOptions } from './models';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
+import { Providers } from './models/dependency-injection/providers';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
-import { destroyInjectables, loadInjectables } from './utils/dependencies.utils';
+import { destroyProviders, getAllInstances, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export interface GlobalMiddlewares {
@@ -45,12 +45,14 @@ export class Server {
     await Server.destroyControllers();
     await Server.destroyWebSockets();
     await Server.destroyModules();
-    await Server.destroyInjectables();
+    await Server.destroyProviders();
 
     await Server.serverListenStop();
     await ExpressFactory.closeServer();
 
     await Server.serverShutdown();
+    Server.unsetAllProviders();
+
     process.exit(1);
   }
 
@@ -83,7 +85,8 @@ export class Server {
     this.options.existingApp.use(cookieParser());
 
     // Global guards.
-    const guards = this.options.guards?.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name))) ?? [];
+    const guards =
+      this.options.guards?.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
     this.options.existingApp.use(...guards);
 
     // Push HTTP event.
@@ -112,7 +115,10 @@ export class Server {
 
     // Add post-route Middlewares.
     const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
-    this.addMiddlewares([...postRoutes, logError, errorHandler]);
+    this.addMiddlewares([...postRoutes]);
+
+    // Add general error handling.
+    this.options.existingApp.use(errorHandler);
 
     return this.options.existingApp;
   }
@@ -145,8 +151,8 @@ export class Server {
     await loadInjectables();
   }
 
-  private static async destroyInjectables(): Promise<void> {
-    await destroyInjectables();
+  private static async destroyProviders(): Promise<void> {
+    await destroyProviders();
   }
 
   private static async serverShutdown(): Promise<void> {
@@ -157,9 +163,13 @@ export class Server {
     await LifeCycleService.triggerServerListenStop();
   }
 
+  private static unsetAllProviders(): void {
+    Providers.unsetAll();
+  }
+
   private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.options.existingApp!.use(middleware); // @TODO existingApp must be always defined
+      this.options.existingApp?.use(middleware); // @TODO existingApp must be always defined
     });
   }
 

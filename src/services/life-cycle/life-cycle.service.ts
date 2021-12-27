@@ -1,6 +1,6 @@
 import { NativeEventsType } from '../../models';
 import { getAllInstances } from '../../utils/dependencies.utils';
-import { LifeCycleEventEmitter } from '../events/event-manager.service';
+import { Subjects } from '../subjects/subjects';
 
 export class LifeCycleManagerService {
   private static async triggerLifeCycleEvent(instance: any, method: string): Promise<void> {
@@ -17,47 +17,47 @@ export class LifeCycleManagerService {
   }
 
   private static pushEvent(event: NativeEventsType, data = {}): void {
-    LifeCycleEventEmitter.next({ event, data });
+    Subjects.lifeCycleSubject.next({ event, data });
   }
 
   async triggerProviderInit(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onProviderInit');
-    LifeCycleManagerService.pushEvent('lifecycle.init.provider', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.init.provider');
   }
 
   async triggerProviderDestroy(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onProviderDestroy');
-    LifeCycleManagerService.pushEvent('lifecycle.destroy.provider', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.provider');
   }
 
   async triggerModuleInit(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onModuleInit');
-    LifeCycleManagerService.pushEvent('lifecycle.init.module', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.init.module');
   }
 
   async triggerModuleDestroy(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onModuleDestroy');
-    LifeCycleManagerService.pushEvent('lifecycle.destroy.module', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.module');
   }
 
   async triggerWebSocketsInit(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketInit');
-    LifeCycleManagerService.pushEvent('lifecycle.init.websocket', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.init.websocket');
   }
 
   async triggerWebSocketsDestroy(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onWebSocketDestroy');
-    LifeCycleManagerService.pushEvent('lifecycle.destroy.websocket', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.websocket');
   }
 
   async triggerControllerInit(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onControllerInit');
-    LifeCycleManagerService.pushEvent('lifecycle.init.controller', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.init.controller');
   }
 
   async triggerControllerDestroy(instance: any): Promise<void> {
     await LifeCycleManagerService.triggerLifeCycleEvent(instance, 'onControllerDestroy');
-    LifeCycleManagerService.pushEvent('lifecycle.destroy.controller', { instance: instance.name });
+    LifeCycleManagerService.pushEvent('lifecycle.destroy.controller');
   }
 
   async triggerServerStarted(): Promise<void> {

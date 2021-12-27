@@ -1,4 +1,4 @@
-import { Injectable } from '../../../src/decorators/injectable';
+import { Injectable } from '../../../src';
 import { CanExecute } from '../../../src/models/interfaces/authorization.interface';
 
 @Injectable()

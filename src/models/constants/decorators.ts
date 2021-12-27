@@ -30,5 +30,8 @@ export const DECORATORS = {
       ON_EVENT: 'on_event',
     },
     SCHEDULER: 'scheduler',
+    interceptor: {
+      INTERCEPTORS: 'interceptors',
+    },
   },
 };

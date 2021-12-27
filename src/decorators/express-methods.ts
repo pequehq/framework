@@ -1,5 +1,3 @@
-import { RequestHandler } from 'express';
-
 import { MiddlewareHandler } from '../models';
 import { methodBuilder } from './utils/decorators';
 
@@ -41,7 +39,7 @@ export const Patch = (
 
 export const Delete = (
   path: string,
-  middleware: RequestHandler | RequestHandler[] = [],
+  middleware: MiddlewareHandler = [],
   documentOnly = false,
   noRestWrapper = false,
 ): MethodDecorator => {

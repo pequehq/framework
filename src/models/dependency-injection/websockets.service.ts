@@ -35,6 +35,7 @@ export class WebSocketsService<TServer = any> {
         webSocket,
       );
       this.adapterService = Injector.resolve<WebSocketAdapter>(
+        'injectable',
         webSocketDefinition.config?.adapter?.name || NATIVE_SERVICES.SOCKETIO_ADAPTER,
       );
 
@@ -55,6 +56,6 @@ export class WebSocketsService<TServer = any> {
   }
 }
 
-Injector.setNative(NATIVE_SERVICES.WEBSOCKETS, WebSocketsService);
+Injector.setNative('injectable', NATIVE_SERVICES.WEBSOCKETS, WebSocketsService);
 
-export const WebSockets = Injector.resolve<WebSocketsService>(NATIVE_SERVICES.WEBSOCKETS);
+export const WebSockets = Injector.resolve<WebSocketsService>('injectable', NATIVE_SERVICES.WEBSOCKETS);

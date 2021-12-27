@@ -1,7 +1,8 @@
-import { GuardClass, MiddlewareHandler } from './interfaces/types';
+import { GuardClass, InterceptorClass, MiddlewareHandler } from './interfaces/types';
 
 export interface ControllerDefinition {
   prefix: string;
-  middlewares: MiddlewareHandler | MiddlewareHandler[];
+  middlewares: MiddlewareHandler[];
   guards: GuardClass[];
+  interceptors: InterceptorClass[];
 }

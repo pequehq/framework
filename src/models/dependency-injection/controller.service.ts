@@ -1,6 +1,8 @@
-import { Application, RequestHandler } from 'express';
+import { Application, ErrorRequestHandler, RequestHandler } from 'express';
 
-import { guardExecutor } from '../../middlewares/guard.middleware';
+import { guardHandler } from '../../middlewares/guard.middleware';
+import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/interceptors.middleware';
+import { responder } from '../../middlewares/responder.middleware';
 import { LoggerService } from '../../services';
 import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
@@ -9,6 +11,7 @@ import { DECORATORS } from '../constants/decorators';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ControllerDefinition } from '../controller-definition.interface';
 import { CanExecute } from '../interfaces/authorization.interface';
+import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
 import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
@@ -32,7 +35,7 @@ export class ControllerService {
   }
 
   async initControllers(options: ServerOptions): Promise<Application> {
-    const logService = Injector.resolve<LoggerService>(NATIVE_SERVICES.LOGGER);
+    const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
 
     if (!options.existingApp) {
       throw new Error('existingApp not defined'); // @TODO remove after existingApp refactoring
@@ -47,9 +50,28 @@ export class ControllerService {
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, controller);
 
+      let controllerAfterInterceptors: RequestHandler[] = [];
+      let controllerBeforeInterceptors: RequestHandler[] = [];
+      let controllerErrorInterceptors: ErrorRequestHandler[] = [];
+
+      // Loading interceptors.
+      if (controllerMeta.interceptors?.length) {
+        controllerAfterInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+        );
+        controllerBeforeInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+        );
+        controllerErrorInterceptors = controllerMeta.interceptors.map((interceptor) =>
+          interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+        );
+      }
+
       // Controller root guards.
       if (controllerMeta.guards?.length) {
-        const guards = controllerMeta.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name)));
+        const guards = controllerMeta.guards.map((guard) =>
+          guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
+        );
         options.existingApp.use(controllerMeta.prefix, ...guards);
       }
 
@@ -69,35 +91,55 @@ export class ControllerService {
           data: `[${route.requestMethod}] ${controllerMeta.prefix}${route.path}`,
         });
 
-        const handler: RequestHandler = async (req, res): Promise<unknown | void> => {
-          const result = async (): Promise<unknown> =>
+        // Applying interceptors, guards and middlewares.
+        let routeBeforeInterceptors: RequestHandler[] = [];
+        let routeAfterInterceptors: RequestHandler[] = [];
+        let routeErrorInterceptors: ErrorRequestHandler[] = [];
+        let routeGuards: RequestHandler[] = [];
+        let routeMiddlewares: RequestHandler[] = [];
+
+        if (route.guards?.length) {
+          routeGuards = route.guards.map((guard) =>
+            guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
+          );
+        }
+
+        if (route.interceptors?.length) {
+          routeAfterInterceptors = route.interceptors.map((interceptor) =>
+            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+          );
+          routeBeforeInterceptors = route.interceptors.map((interceptor) =>
+            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+          );
+          routeErrorInterceptors = route.interceptors.map((interceptor) =>
+            interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+          );
+        }
+
+        const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
+          // Possible override from interceptor.
+          if (res.locals.handlerOptions && res.locals.handlerOptions.override) {
+            next();
+          }
+
+          const result = async (): Promise<any> =>
             (instance as object)[route.method.name](...buildParameters(req, res, route));
           if (route.noRestWrapper) {
             return result();
           }
 
           try {
-            const data = await result();
-
-            res.setHeader('Content-Type', 'application/json');
-            res.status((data as object)['statusCode'] ?? 200);
-            res.send(data);
-            res.end();
+            res.locals.data = await result();
+            next();
           } catch (error) {
-            console.log(error); // @TODO handle error response
+            next(error);
           }
         };
 
-        // Applying guards and middlewares.
-        let routeGuards: RequestHandler[] = [];
-        let routeMiddlewares: RequestHandler[] = [];
-
-        if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) => guardExecutor(Injector.resolve<CanExecute>(guard.name)));
-        }
-
-        if (route.middlewareFunctions?.length) {
-          routeMiddlewares = [...route.middlewareFunctions];
+        if (route.middlewareFunctions) {
+          routeMiddlewares = Array.isArray(route.middlewareFunctions)
+            ? [...route.middlewareFunctions]
+            : [route.middlewareFunctions];
         }
 
         // Route registration.
@@ -105,7 +147,14 @@ export class ControllerService {
           controllerMeta.prefix + route.path,
           routeGuards,
           routeMiddlewares,
+          controllerBeforeInterceptors,
+          routeBeforeInterceptors,
           handler,
+          controllerAfterInterceptors,
+          routeAfterInterceptors,
+          responder,
+          controllerErrorInterceptors,
+          routeErrorInterceptors,
         );
       }
     }
@@ -120,5 +169,5 @@ export class ControllerService {
   }
 }
 
-Injector.setNative(NATIVE_SERVICES.CONTROLLER, ControllerService);
-export const Controllers = Injector.resolve<ControllerService>(NATIVE_SERVICES.CONTROLLER);
+Injector.setNative('injectable', NATIVE_SERVICES.CONTROLLER, ControllerService);
+export const Controllers = Injector.resolve<ControllerService>('injectable', NATIVE_SERVICES.CONTROLLER);

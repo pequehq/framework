@@ -172,7 +172,7 @@ describe('Decorator tests', () => {
 
         await loadInjectables();
 
-        const testService = Injector.resolve<ProviderClass>('TestService');
+        const testService = Injector.resolve<ProviderClass>('injectable', 'TestService');
         expect(testService.constructor.name).toEqual(TestService.name);
       });
     });

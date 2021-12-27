@@ -1,13 +1,18 @@
-import { ControllerDefinition, GuardClass, RouteDefinition } from '../models';
+import { ControllerDefinition, InterceptorClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
+import { interceptorBuilder } from './utils/decorators';
 
-export const Guard = (guard: GuardClass): MethodDecorator & ClassDecorator => {
-  return (target, propertyKey?, descriptor?): void => {
+export const Interceptor = (): ClassDecorator => {
+  return interceptorBuilder();
+};
+
+export const Intercept = (interceptor: InterceptorClass): MethodDecorator & ClassDecorator => {
+  return (target, propertyKey?, descriptor?) => {
     const isClassDecorator = !descriptor;
 
     if (isClassDecorator) {
       const controller: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, target);
-      controller.guards?.push(guard);
+      controller.interceptors?.push(interceptor);
       Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controller, target);
     }
 
@@ -15,8 +20,8 @@ export const Guard = (guard: GuardClass): MethodDecorator & ClassDecorator => {
 
     if (routes.length > 0) {
       const index = routes.length - 1;
-      routes[index].guards ??= [];
-      routes[index].guards?.push(guard);
+      routes[index].interceptors ??= [];
+      routes[index].interceptors?.push(interceptor);
     }
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
