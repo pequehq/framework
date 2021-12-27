@@ -70,6 +70,16 @@ export class ProviderService {
   getTypes(provider: string) {
     return this.types.get(provider);
   }
+
+  unsetAll(): void {
+    for (const key of Object.keys(this.providerArrays)) {
+      this.providerArrays[key] = [];
+    }
+
+    for (const key of Object.keys(this.providerMaps)) {
+      this.providerMaps[key] = new Map<string, ProviderInstance>();
+    }
+  }
 }
 
 export const Providers = new ProviderService();

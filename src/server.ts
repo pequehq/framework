@@ -16,11 +16,12 @@ import { ServerOptions } from './models';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
+import { Providers } from './models/dependency-injection/providers';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
-import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
+import { destroyProviders, getAllInstances, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export interface GlobalMiddlewares {
@@ -50,6 +51,8 @@ export class Server {
     await ExpressFactory.closeServer();
 
     await Server.serverShutdown();
+    Server.unsetAllProviders();
+
     process.exit(1);
   }
 
@@ -160,9 +163,13 @@ export class Server {
     await LifeCycleService.triggerServerListenStop();
   }
 
+  private static unsetAllProviders(): void {
+    Providers.unsetAll();
+  }
+
   private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.options.existingApp!.use(middleware); // @TODO existingApp must be always defined
+      this.options.existingApp?.use(middleware); // @TODO existingApp must be always defined
     });
   }
 

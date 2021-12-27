@@ -3,6 +3,7 @@ import { ControllerService } from '../models/dependency-injection/controller.ser
 import { Injector } from '../models/dependency-injection/injector.service';
 import { ModuleService } from '../models/dependency-injection/module.service';
 import { Providers } from '../models/dependency-injection/providers';
+import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 
 export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
   // Getting the params to be injected declared inside the constructor.
@@ -26,11 +27,11 @@ export const loadInjectables = async (): Promise<void> => {
 
 export const destroyProviders = async (): Promise<void> => {
   for (const key of Providers.getProviderInstancesByType('injectable').keys()) {
-    await Injector.unset('injectable', key);
+    await LifeCycleService.triggerProviderDestroy(key);
   }
 
   for (const key of Providers.getProviderInstancesByType('interceptor').keys()) {
-    await Injector.unset('interceptor', key);
+    await LifeCycleService.triggerProviderDestroy(key);
   }
 };
 
