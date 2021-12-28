@@ -2,7 +2,7 @@ import { Listener, NativeEventsType } from '../../models';
 
 export interface OnEventInterface {
   event: string | NativeEventsType;
-  listener: (...args: unknown[]) => void;
+  listener: (...args: unknown[]) => unknown;
 }
 
 class EventStorageService {

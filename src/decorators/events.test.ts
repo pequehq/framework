@@ -1,16 +1,13 @@
+import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
+import { wait } from '../../test/test.utils';
 import { EventStorage, OnEventInterface } from '../services/events/event-storage.service';
 import { Subjects } from '../services/subjects/subjects';
-import { loadInjectables } from '../utils/dependencies.utils';
 import { ConsumeEvent, ProduceEvent } from './events';
 
 const test = suite('Events');
-
-test.before(async () => {
-  await loadInjectables();
-});
 
 test.after.each(async () => {
   EventStorage.remove('testEvent');
@@ -29,7 +26,7 @@ test('should set event listener metadata', () => {
   assert.is(events[0].listener(), 'value');
 });
 
-test('should push and event', () => {
+test('should push and event', async () => {
   class TestClass {
     @ProduceEvent('testEvent')
     testMethod(): string {
@@ -37,13 +34,16 @@ test('should push and event', () => {
     }
   }
 
+  const nextSpy = sinon.spy(Subjects.pushEventSubject, 'next');
+  assert.is(nextSpy.callCount, 0);
+
   const testClass = new TestClass();
-
-  Subjects.pushEventSubject.asObservable().subscribe((value) => {
-    assert.equal(value, { event: 'testEvent', data: 'value' });
-  });
-
   testClass.testMethod();
+
+  await wait();
+
+  assert.is(nextSpy.callCount, 1);
+  assert.ok(nextSpy.calledWith({ event: 'testEvent', data: 'value' }));
 });
 
 test.run();
