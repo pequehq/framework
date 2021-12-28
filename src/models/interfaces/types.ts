@@ -3,6 +3,8 @@ import type { Handler } from 'express';
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
 }
+
+export type Listener = (...args: unknown[]) => void;
 export type MiddlewareHandler = Handler | Handler[];
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';

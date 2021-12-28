@@ -3,12 +3,12 @@ import 'reflect-metadata';
 import EventEmitter from 'events';
 import { Subscription } from 'rxjs';
 
-import { Injectable, OnEventInterface } from '../../decorators';
+import { Injectable } from '../../decorators';
 import { NativeEventsType } from '../../models';
-import { DECORATORS } from '../../models/constants/decorators';
 import { OnProviderDestroy, OnProviderInit } from '../../models/interfaces/life-cycle.interface';
 import { SubjectEvent } from '../../models/interfaces/subject.interface';
 import { Subjects } from '../subjects/subjects';
+import { EventStorage } from './event-storage.service';
 
 export interface EventPayload<TData> {
   event: string | NativeEventsType;
@@ -19,12 +19,9 @@ export interface EventPayload<TData> {
 @Injectable()
 export class EventManagerService implements OnProviderInit, OnProviderDestroy {
   private emitter = new EventEmitter();
-  private listeners: OnEventInterface[] = [];
   private subscriptions: Subscription[] = [];
 
   onProviderInit(): void {
-    this.listeners = Reflect.getMetadata(DECORATORS.metadata.events.ON_EVENT, EventManagerService) ?? [];
-
     this.registerListeners();
 
     for (const key of Object.keys(Subjects)) {
@@ -47,14 +44,15 @@ export class EventManagerService implements OnProviderInit, OnProviderDestroy {
   }
 
   registerListeners(): void {
-    for (const { event, listener } of this.listeners) {
+    for (const { event, listener } of EventStorage.getAll()) {
       this.emitter.addListener(event, listener);
     }
   }
 
   unregisterListeners(): void {
-    for (const { event, listener } of this.listeners) {
+    for (const { event, listener } of EventStorage.getAll()) {
       this.emitter.removeListener(event, listener);
+      EventStorage.remove(event);
     }
   }
 
