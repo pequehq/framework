@@ -135,16 +135,14 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target): void => {
     Modules.push(target as unknown as ModuleClass);
 
-    if (module.controllers) {
-      module.controllers.forEach((controller) => Controllers.push(controller));
-    }
+    module.controllers.forEach((controller) => Controllers.push(controller));
 
     // Setting custom providers.
     (module.providers ?? []).forEach((provider) => {
       if (provider.useClass) {
         Providers.addProvider('injectable', {
           name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
-          clazz: provider.useClass as any, // @TODO check which type should use
+          clazz: provider.useClass as ClassDeclaration,
         });
       }
     });
