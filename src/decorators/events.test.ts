@@ -44,6 +44,8 @@ test('should push and event', async () => {
 
   assert.is(nextSpy.callCount, 1);
   assert.ok(nextSpy.calledWith({ event: 'testEvent', data: 'value' }));
+
+  nextSpy.restore();
 });
 
 test.run();
