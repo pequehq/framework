@@ -13,17 +13,25 @@ interface InterceptorInstance<TClass> {
   interceptor: TClass;
 }
 
-export type ProviderInstances<TClass> = InjectableInstance<TClass> & InterceptorInstance<TClass>;
+interface TransformerInstance<TClass> {
+  transformer: TClass;
+}
+
+export type ProviderInstances<TClass> = InjectableInstance<TClass> &
+  InterceptorInstance<TClass> &
+  TransformerInstance<TClass>;
 
 export class ProviderService {
   private providerMaps: Record<ProviderType, Map<string, ProviderInstance>> = {
     injectable: new Map<string, ProviderInstance>(),
     interceptor: new Map<string, ProviderInstance>(),
+    transformer: new Map<string, ProviderInstance>(),
   };
 
   private providerArrays: Record<ProviderType, ProviderInterface[]> = {
     injectable: [],
     interceptor: [],
+    transformer: [],
   };
 
   private types = new Map<string, ProviderType[]>();
@@ -56,6 +64,7 @@ export class ProviderService {
     return {
       injectable: this.providerMaps.injectable.get(provider),
       interceptor: this.providerMaps.interceptor.get(provider),
+      transformer: this.providerMaps.transformer.get(provider),
     };
   }
 
