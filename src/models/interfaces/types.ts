@@ -31,7 +31,7 @@ export type NativeEventsType =
   | 'http'
   | 'logger'
   | 'interceptor.exception';
-export type SubjectType = 'lifeCycleSubject';
+export type SubjectType = 'lifeCycleSubject' | 'pushEventSubject';
 export type InterceptorStage = 'after' | 'before' | 'error';
 
 export type ClassDeclaration = Type;
