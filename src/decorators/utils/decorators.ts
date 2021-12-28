@@ -113,10 +113,6 @@ export const methodBuilder = (
 export const paramBuilder = (param: ParamType, paramName?: string): ParameterDecorator => {
   const metadataKey = metadataKeys[param];
 
-  if (!metadataKey) {
-    throw new Error(`No metadata key for [${param}].`);
-  }
-
   return (target, propertyKey, parameterIndex): void => {
     const parameters = Reflect.getMetadata(metadataKey, target.constructor) ?? [];
 
