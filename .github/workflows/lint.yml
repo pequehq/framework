@@ -28,5 +28,4 @@ jobs:
         run: npm run lint
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          token: ${{ secrets.PAT }}
           commit_message: "resolve style guide violations"
