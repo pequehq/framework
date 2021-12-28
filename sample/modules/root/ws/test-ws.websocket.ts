@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 
-import { OnEvent } from '../../../../src/decorators/events';
+import { ConsumeEvent } from '../../../../src/decorators/events';
 import { GetWebSocketServer, WebSocketServer } from '../../../../src/decorators/websockets';
 import { OnWebSocketDestroy, OnWebSocketInit } from '../../../../src/models/interfaces/life-cycle.interface';
 import { EventPayload } from '../../../../src/services/events/event-manager.service';
@@ -24,7 +24,7 @@ export class TestWebsocket implements OnWebSocketInit, OnWebSocketDestroy {
     console.log('Socket max listeners', this.server.getMaxListeners());
   }
 
-  @OnEvent('ws.ciao')
+  @ConsumeEvent('ws.ciao')
   test(data: EventPayload<any>) {
     console.log('on event', data);
   }

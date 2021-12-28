@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { Guard } from '../src/decorators/authorization';
 import { Controller } from '../src/decorators/controller';
-import { OnEvent, OnEventInterface } from '../src/decorators/events';
+import { ConsumeEvent, OnEventInterface } from '../src/decorators/events';
 import { Delete, Get, Patch, Post, Put } from '../src/decorators/express-methods';
 import { Injectable } from '../src/decorators/injectable';
 import { Body, Cookie, Header, Param, Query, Request, Response, Session } from '../src/decorators/parameters';
@@ -247,7 +247,7 @@ describe('Decorator tests', () => {
 
   describe('@OnEvent() decorator', () => {
     class TestClass {
-      @OnEvent('testEvent')
+      @ConsumeEvent('testEvent')
       testMethod() {
         console.log('test');
       }
