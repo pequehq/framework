@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
+import { Injector } from '../models/dependency-injection/injector.service';
 import { EventStorage, OnEventInterface } from '../services/events/event-storage.service';
 import { loadInjectables } from '../utils/dependencies.utils';
 import { OnEvent } from './events';
@@ -11,6 +12,10 @@ const test = suite('Events');
 
 test.before(async () => {
   await loadInjectables();
+});
+
+test.after.each(async () => {
+  EventStorage.remove('testEvent');
 });
 
 test('should set event listener metadata', () => {
