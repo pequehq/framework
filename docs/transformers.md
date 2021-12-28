@@ -1,5 +1,5 @@
 ---
-title: Modules
+title: Transformers and Validators
 has_children: false
 nav_order: 7
 ---
@@ -33,6 +33,23 @@ export class TestController {
   @Get('/transformer')
   async transformer(@Query('testTransformer', TestTransformer) param: string) {
     return param;
+  }
+}
+```
+
+# Validation
+
+Transformers can also suite the role of validators and errors can be thrown from its.
+
+```typescript
+@Transformer()
+export class NumberTransform implements TransformerHandler {
+  transform(value: unknown): unknown | Promise<unknown> {
+    if (!isNumber(value)) {
+      throw new BadRequestException({ error: { }, message: 'Not a number' })
+    }
+    
+    return parseInt(value);
   }
 }
 ```
