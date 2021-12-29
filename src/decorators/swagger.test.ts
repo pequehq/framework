@@ -158,9 +158,10 @@ test('@SwaggerResponse should set swagger response metadata', async (context) =>
           session: [],
         },
         middlewareFunctions: [],
-        noRestWrapper: false,
         path: '/hello-world',
         requestMethod: 'get',
+        interceptors: [],
+        guards: [],
       },
     },
   ];
