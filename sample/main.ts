@@ -12,7 +12,7 @@ async function startUp() {
     rootModule: TestRootModule,
     globalMiddlewares: {
       preRoutes: [bodyParser.urlencoded({ extended: true }), bodyParser.json({ limit: '2m' })],
-      postRoutes: [cors],
+      postRoutes: [cors()],
     },
     swagger: {
       folder: '/doc',

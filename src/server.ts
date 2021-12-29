@@ -27,11 +27,6 @@ import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
-export interface GlobalMiddlewares {
-  preRoutes?: any[];
-  postRoutes?: any[];
-}
-
 export class Server {
   private readonly options: ServerOptions;
 
