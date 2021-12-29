@@ -110,7 +110,7 @@ export class ControllerService {
           interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
         );
 
-        const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
+        const handler: RequestHandler = async (req, res, next): Promise<void> => {
           // Possible override from interceptor.
           if (res.locals.handlerOptions && res.locals.handlerOptions.override) {
             next();
@@ -118,9 +118,6 @@ export class ControllerService {
 
           const result = async (): Promise<any> =>
             (instance as object)[route.method.name](...(await buildParameters(req, res, route)));
-          if (route.noRestWrapper) {
-            return result();
-          }
 
           try {
             res.locals.data = await result();

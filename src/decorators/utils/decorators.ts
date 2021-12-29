@@ -81,7 +81,6 @@ export const methodBuilder = (
   path: string,
   middleware: MiddlewareHandler,
   documentOnly: boolean,
-  noRestWrapper: boolean,
 ): MethodDecorator => {
   return (target, propertyKey): void => {
     if (!Reflect.hasMetadata(DECORATORS.metadata.ROUTES, target.constructor)) {
@@ -107,7 +106,6 @@ export const methodBuilder = (
       },
       middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
       documentOnly,
-      noRestWrapper,
       interceptors: [],
       guards: [],
     });
