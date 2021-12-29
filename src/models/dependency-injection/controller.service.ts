@@ -13,7 +13,6 @@ import { ControllerDefinition } from '../controller-definition.interface';
 import { CanExecute } from '../interfaces/authorization.interface';
 import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
-import { ServerOptions } from '../interfaces/server-options.interface';
 import { Injector } from './injector.service';
 
 type ControllerClass = { new (...args: unknown[]): unknown };
@@ -34,12 +33,8 @@ export class ControllerService {
     return this.instances;
   }
 
-  async initControllers(options: ServerOptions): Promise<Application> {
+  async initControllers(application: Application): Promise<void> {
     const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
-
-    if (!options.existingApp) {
-      throw new Error('existingApp not defined'); // @TODO remove after existingApp refactoring
-    }
 
     // Iterate controllers.
     for (const controller of this.controllers) {
@@ -72,12 +67,12 @@ export class ControllerService {
         const guards = controllerMeta.guards.map((guard) =>
           guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
         );
-        options.existingApp.use(controllerMeta.prefix, ...guards);
+        application.use(controllerMeta.prefix, ...guards);
       }
 
       // Controller root middlewares.
       if (controllerMeta.middlewares?.length) {
-        options.existingApp.use(controllerMeta.prefix, ...controllerMeta.middlewares);
+        application.use(controllerMeta.prefix, ...controllerMeta.middlewares);
       }
 
       // Iterate the routes for express registration.
@@ -134,7 +129,7 @@ export class ControllerService {
         }
 
         // Route registration.
-        options.existingApp[route.requestMethod](
+        application[route.requestMethod](
           controllerMeta.prefix + route.path,
           routeGuards,
           routeMiddlewares,
@@ -149,8 +144,6 @@ export class ControllerService {
         );
       }
     }
-
-    return options.existingApp;
   }
 
   async destroyControllers(): Promise<void> {

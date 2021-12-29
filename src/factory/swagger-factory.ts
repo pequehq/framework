@@ -1,14 +1,15 @@
 import * as mustache from 'mustache';
 
 import { SwaggerComponents, SwaggerParameters, SwaggerResponseBodies, SwaggerSecuritySchemas } from '../decorators';
-import { ControllerDefinition, ExpressMethods } from '../models';
+import { ControllerDefinition, ExpressMethods, ServerOptions } from '../models';
+import { CONFIG_STORAGES } from '../models/constants/config';
 import { DECORATORS } from '../models/constants/decorators';
 import { SWAGGER } from '../models/constants/swagger';
 import { Controllers } from '../models/dependency-injection/controller.service';
 import { SwaggerRouteDefinition } from '../models/interfaces/swagger/swagger-route-definition.interface';
+import { Config } from '../services/config/config.service';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../utils/express/factory';
 import { appendFile, getFile, getPath, removeFolder, writeFile } from '../utils/fs.utils';
-import { ExpressFactory } from './express-factory';
 
 const GENERATED_FOLDER = '../swagger/generated';
 const TEMPLATE_FOLDER = '../models/mustache/swagger';
@@ -44,6 +45,10 @@ const BASE_DOC = {
 };
 
 export class SwaggerFactory {
+  private static getExpressConfig(): ServerOptions {
+    return Config.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
+  }
+
   private static resetBaseDoc(): void {
     BASE_DOC.parameters = false;
     BASE_DOC.requestBodies = false;
@@ -78,19 +83,19 @@ export class SwaggerFactory {
 
   private static createInfoFile(): void {
     SwaggerFactory.render(INFO_TEMPLATE_PATH, getPath(INFO_GENERATED_PATH), {
-      info: ExpressFactory.getServerOptions().swagger?.info,
+      info: SwaggerFactory.getExpressConfig().swagger?.info,
     });
   }
 
   private static createTagsFile(): void {
     SwaggerFactory.render(TAGS_TEMPLATE_PATH, getPath(TAGS_GENERATED_PATH), {
-      tags: ExpressFactory.getServerOptions().swagger?.tags,
+      tags: SwaggerFactory.getExpressConfig().swagger?.tags,
     });
   }
 
   private static createServersFile(): void {
     SwaggerFactory.render(SERVERS_TEMPLATE_PATH, getPath(SERVERS_GENERATED_PATH), {
-      servers: ExpressFactory.getServerOptions().swagger?.servers,
+      servers: SwaggerFactory.getExpressConfig().swagger?.servers,
     });
   }
 

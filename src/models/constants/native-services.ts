@@ -8,4 +8,5 @@ export const NATIVE_SERVICES = {
   SOCKETIO_ADAPTER: 'SocketIoServiceAdapter',
   CACHE: 'CacheService',
   INTERCEPTOR: 'InterceptorService',
+  CONFIG: 'ConfigService',
 };

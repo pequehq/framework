@@ -3,11 +3,12 @@ import cookieParser from 'cookie-parser';
 import express, { Application } from 'express';
 import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
+import http from 'http';
+import { Socket } from 'net';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
 import { Inject } from './decorators';
-import { ExpressFactory } from './factory';
 import { SwaggerFactory } from './factory/swagger-factory';
 import { fallback, pushHttpEvents } from './middlewares';
 import { errorHandler } from './middlewares/error-handler.middleware';
@@ -21,7 +22,7 @@ import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
-import { destroyProviders, getAllInstances, loadInjectables } from './utils/dependencies.utils';
+import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export interface GlobalMiddlewares {
@@ -33,7 +34,11 @@ export class Server {
   @Inject('LoggerService')
   private logService: LoggerService;
 
-  constructor(private options: ServerOptions) {
+  private application: Application;
+  private server: http.Server;
+  private sockets = new Set<Socket>();
+
+  constructor(public options: ServerOptions) {
     this.setDefaultUnhandledExceptionsFallback();
   }
 
@@ -48,12 +53,20 @@ export class Server {
     await Server.destroyProviders();
 
     await Server.serverListenStop();
-    await ExpressFactory.closeServer();
+    await this.closeServer();
 
     await Server.serverShutdown();
     Server.unsetAllProviders();
 
     process.exit(1);
+  }
+
+  getServer(): http.Server {
+    return this.server;
+  }
+
+  getOptions(): ServerOptions {
+    return this.options;
   }
 
   terminationProcess() {
@@ -74,29 +87,29 @@ export class Server {
     await Server.loadModules();
 
     // Load existing app or one from scratch.
-    this.options.existingApp = this.options.existingApp ?? express();
+    this.application = this.options.existingApp ?? express();
 
     // Session.
     if (this.options.session) {
-      this.options.existingApp.use(expressSession(this.options.session));
+      this.application.use(expressSession(this.options.session));
     }
 
     // Cookie parser.
-    this.options.existingApp.use(cookieParser());
+    this.application.use(cookieParser());
 
     // Global guards.
     const guards =
       this.options.guards?.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
-    this.options.existingApp.use(...guards);
+    this.application.use(...guards);
 
     // Push HTTP event.
-    this.options.existingApp.use(pushHttpEvents);
+    this.application.use(pushHttpEvents);
 
     // Add pre-route Middlewares.
     const preRoutes = this.options.globalMiddlewares?.preRoutes ?? [];
     this.addMiddlewares(preRoutes);
 
-    this.options.existingApp = await this.loadControllers();
+    await this.loadControllers();
     await Server.loadWebSockets();
 
     // OpenAPI.
@@ -106,25 +119,65 @@ export class Server {
       const swaggerDocument = await $RefParser.dereference(
         YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')),
       );
-      this.options.existingApp.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+      this.application.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
       this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
     }
 
     // Add fallback.
-    this.options.existingApp.use(fallback);
+    this.application.use(fallback);
 
     // Add post-route Middlewares.
     const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
     this.addMiddlewares([...postRoutes]);
 
     // Add general error handling.
-    this.options.existingApp.use(errorHandler);
+    this.application.use(errorHandler);
 
-    return this.options.existingApp;
+    // Server listener.
+    await this.listen();
+
+    return this.application;
   }
 
-  private async loadControllers(): Promise<Application> {
-    return await Controllers.initControllers(this.options);
+  private async listen(): Promise<void> {
+    const port = this.options.port || 8888;
+    const hostname = this.options.hostname || 'localhost';
+
+    await LifeCycleService.triggerServerListen();
+
+    this.server = this.application.listen(port, hostname, async () => {
+      this.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
+      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.options.isCpuClustered ? 'ON' : 'OFF'}` });
+      await LifeCycleService.triggerServerStarted();
+    });
+
+    // Connections management.
+    this.server.on('connection', (socket) => {
+      this.server.once('close', () => this.sockets.delete(socket));
+      this.sockets.add(socket);
+    });
+  }
+
+  async closeServer(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // Ending all the open connections first.
+      for (const socket of this.sockets) {
+        socket.destroy();
+        this.sockets.delete(socket);
+      }
+
+      this.server.close((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  private async loadControllers(): Promise<void> {
+    await Controllers.initControllers(this.application);
   }
 
   private static async destroyControllers(): Promise<void> {
