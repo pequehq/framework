@@ -5,7 +5,7 @@ import { LoggerInterface } from './logger.interface';
 import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
 import { GuardClass, ModuleClass } from './types';
 
-export interface GlobalMiddlewares {
+interface GlobalMiddlewares {
   preRoutes?: RequestHandler[];
   postRoutes?: RequestHandler[];
 }
