@@ -1,3 +1,3 @@
-export interface HttpClient {
-  request(options: any);
+export interface HttpClient<TOptions = any> {
+  request(options: TOptions): Promise<unknown> | unknown;
 }

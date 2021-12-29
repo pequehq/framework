@@ -6,7 +6,6 @@ export interface CustomProvider {
 }
 
 export const Injectable = (customProvider?: CustomProvider): ClassDecorator => {
-  // @TODO manage custom provider name.
   return injectableBuilder({ type: 'injectable', customProvider });
 };
 

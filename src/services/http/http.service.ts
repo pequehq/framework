@@ -4,7 +4,7 @@ import { Injectable } from '../../decorators';
 import { HttpClient } from '../../models';
 
 @Injectable()
-export class HttpService implements HttpClient {
+export class HttpService implements HttpClient<AxiosRequestConfig> {
   request<T>(options: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return axios
       .request<T>(options)
