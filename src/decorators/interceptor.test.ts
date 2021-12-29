@@ -12,7 +12,7 @@ import { Intercept, Interceptor } from './interceptor';
 
 const test = suite('Interceptors');
 
-test.after.each(() => {
+test.before.each(() => {
   Providers.unsetAll();
 });
 
