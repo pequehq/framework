@@ -109,7 +109,7 @@ export class Server {
     const preRoutes = this.options.globalMiddlewares?.preRoutes ?? [];
     this.addMiddlewares(preRoutes);
 
-    this.application = await this.loadControllers();
+    await this.loadControllers();
     await Server.loadWebSockets();
 
     // OpenAPI.
@@ -176,8 +176,8 @@ export class Server {
     });
   }
 
-  private async loadControllers(): Promise<Application> {
-    return await Controllers.initControllers(this.application);
+  private async loadControllers(): Promise<void> {
+    await Controllers.initControllers(this.application);
   }
 
   private static async destroyControllers(): Promise<void> {
