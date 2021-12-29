@@ -3,14 +3,14 @@ import http from 'http';
 import { ServerOptions } from '../models';
 import { Server } from '../server';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
-import { isMaster, setupWorkers } from '../utils/cluster.utils';
+import { clusterUtils } from '../utils/cluster.utils';
 
 export class ExpressFactory {
   private static expressServer: http.Server;
 
   static createServer = async (options: ServerOptions): Promise<http.Server> => {
-    if (options.isCpuClustered && isMaster()) {
-      setupWorkers();
+    if (options.isCpuClustered && clusterUtils.isMaster()) {
+      clusterUtils.setupWorkers();
       return ExpressFactory.expressServer;
     }
 

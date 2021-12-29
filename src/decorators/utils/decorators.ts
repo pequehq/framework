@@ -47,13 +47,7 @@ const metadataKeys: Record<ParamType, string> = {
 };
 
 const extractParameters = (param: ParamType, target: object, propertyKey: string | symbol): ParamDefinition[] => {
-  const metadataKey = metadataKeys[param];
-
-  if (!metadataKey) {
-    throw new Error(`No metadata key for [${param}].`);
-  }
-
-  return (Reflect.getMetadata(metadataKey, target.constructor) ?? [])
+  return (Reflect.getMetadata(metadataKeys[param], target.constructor) ?? [])
     .map((param) => param[propertyKey])
     .filter(Boolean);
 };
