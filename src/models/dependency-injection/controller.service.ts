@@ -33,7 +33,7 @@ export class ControllerService {
     return this.instances;
   }
 
-  async initControllers(application: Application): Promise<Application> {
+  async initControllers(application: Application): Promise<void> {
     const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
 
     // Iterate controllers.
@@ -153,8 +153,6 @@ export class ControllerService {
         );
       }
     }
-
-    return application;
   }
 
   async destroyControllers(): Promise<void> {

@@ -5,7 +5,7 @@ import { Config } from './config.service';
 
 const test = suite('Config');
 
-test('should set a config storage', () => {
+test.before.each((context) => {
   const configOne = {
     testProp: 'testValue',
     testArray: [1, 2, 3],
@@ -18,8 +18,20 @@ test('should set a config storage', () => {
 
   Config.set('test-storage', configOne);
   Config.set('other-test-storage', configTwo);
-  assert.equal(Config.get('test-storage'), configOne);
-  assert.equal(Config.get('other-test-storage'), configTwo);
+
+  context.storage = {
+    configOne,
+    configTwo,
+  };
+});
+
+test.after.each(() => {
+  Config.flush();
+});
+
+test('should set a config storage', (context) => {
+  assert.equal(Config.get('test-storage'), context.storage.configOne);
+  assert.equal(Config.get('other-test-storage'), context.storage.configTwo);
 });
 
 test('should delete a storage', () => {
