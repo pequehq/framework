@@ -22,4 +22,5 @@ export class ConfigService {
 }
 
 Injector.setNative('injectable', NATIVE_SERVICES.CONFIG, ConfigService);
+
 export const Config = Injector.resolve<ConfigService>('injectable', NATIVE_SERVICES.CONFIG);

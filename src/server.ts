@@ -14,6 +14,7 @@ import { fallback, pushHttpEvents } from './middlewares';
 import { errorHandler } from './middlewares/error-handler.middleware';
 import { guardHandler } from './middlewares/guard.middleware';
 import { ServerOptions } from './models';
+import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
@@ -21,6 +22,7 @@ import { Providers } from './models/dependency-injection/provider.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
+import { Config } from './services/config/config.service';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
 import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
@@ -31,6 +33,8 @@ export interface GlobalMiddlewares {
 }
 
 export class Server {
+  private readonly options: ServerOptions;
+
   @Inject('LoggerService')
   private logService: LoggerService;
 
@@ -38,7 +42,10 @@ export class Server {
   private server: http.Server;
   private sockets = new Set<Socket>();
 
-  constructor(public options: ServerOptions) {
+  constructor(options: ServerOptions) {
+    this.options = options;
+    Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
+
     this.setDefaultUnhandledExceptionsFallback();
   }
 
@@ -63,10 +70,6 @@ export class Server {
 
   getServer(): http.Server {
     return this.server;
-  }
-
-  getOptions(): ServerOptions {
-    return this.options;
   }
 
   terminationProcess() {
@@ -222,7 +225,7 @@ export class Server {
 
   private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.options.existingApp?.use(middleware); // @TODO existingApp must be always defined
+      this.application.use(middleware);
     });
   }
 
