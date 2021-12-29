@@ -1,5 +1,7 @@
-import { ExpressFactory } from '../../factory';
+import { Config } from '../../services/config/config.service';
+import { CONFIG_STORAGES } from '../constants/config';
 import { HTTP_STATES } from '../constants/http-states';
+import { ServerOptions } from '../interfaces/server-options.interface';
 
 // @TODO manage to add as much HTTP exceptions as possible.
 
@@ -17,22 +19,17 @@ export class HttpException<TError> extends Error {
   constructor(public httpException: HttpError<TError>) {
     super();
     this.config();
-    this.dispatchInterceptor();
   }
 
-  private config() {
+  private config(): void {
     if (this.httpException.message) {
       this.message = this.httpException.message;
     }
 
     this.name = this.constructor.name;
-    if (ExpressFactory.getServerOptions().showOriginalErrorObject) {
+    if (Config.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER).showOriginalErrorObject) {
       this.httpException.stack = this.stack;
     }
-  }
-
-  private dispatchInterceptor() {
-    // @TODO implement
   }
 }
 
