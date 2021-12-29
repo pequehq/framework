@@ -34,16 +34,16 @@ Of course, the framework give access to all the standard methods as well:
 
 Decorators to intercept directly the content of the **response** and the **request** are available:
 
-| Decorator               | Description                          |
-|-------------------------|--------------------------------------|
-| `@Request()`            | The entire `express.Request` object  |
-| `@Response()`           | The entire `express.Response` object |
-| `@Param(key?: string)`  | `req.params` or `req.params[key]`    | 
-| `@Query(key?: string)`  | `req.params` or `req.query[key]`     |
-| `@Header(key?: string)` | `req.headers` or `req.headers[key]`  |
-| `@Body()`               | `req.body`                           |
-| `@Session()`            | `req.session`                        |
-| `@Cookie(name: string)` | `req.cookies`                        |
+| Decorator                                               | Description                          |
+|---------------------------------------------------------|--------------------------------------|
+| `@Request()`                                            | The entire `express.Request` object  |
+| `@Response()`                                           | The entire `express.Response` object |
+| `@Param(key: string, transformer?: TransformerClass)`   | `req.params` or `req.params[key]`    | 
+| `@Query(key: string, transformer?: TransformerClass)`   | `req.params` or `req.query[key]`     |
+| `@Header(key: string, transformer?: TransformerClass)`  | `req.headers` or `req.headers[key]`  |
+| `@Body(, transformer?: TransformerClass)`               | `req.body`                           |
+| `@Session()`                                            | `req.session`                        |
+| `@Cookie(name: string)`                                 | `req.cookies`                        |
 
 
 ## Middlewares

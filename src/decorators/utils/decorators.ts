@@ -2,20 +2,23 @@ import {
   ClassDeclaration,
   ControllerDefinition,
   ExpressMethods,
+  InterceptorClass,
   InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
+  ProviderClass,
   ProviderType,
   RouteDefinition,
+  TransformerClass,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { Providers } from '../../models/dependency-injection/providers';
+import { Providers } from '../../models/dependency-injection/provider.service';
 import { CustomProvider } from '../injectable';
 
 interface ProviderOptions {
@@ -26,6 +29,7 @@ interface InjectableInterface extends ProviderOptions {
   customProvider?: CustomProvider;
 }
 
+// @TODO check why this interface is unused
 interface InterceptorInterface extends ProviderOptions {
   interceptorType: InterceptorType;
   clazz: ClassDeclaration;
@@ -110,7 +114,10 @@ export const methodBuilder = (
   };
 };
 
-export const paramBuilder = (param: ParamType, paramName?: string): ParameterDecorator => {
+export const paramBuilder = (
+  param: ParamType,
+  options?: { paramName?: string; transformer?: TransformerClass },
+): ParameterDecorator => {
   const metadataKey = metadataKeys[param];
 
   return (target, propertyKey, parameterIndex): void => {
@@ -119,7 +126,8 @@ export const paramBuilder = (param: ParamType, paramName?: string): ParameterDec
     parameters.push({
       [propertyKey]: {
         index: parameterIndex,
-        param: paramName,
+        param: options?.paramName,
+        transformer: options?.transformer,
       },
     });
 
@@ -145,9 +153,15 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   };
 };
 
+export const transformerBuilder = (): ClassDecorator => {
+  return (target): void => {
+    Providers.addProvider('transformer', { name: target.name, clazz: target as unknown as TransformerClass });
+  };
+};
+
 export const interceptorBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider('interceptor', { name: target.name, clazz: target as any });
+    Providers.addProvider('interceptor', { name: target.name, clazz: target as unknown as InterceptorClass });
   };
 };
 
@@ -163,7 +177,7 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
       }
     }
 
-    Providers.addProvider('injectable', { name, clazz: target as any }); // @TODO check clazz type
+    Providers.addProvider('injectable', { name, clazz: target as unknown as ProviderClass });
   };
 };
 

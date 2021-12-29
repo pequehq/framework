@@ -6,7 +6,7 @@ import { Body, Cookie, Header, Param, Query, Request, Response, Session } from '
 
 const test = suite('Parameters');
 
-test('should contain the right REQUEST metadata', async () => {
+test('@Request() should contain the right REQUEST metadata', async () => {
   class TestController {
     testRoute(@Request() req) {
       return 'value';
@@ -16,10 +16,18 @@ test('should contain the right REQUEST metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.REQUEST, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: undefined } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: undefined,
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right RESPONSE metadata', async () => {
+test('@Response() should contain the right RESPONSE metadata', async () => {
   class TestController {
     testRoute(@Response() res) {
       return 'value';
@@ -29,10 +37,18 @@ test('should contain the right RESPONSE metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.RESPONSE, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: undefined } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: undefined,
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right BODY metadata', async () => {
+test('@Body() should contain the right BODY metadata', async () => {
   class TestController {
     testRoute(@Body() body) {
       return 'value';
@@ -42,10 +58,18 @@ test('should contain the right BODY metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.BODY, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: undefined } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: undefined,
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right PARAM metadata', async () => {
+test('@Param should contain the right PARAM metadata', async () => {
   class TestController {
     testRoute(@Param('foo') param) {
       return 'value';
@@ -55,10 +79,18 @@ test('should contain the right PARAM metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.PARAMETERS, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: 'foo' } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: 'foo',
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right QUERY metadata', async () => {
+test('@Query should contain the right QUERY metadata', async () => {
   class TestController {
     testRoute(@Query('foo') query) {
       return 'value';
@@ -68,10 +100,18 @@ test('should contain the right QUERY metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.QUERY, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: 'foo' } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: 'foo',
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right HEADER metadata', async () => {
+test('@Header should contain the right HEADER metadata', async () => {
   class TestController {
     testRoute(@Header('authorization') header) {
       return 'value';
@@ -81,10 +121,18 @@ test('should contain the right HEADER metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.HEADERS, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: 'authorization' } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: 'authorization',
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
-test('should contain the right COOKIE metadata', async () => {
+test('@Cookie should contain the right COOKIE metadata', async () => {
   class TestController {
     testRoute(@Cookie('access-token') cookie) {
       return 'value';
@@ -94,7 +142,15 @@ test('should contain the right COOKIE metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.COOKIES, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: 'access-token' } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: 'access-token',
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
 test('should contain the right SESSION metadata', async () => {
@@ -107,7 +163,15 @@ test('should contain the right SESSION metadata', async () => {
   const metadata = Reflect.getMetadata(DECORATORS.metadata.SESSION, TestController) ?? [];
 
   assert.is(metadata.length, 1);
-  assert.equal(metadata, [{ testRoute: { index: 0, param: undefined } }]);
+  assert.equal(metadata, [
+    {
+      testRoute: {
+        index: 0,
+        param: undefined,
+        transformer: undefined,
+      },
+    },
+  ]);
 });
 
 test.run();

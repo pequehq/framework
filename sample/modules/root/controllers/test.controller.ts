@@ -6,6 +6,7 @@ import {
   HttpService,
   Intercept,
   LoggerService,
+  Query,
   Session,
   SwaggerResponse,
   SwaggerTag,
@@ -17,6 +18,7 @@ import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
 import { TestControllerInterceptor } from '../../interceptor/test-controller.interceptor';
 import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
+import { TestTransformer } from '../../transformers/test-transformer';
 import { ExternalTestService } from '../external-test.service';
 
 @SwaggerTag(['Test'])
@@ -81,5 +83,10 @@ export class TestController implements OnControllerInit {
   @Get('/error')
   async error() {
     throw new ForbiddenError({ error: { test: 'payload' }, message: 'This is an error' });
+  }
+
+  @Get('/transformer')
+  async transformer(@Query('testTransformer', TestTransformer) param: string) {
+    return param;
   }
 }

@@ -123,7 +123,7 @@ export class ControllerService {
           }
 
           const result = async (): Promise<any> =>
-            (instance as object)[route.method.name](...buildParameters(req, res, route));
+            (instance as object)[route.method.name](...(await buildParameters(req, res, route)));
           if (route.noRestWrapper) {
             return result();
           }
