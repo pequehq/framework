@@ -1,3 +1,5 @@
+import { Context } from './context.interface';
+
 export interface CanExecute {
-  canExecute(context: any): Promise<boolean>;
+  canExecute(context: Context): Promise<boolean>;
 }

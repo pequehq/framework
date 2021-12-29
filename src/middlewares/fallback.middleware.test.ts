@@ -15,11 +15,11 @@ test('should execute the Fallback middleware correctly', () => {
 
   const resMock = expressMocks.mockResponse(response);
   const reqMock = expressMocks.mockRequest();
-  const nextFunction = expressMocks.mockNextFunction();
+  const next = expressMocks.mockNextFunction();
 
   const sendSpy = sinon.spy(resMock, 'send');
 
-  fallback(reqMock as express.Request, resMock as express.Response, nextFunction);
+  fallback(reqMock as express.Request, resMock as express.Response, next.next);
   assert.is(sendSpy.callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_404);
 });

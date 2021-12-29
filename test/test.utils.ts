@@ -36,7 +36,13 @@ export class ExpressMocks {
     return {};
   }
 
-  mockNextFunction(): express.NextFunction {
-    return (): unknown => undefined;
+  mockNextFunction(error?: { error?: unknown }): any {
+    return {
+      next(err?: unknown): void {
+        if (error) {
+          error.error = err;
+        }
+      },
+    };
   }
 }

@@ -33,14 +33,16 @@ test('should execute the Error handler middleware correctly with HttpException',
 
   const resMock = expressMocks.mockResponse(response);
   const reqMock = expressMocks.mockRequest();
-  const nextFunction = expressMocks.mockNextFunction();
+  const next = expressMocks.mockNextFunction();
 
   const setHeaderSpy = sinon.spy(resMock, 'setHeader');
+  const statusSpy = sinon.spy(resMock, 'status');
   const sendSpy = sinon.spy(resMock, 'send');
   const endSpy = sinon.spy(resMock, 'end');
 
-  errorHandler(error, reqMock as express.Request, resMock as express.Response, nextFunction);
+  errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
   assert.is(setHeaderSpy.callCount, 1);
+  assert.is(statusSpy.callCount, 1);
   assert.is(sendSpy.callCount, 1);
   assert.is(endSpy.callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_400);
@@ -55,14 +57,16 @@ test('should execute the Error handler middleware correctly without HttpExceptio
 
   const resMock = expressMocks.mockResponse(response);
   const reqMock = expressMocks.mockRequest();
-  const nextFunction = expressMocks.mockNextFunction();
+  const next = expressMocks.mockNextFunction();
 
   const setHeaderSpy = sinon.spy(resMock, 'setHeader');
+  const statusSpy = sinon.spy(resMock, 'status');
   const sendSpy = sinon.spy(resMock, 'send');
   const endSpy = sinon.spy(resMock, 'end');
 
-  errorHandler(error, reqMock as express.Request, resMock as express.Response, nextFunction);
+  errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
   assert.is(setHeaderSpy.callCount, 1);
+  assert.is(statusSpy.callCount, 1);
   assert.is(sendSpy.callCount, 1);
   assert.is(endSpy.callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_500);
