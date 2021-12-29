@@ -10,12 +10,13 @@ import {
   ParamType,
   ProviderType,
   RouteDefinition,
+  TransformerClass,
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { Providers } from '../../models/dependency-injection/providers';
+import { Providers } from '../../models/dependency-injection/provider.service';
 import { CustomProvider } from '../injectable';
 
 interface ProviderOptions {
@@ -110,7 +111,10 @@ export const methodBuilder = (
   };
 };
 
-export const paramBuilder = (param: ParamType, paramName?: string): ParameterDecorator => {
+export const paramBuilder = (
+  param: ParamType,
+  options?: { paramName?: string; transformer?: TransformerClass },
+): ParameterDecorator => {
   const metadataKey = metadataKeys[param];
 
   if (!metadataKey) {
@@ -123,7 +127,8 @@ export const paramBuilder = (param: ParamType, paramName?: string): ParameterDec
     parameters.push({
       [propertyKey]: {
         index: parameterIndex,
-        param: paramName,
+        param: options?.paramName,
+        transformer: options?.transformer,
       },
     });
 
@@ -148,6 +153,12 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
         });
       }
     });
+  };
+};
+
+export const transformerBuilder = (): ClassDecorator => {
+  return (target): void => {
+    Providers.addProvider('transformer', { name: target.name, clazz: target as any });
   };
 };
 

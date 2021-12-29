@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 
 import { RouteDefinition } from '../../models';
+import { Transformers } from '../../services/transformer/transformer.service';
 
-export const buildParameters = (req: Request, res: Response, route: RouteDefinition): unknown[] => {
+export const buildParameters = async (req: Request, res: Response, route: RouteDefinition): Promise<unknown[]> => {
   const args: unknown[] = [];
   const method = route.method;
 
@@ -15,19 +16,25 @@ export const buildParameters = (req: Request, res: Response, route: RouteDefinit
   }
 
   if (method.body?.length) {
-    args[method.body[0].index] = req.body;
+    args[method.body[0].index] = await Transformers.transform(req.body, method.body[0].transformer as never);
   }
 
   if (method.params?.length) {
-    method.params.forEach((param) => (args[param.index] = req.params[param.param]));
+    for (const param of method.params) {
+      args[param.index] = await Transformers.transform(req.params[param.param], param.transformer as never);
+    }
   }
 
   if (method.query?.length) {
-    method.query.forEach((param) => (args[param.index] = req.query[param.param]));
+    for (const param of method.query) {
+      args[param.index] = await Transformers.transform(req.query[param.param], param.transformer as never);
+    }
   }
 
   if (method.headers?.length) {
-    method.headers.forEach((param) => (args[param.index] = req.headers[param.param]));
+    for (const param of method.headers) {
+      args[param.index] = await Transformers.transform(req.headers[param.param], param.transformer as never);
+    }
   }
 
   if (method.cookies?.length) {

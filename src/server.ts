@@ -16,7 +16,7 @@ import { ServerOptions } from './models';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
-import { Providers } from './models/dependency-injection/providers';
+import { Providers } from './models/dependency-injection/provider.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';

@@ -2,7 +2,7 @@ import { ClassDeclaration } from '../models';
 import { ControllerService } from '../models/dependency-injection/controller.service';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { ModuleService } from '../models/dependency-injection/module.service';
-import { Providers } from '../models/dependency-injection/providers';
+import { Providers } from '../models/dependency-injection/provider.service';
 import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
 
 export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
@@ -22,6 +22,12 @@ export const loadInjectables = async (): Promise<void> => {
   const interceptors = Providers.getProvidersByType('interceptor');
   for (const interceptor of interceptors) {
     await Injector.set('interceptor', interceptor.name, interceptor.clazz, getClassDependencies(interceptor.clazz));
+  }
+
+  // Load transformers.
+  const transformers = Providers.getProvidersByType('transformer');
+  for (const transformer of transformers) {
+    await Injector.set('transformer', transformer.name, transformer.clazz, getClassDependencies(transformer.clazz));
   }
 };
 

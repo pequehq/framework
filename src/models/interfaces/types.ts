@@ -11,7 +11,7 @@ export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'res
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
 export type LogLevelsType = 'debug' | 'info' | 'warn' | 'error';
 export type InterceptorType = 'exception';
-export type ProviderType = 'injectable' | 'interceptor';
+export type ProviderType = 'injectable' | 'interceptor' | 'transformer';
 export type NativeEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'
@@ -44,6 +44,9 @@ export type ProviderInstance = InstanceType<ProviderClass>;
 
 export type InterceptorClass = ClassDeclaration;
 export type InterceptorInstance = InstanceType<InterceptorClass>;
+
+export type TransformerClass = ClassDeclaration;
+export type TransformerInstance = InstanceType<TransformerClass>;
 
 export type ControllerClass = ClassDeclaration;
 export type ControllerInstance = InstanceType<ControllerClass>;

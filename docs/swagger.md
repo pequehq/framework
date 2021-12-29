@@ -1,7 +1,7 @@
 ---
 title: Swagger
 has_children: false
-nav_order: 10
+nav_order: 11
 ---
 
 # Swagger (OpenAPI)
