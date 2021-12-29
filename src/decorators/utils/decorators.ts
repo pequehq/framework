@@ -163,12 +163,8 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
   return (target): void => {
     let name = target.name;
 
-    if (options.customProvider) {
-      if (typeof options.customProvider.interface === 'string') {
-        name = options.customProvider.interface;
-      } else {
-        name = options.customProvider.interface.name;
-      }
+    if (options.customProvider?.interface) {
+      name = options.customProvider.interface;
     }
 
     Providers.addProvider('injectable', { name, clazz: target as unknown as ProviderClass });
