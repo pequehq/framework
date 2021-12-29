@@ -67,21 +67,20 @@ test('should set an interceptor metadata for routes and controllers', async () =
   @Controller('/test')
   class TestController {
     @Intercept(TestInterceptor)
-    @Get('/transformer')
+    @Get('/path')
     testRoute() {
       return 'testRoute';
     }
   }
 
   const controllerMetadata: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, TestController);
-  assert.is.not(controllerMetadata.interceptors, undefined);
   assert.is(controllerMetadata.interceptors.length, 1);
   assert.is(controllerMetadata.interceptors[0], TestInterceptor);
 
   const routesMetadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestController);
   assert.is(routesMetadata.length, 1);
-  assert.is.not(routesMetadata[0].interceptors, undefined);
-  assert.is(routesMetadata[0].interceptors?.[0], TestInterceptor);
+  assert.is(routesMetadata[0].interceptors.length, 1);
+  assert.is(routesMetadata[0].interceptors[0], TestInterceptor);
 });
 
 test.run();

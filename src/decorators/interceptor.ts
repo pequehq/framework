@@ -7,21 +7,19 @@ export const Interceptor = (): ClassDecorator => {
 };
 
 export const Intercept = (interceptor: InterceptorClass): MethodDecorator & ClassDecorator => {
-  return (target, propertyKey?, descriptor?) => {
+  return (target, propertyKey?, descriptor?): void => {
     const isClassDecorator = !descriptor;
 
     if (isClassDecorator) {
       const controller: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, target);
-      controller.interceptors?.push(interceptor);
+      controller.interceptors.push(interceptor);
       Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controller, target);
     }
 
-    const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor) ?? [];
+    const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor);
 
     if (routes.length > 0) {
-      const index = routes.length - 1;
-      routes[index].interceptors ??= [];
-      routes[index].interceptors?.push(interceptor);
+      routes[routes.length - 1].interceptors.push(interceptor);
     }
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);

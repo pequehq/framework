@@ -108,6 +108,8 @@ export const methodBuilder = (
       middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
       documentOnly,
       noRestWrapper,
+      interceptors: [],
+      guards: [],
     });
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);

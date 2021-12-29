@@ -7,7 +7,9 @@ export const interceptorHandler = (interceptor: InterceptorInstance, stage: Inte
     try {
       if (stage === 'before') {
         res.locals.handlerOptions = await interceptor[stage]({ request: req, response: res });
-      } else if (stage === 'after') {
+      }
+
+      if (stage === 'after') {
         const handlerResult = await interceptor[stage]({ request: req, response: res }, res.locals.data);
         if (handlerResult) {
           res.locals.data = handlerResult;

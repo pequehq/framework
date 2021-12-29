@@ -8,6 +8,6 @@ export interface RouteDefinition {
   middlewareFunctions: MiddlewareHandler;
   documentOnly: boolean;
   noRestWrapper: boolean;
-  guards?: GuardClass[];
-  interceptors?: InterceptorClass[];
+  guards: GuardClass[];
+  interceptors: InterceptorClass[];
 }

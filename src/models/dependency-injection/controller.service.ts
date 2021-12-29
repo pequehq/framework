@@ -98,23 +98,17 @@ export class ControllerService {
         let routeGuards: RequestHandler[] = [];
         let routeMiddlewares: RequestHandler[] = [];
 
-        if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) =>
-            guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
-          );
-        }
+        routeGuards = route.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
 
-        if (route.interceptors?.length) {
-          routeAfterInterceptors = route.interceptors.map((interceptor) =>
-            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
-          );
-          routeBeforeInterceptors = route.interceptors.map((interceptor) =>
-            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
-          );
-          routeErrorInterceptors = route.interceptors.map((interceptor) =>
-            interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
-          );
-        }
+        routeAfterInterceptors = route.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+        );
+        routeBeforeInterceptors = route.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+        );
+        routeErrorInterceptors = route.interceptors.map((interceptor) =>
+          interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+        );
 
         const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
           // Possible override from interceptor.
