@@ -74,7 +74,7 @@ test('should set an interceptor metadata for routes and controllers', async () =
   }
 
   const controllerMetadata: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, TestController);
-  assert.is(controllerMetadata.interceptors !== undefined, true);
+  assert.is.not(controllerMetadata.interceptors, undefined);
   assert.is(controllerMetadata.interceptors.length, 1);
   assert.is(controllerMetadata.interceptors[0].name, 'TestInterceptor');
 
