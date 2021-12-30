@@ -9,7 +9,7 @@ import { ConsumeEvent, ProduceEvent } from './events';
 
 const test = suite('Events');
 
-test.after.each(async () => {
+test.before.each(async () => {
   EventStorage.remove('testEvent');
 });
 

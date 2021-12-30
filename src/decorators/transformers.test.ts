@@ -7,7 +7,7 @@ import { Transformer } from './transformer';
 
 const test = suite('Transformers');
 
-test.after.each(() => {
+test.before.each(() => {
   Providers.unsetAll();
 });
 
@@ -19,8 +19,13 @@ test('should set a transformer provider', () => {
     }
   }
 
-  assert.is(Providers.getProvidersByType('transformer').length, 1);
-  assert.is(Providers.getProvidersByType('transformer')[0].name, 'TestTransformer');
+  const transformers = Providers.getProvidersByType('transformer');
+
+  assert.is(transformers.length, 1);
+  assert.equal(transformers[0], {
+    name: 'TestTransformer',
+    clazz: TestTransformer,
+  });
 });
 
 test.run();

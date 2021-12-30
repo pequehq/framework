@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
-export interface HttpEvent {
-  req: Request;
+export interface HttpEvent<TRequest = any> {
+  req: TRequest;
 }

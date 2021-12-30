@@ -15,6 +15,10 @@ export class ModuleService {
     return this.modules;
   }
 
+  flush(): void {
+    this.modules = [];
+  }
+
   getInstances(): ModuleInstance[] {
     return this.instances;
   }
@@ -35,4 +39,5 @@ export class ModuleService {
 }
 
 Injector.setNative('injectable', NATIVE_SERVICES.MODULE, ModuleService);
+
 export const Modules = Injector.resolve<ModuleService>('injectable', NATIVE_SERVICES.MODULE);

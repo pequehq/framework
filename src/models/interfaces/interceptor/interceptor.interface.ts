@@ -4,9 +4,9 @@ import { HandlerAfterOptions, HandlerBeforeOptions } from './handler-options.int
 
 export interface InterceptorHandler {
   before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void>;
-  after<TResult>(
+  after(
     context: Context,
-    handlerResult: TResult,
-  ): HandlerAfterOptions<TResult> | Promise<HandlerAfterOptions<TResult>> | void | Promise<void>;
-  error<TError>(context: Context, error: HttpException<TError>);
+    handlerResult: unknown,
+  ): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void>;
+  error(context: Context, error: HttpException<unknown>);
 }

@@ -9,4 +9,5 @@ export const NATIVE_SERVICES = {
   CACHE: 'CacheService',
   INTERCEPTOR: 'InterceptorService',
   CONFIG: 'ConfigService',
+  HTTP_SERVICE: 'HttpService',
 };

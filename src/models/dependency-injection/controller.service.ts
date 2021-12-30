@@ -93,25 +93,19 @@ export class ControllerService {
         let routeGuards: RequestHandler[] = [];
         let routeMiddlewares: RequestHandler[] = [];
 
-        if (route.guards?.length) {
-          routeGuards = route.guards.map((guard) =>
-            guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
-          );
-        }
+        routeGuards = route.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)));
 
-        if (route.interceptors?.length) {
-          routeAfterInterceptors = route.interceptors.map((interceptor) =>
-            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
-          );
-          routeBeforeInterceptors = route.interceptors.map((interceptor) =>
-            interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
-          );
-          routeErrorInterceptors = route.interceptors.map((interceptor) =>
-            interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
-          );
-        }
+        routeAfterInterceptors = route.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
+        );
+        routeBeforeInterceptors = route.interceptors.map((interceptor) =>
+          interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'before'),
+        );
+        routeErrorInterceptors = route.interceptors.map((interceptor) =>
+          interceptorErrorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name)),
+        );
 
-        const handler: RequestHandler = async (req, res, next): Promise<unknown | void> => {
+        const handler: RequestHandler = async (req, res, next): Promise<void> => {
           // Possible override from interceptor.
           if (res.locals.handlerOptions && res.locals.handlerOptions.override) {
             next();
@@ -119,9 +113,6 @@ export class ControllerService {
 
           const result = async (): Promise<any> =>
             (instance as object)[route.method.name](...(await buildParameters(req, res, route)));
-          if (route.noRestWrapper) {
-            return result();
-          }
 
           try {
             res.locals.data = await result();

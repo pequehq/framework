@@ -8,14 +8,14 @@ export function WebSocketServer<TOptions, TAdapter>(
   port: number,
   config?: { options?: TOptions; adapter: TAdapter },
 ): ClassDecorator {
-  return (target) => {
+  return (target): void => {
     Reflect.defineMetadata(DECORATORS.metadata.WEBSOCKETS.CONFIG, { port, config }, target);
     WebSockets.push(target as unknown as WebSocketClass);
   };
 }
 
 export const GetWebSocketServer = (): PropertyDecorator => {
-  return (target, key) => {
+  return (target, key): void => {
     Object.defineProperty(target, key, {
       get: () => Injector.resolve<WebSocketsService>('injectable', NATIVE_SERVICES.WEBSOCKETS).getServer(),
       enumerable: true,

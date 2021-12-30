@@ -2,12 +2,14 @@ import {
   ClassDeclaration,
   ControllerDefinition,
   ExpressMethods,
+  InterceptorClass,
   InterceptorType,
   MiddlewareHandler,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
+  ProviderClass,
   ProviderType,
   RouteDefinition,
   TransformerClass,
@@ -27,6 +29,7 @@ interface InjectableInterface extends ProviderOptions {
   customProvider?: CustomProvider;
 }
 
+// @TODO check why this interface is unused
 interface InterceptorInterface extends ProviderOptions {
   interceptorType: InterceptorType;
   clazz: ClassDeclaration;
@@ -44,13 +47,7 @@ const metadataKeys: Record<ParamType, string> = {
 };
 
 const extractParameters = (param: ParamType, target: object, propertyKey: string | symbol): ParamDefinition[] => {
-  const metadataKey = metadataKeys[param];
-
-  if (!metadataKey) {
-    throw new Error(`No metadata key for [${param}].`);
-  }
-
-  return (Reflect.getMetadata(metadataKey, target.constructor) ?? [])
+  return (Reflect.getMetadata(metadataKeys[param], target.constructor) ?? [])
     .map((param) => param[propertyKey])
     .filter(Boolean);
 };
@@ -78,7 +75,6 @@ export const methodBuilder = (
   path: string,
   middleware: MiddlewareHandler,
   documentOnly: boolean,
-  noRestWrapper: boolean,
 ): MethodDecorator => {
   return (target, propertyKey): void => {
     if (!Reflect.hasMetadata(DECORATORS.metadata.ROUTES, target.constructor)) {
@@ -104,7 +100,8 @@ export const methodBuilder = (
       },
       middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
       documentOnly,
-      noRestWrapper,
+      interceptors: [],
+      guards: [],
     });
 
     Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
@@ -116,10 +113,6 @@ export const paramBuilder = (
   options?: { paramName?: string; transformer?: TransformerClass },
 ): ParameterDecorator => {
   const metadataKey = metadataKeys[param];
-
-  if (!metadataKey) {
-    throw new Error(`No metadata key for [${param}].`);
-  }
 
   return (target, propertyKey, parameterIndex): void => {
     const parameters = Reflect.getMetadata(metadataKey, target.constructor) ?? [];
@@ -140,16 +133,14 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target): void => {
     Modules.push(target as unknown as ModuleClass);
 
-    if (module.controllers) {
-      module.controllers.forEach((controller) => Controllers.push(controller));
-    }
+    module.controllers.forEach((controller) => Controllers.push(controller));
 
     // Setting custom providers.
     (module.providers ?? []).forEach((provider) => {
       if (provider.useClass) {
         Providers.addProvider('injectable', {
           name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
-          clazz: provider.useClass as any, // @TODO check which type should use
+          clazz: provider.useClass as ClassDeclaration,
         });
       }
     });
@@ -158,13 +149,13 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
 
 export const transformerBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider('transformer', { name: target.name, clazz: target as any });
+    Providers.addProvider('transformer', { name: target.name, clazz: target as unknown as TransformerClass });
   };
 };
 
 export const interceptorBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider('interceptor', { name: target.name, clazz: target as any });
+    Providers.addProvider('interceptor', { name: target.name, clazz: target as unknown as InterceptorClass });
   };
 };
 
@@ -172,15 +163,11 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
   return (target): void => {
     let name = target.name;
 
-    if (options.customProvider) {
-      if (typeof options.customProvider.interface === 'string') {
-        name = options.customProvider.interface;
-      } else {
-        name = options.customProvider.interface.name;
-      }
+    if (options.customProvider?.interface) {
+      name = options.customProvider.interface;
     }
 
-    Providers.addProvider('injectable', { name, clazz: target as any }); // @TODO check clazz type
+    Providers.addProvider('injectable', { name, clazz: target as unknown as ProviderClass });
   };
 };
 
