@@ -1,5 +1,4 @@
 import express from 'express';
-import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
@@ -17,10 +16,8 @@ test('should execute the Fallback middleware correctly', () => {
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  const sendSpy = sinon.spy(resMock, 'send');
-
   fallback(reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(sendSpy.callCount, 1);
+  assert.is(expressMocks.spy('send').callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_404);
 });
 

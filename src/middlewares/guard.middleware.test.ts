@@ -1,5 +1,4 @@
 import express from 'express';
-import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
@@ -36,11 +35,9 @@ test('should execute a guard class and allow can execute', async () => {
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  const nextSpy = sinon.spy(next, 'next');
-
   const guard = Injector.resolve<CanExecute>('injectable', 'TestGuard');
   await guardHandler(guard)(reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(nextSpy.callCount, 1);
+  assert.is(expressMocks.spy('next').callCount, 1);
 });
 
 test('should execute a guard class and deny can execute', async () => {
@@ -60,13 +57,10 @@ test('should execute a guard class and deny can execute', async () => {
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  const statusSpy = sinon.spy(resMock, 'status');
-  const sendSpy = sinon.spy(resMock, 'send');
-
   const guard = Injector.resolve<CanExecute>('injectable', 'TestGuard');
   await guardHandler(guard)(reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(statusSpy.callCount, 1);
-  assert.is(sendSpy.callCount, 1);
+  assert.is(expressMocks.spy('status').callCount, 1);
+  assert.is(expressMocks.spy('send').callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_403);
   assert.equal(response.body, { message: 'Forbidden resource' });
 });
@@ -89,11 +83,9 @@ test('should throw an error from the guard class', async () => {
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction(nextError);
 
-  const nextSpy = sinon.spy(next, 'next');
-
   const guard = Injector.resolve<CanExecute>('injectable', 'TestGuard');
   await guardHandler(guard)(reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(nextSpy.callCount, 1);
+  assert.is(expressMocks.spy('next').callCount, 1);
   assert.instance(nextError.error, Error);
 });
 

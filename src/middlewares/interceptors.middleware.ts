@@ -1,6 +1,7 @@
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
 
 import { InterceptorInstance, InterceptorStage } from '../models';
+import { HandlerAfterOptions } from '../models/interfaces/interceptor/handler-options.interface';
 
 export const interceptorHandler = (interceptor: InterceptorInstance, stage: InterceptorStage): RequestHandler => {
   return async (req: express.Request, res: express.Response, next): Promise<void> => {
@@ -10,9 +11,12 @@ export const interceptorHandler = (interceptor: InterceptorInstance, stage: Inte
       }
 
       if (stage === 'after') {
-        const handlerResult = await interceptor[stage]({ request: req, response: res }, res.locals.data);
+        const handlerResult: HandlerAfterOptions<unknown> = await interceptor[stage](
+          { request: req, response: res },
+          res.locals.data,
+        );
         if (handlerResult) {
-          res.locals.data = handlerResult;
+          res.locals.data = handlerResult.handlerResult;
         }
       }
 

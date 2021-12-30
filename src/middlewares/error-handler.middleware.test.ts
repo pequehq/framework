@@ -1,5 +1,4 @@
 import express from 'express';
-import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
@@ -35,16 +34,11 @@ test('should execute the Error handler middleware correctly with HttpException',
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  const setHeaderSpy = sinon.spy(resMock, 'setHeader');
-  const statusSpy = sinon.spy(resMock, 'status');
-  const sendSpy = sinon.spy(resMock, 'send');
-  const endSpy = sinon.spy(resMock, 'end');
-
   errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(setHeaderSpy.callCount, 1);
-  assert.is(statusSpy.callCount, 1);
-  assert.is(sendSpy.callCount, 1);
-  assert.is(endSpy.callCount, 1);
+  assert.is(expressMocks.spy('setHeader').callCount, 1);
+  assert.is(expressMocks.spy('status').callCount, 1);
+  assert.is(expressMocks.spy('send').callCount, 1);
+  assert.is(expressMocks.spy('end').callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_400);
   assert.equal(response.header, ['Content-Type', 'application/json']);
   assert.equal(response.body, error.httpException);
@@ -59,16 +53,11 @@ test('should execute the Error handler middleware correctly without HttpExceptio
   const reqMock = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  const setHeaderSpy = sinon.spy(resMock, 'setHeader');
-  const statusSpy = sinon.spy(resMock, 'status');
-  const sendSpy = sinon.spy(resMock, 'send');
-  const endSpy = sinon.spy(resMock, 'end');
-
   errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(setHeaderSpy.callCount, 1);
-  assert.is(statusSpy.callCount, 1);
-  assert.is(sendSpy.callCount, 1);
-  assert.is(endSpy.callCount, 1);
+  assert.is(expressMocks.spy('setHeader').callCount, 1);
+  assert.is(expressMocks.spy('status').callCount, 1);
+  assert.is(expressMocks.spy('send').callCount, 1);
+  assert.is(expressMocks.spy('end').callCount, 1);
   assert.is(response.status, HTTP_STATES.HTTP_500);
   assert.equal(response.header, ['Content-Type', 'application/json']);
   assert.equal(response.body, {
