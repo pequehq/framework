@@ -1,8 +1,7 @@
-import express from 'express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { ExpressMocks } from '../../test/test.utils';
+import { ExpressMocks, NextError } from '../../test/mocks/express.mocks';
 import { Interceptor } from '../decorators';
 import { HttpException, InterceptorHandler } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
@@ -15,7 +14,12 @@ import { interceptorErrorHandler, interceptorHandler } from './interceptors.midd
 
 const test = suite('Interceptor Middleware');
 
+const expressMocks = new ExpressMocks();
+
 test.before.each(async () => {
+  expressMocks.restore();
+  Providers.unsetAll();
+
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
     after<TResult>(
@@ -55,89 +59,70 @@ test.before.each(async () => {
   await loadInjectables();
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
-});
-
 test('should execute an interceptor class before method', async () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
-
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
   const interceptor = Injector.resolve<InterceptorHandler>('interceptor', 'TestInterceptor');
-  await interceptorHandler(interceptor, 'before')(reqMock as express.Request, resMock as express.Response, next.next);
+  await interceptorHandler(interceptor, 'before')(req, res, next);
   assert.is(expressMocks.spy('next').callCount, 1);
-  assert.equal(resMock.locals?.handlerOptions, { override: false });
+  assert.equal(res.locals?.handlerOptions, { override: false });
 });
 
 test('should execute an interceptor class after method', async () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
-
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
   const interceptor = Injector.resolve<InterceptorHandler>('interceptor', 'TestInterceptor');
-  await interceptorHandler(interceptor, 'after')(reqMock as express.Request, resMock as express.Response, next.next);
+  await interceptorHandler(interceptor, 'after')(req, res, next);
   assert.is(expressMocks.spy('next').callCount, 1);
-  assert.equal(resMock.locals?.data, { test: 'value' });
+  assert.equal(res.locals?.data, { test: 'value' });
 });
 
 test('should execute an interceptor class error method', async () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
-  const nextError: { error?: unknown } = {};
   const error = new HttpException({
     error: { test: 'error' },
     statusCode: HTTP_STATES.HTTP_400,
     message: 'test message',
   });
 
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
-  const next = expressMocks.mockNextFunction(nextError);
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
+  const next = expressMocks.mockNextFunction();
 
   const interceptor = Injector.resolve<InterceptorHandler>('interceptor', 'TestInterceptor');
-  await interceptorErrorHandler(interceptor)(error, reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(expressMocks.spy('next').callCount, 1);
-  assert.instance(nextError.error, HttpException);
+  await interceptorErrorHandler(interceptor)(error, req, res, next);
+  assert.ok(expressMocks.spy('next').calledWith(error));
 });
 
 test('should execute catch an error in the interceptor middleware inside before/after section', async () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
-  const nextError: { error?: unknown } = {};
-
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const nextError: NextError = {};
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction(nextError);
 
   const interceptor = Injector.resolve<InterceptorHandler>('interceptor', 'TestInterceptorCatch');
-  await interceptorHandler(interceptor, 'before')(reqMock as express.Request, resMock as express.Response, next.next);
+  await interceptorHandler(interceptor, 'before')(req, res, next);
   assert.is(expressMocks.spy('next').callCount, 1);
   assert.instance(nextError.error, Error);
 });
 
 test('should execute catch an error in the interceptor middleware inside error section', async () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
-  const nextError: { error?: unknown } = {};
+  const nextError: NextError = {};
   const error = new HttpException({
     error: { test: 'error' },
     statusCode: HTTP_STATES.HTTP_400,
     message: 'test message',
   });
 
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction(nextError);
 
   const interceptor = Injector.resolve<InterceptorHandler>('interceptor', 'TestInterceptorCatch');
-  await interceptorErrorHandler(interceptor)(error, reqMock as express.Request, resMock as express.Response, next.next);
+  await interceptorErrorHandler(interceptor)(error, req, res, next);
   assert.is(expressMocks.spy('next').callCount, 1);
   assert.instance(nextError.error, Error);
 });

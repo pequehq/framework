@@ -1,24 +1,26 @@
-import express from 'express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { ExpressMocks } from '../../test/test.utils';
+import { ExpressMocks } from '../../test/mocks/express.mocks';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { fallback } from './fallback.middleware';
 
 const test = suite('Fallback Middleware');
 
-test('should execute the Fallback middleware correctly', () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
+const expressMocks = new ExpressMocks();
 
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+test.before.each(() => {
+  expressMocks.restore();
+});
+
+test('should execute the Fallback middleware correctly', () => {
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  fallback(reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(expressMocks.spy('send').callCount, 1);
-  assert.is(response.status, HTTP_STATES.HTTP_404);
+  fallback(req, res, next);
+  assert.ok(expressMocks.spy('send').calledWith({ message: 'Route not found.' }));
+  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_404));
 });
 
 test.run();

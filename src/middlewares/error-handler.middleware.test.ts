@@ -1,8 +1,7 @@
-import express from 'express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { ExpressMocks } from '../../test/test.utils';
+import { ExpressMocks } from '../../test/mocks/express.mocks';
 import { HttpException, ServerOptions } from '../models';
 import { CONFIG_STORAGES } from '../models/constants/config';
 import { HTTP_STATES } from '../models/constants/http-states';
@@ -11,7 +10,11 @@ import { errorHandler } from './error-handler.middleware';
 
 const test = suite('Error handler Middleware');
 
+const expressMocks = new ExpressMocks();
+
 test.before.each(() => {
+  expressMocks.restore();
+
   class TestClass {}
 
   const config: ServerOptions = {
@@ -22,49 +25,43 @@ test.before.each(() => {
 });
 
 test('should execute the Error handler middleware correctly with HttpException', () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
   const error = new HttpException({
     error: { test: 'error' },
     statusCode: HTTP_STATES.HTTP_400,
     message: 'test message',
   });
 
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(expressMocks.spy('setHeader').callCount, 1);
-  assert.is(expressMocks.spy('status').callCount, 1);
-  assert.is(expressMocks.spy('send').callCount, 1);
-  assert.is(expressMocks.spy('end').callCount, 1);
-  assert.is(response.status, HTTP_STATES.HTTP_400);
-  assert.equal(response.header, ['Content-Type', 'application/json']);
-  assert.equal(response.body, error.httpException);
+  errorHandler(error, req, res, next);
+
+  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_400));
+  assert.ok(expressMocks.spy('send').calledWith(error.httpException));
+  assert.ok(expressMocks.spy('end').called);
 });
 
 test('should execute the Error handler middleware correctly without HttpException', () => {
-  const expressMocks = new ExpressMocks();
-  const response: { status?: number; header?: string[]; body?: unknown } = {};
   const error = {};
 
-  const resMock = expressMocks.mockResponse(response);
-  const reqMock = expressMocks.mockRequest();
+  const res = expressMocks.mockResponse();
+  const req = expressMocks.mockRequest();
   const next = expressMocks.mockNextFunction();
 
-  errorHandler(error, reqMock as express.Request, resMock as express.Response, next.next);
-  assert.is(expressMocks.spy('setHeader').callCount, 1);
-  assert.is(expressMocks.spy('status').callCount, 1);
-  assert.is(expressMocks.spy('send').callCount, 1);
-  assert.is(expressMocks.spy('end').callCount, 1);
-  assert.is(response.status, HTTP_STATES.HTTP_500);
-  assert.equal(response.header, ['Content-Type', 'application/json']);
-  assert.equal(response.body, {
-    statusCode: HTTP_STATES.HTTP_500,
-    error,
-    message: 'Unknown error.',
-  });
+  errorHandler(error, req, res, next);
+
+  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_500));
+  assert.ok(
+    expressMocks.spy('send').calledWith({
+      error,
+      statusCode: HTTP_STATES.HTTP_500,
+      message: 'Unknown error.',
+    }),
+  );
+  assert.ok(expressMocks.spy('end').called);
 });
 
 test.run();
