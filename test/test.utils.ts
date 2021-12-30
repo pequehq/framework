@@ -30,7 +30,10 @@ export class ExpressMocks {
     return this.spies[what];
   }
 
-  mockResponse(response: { status?: number; header?: string[]; body?: unknown }): Partial<express.Response> {
+  mockResponse(
+    response: { status?: number; header?: string[]; body?: unknown },
+    locals: any = { data: {} },
+  ): Partial<express.Response> {
     this.mockRes = {
       send: (body) => (response.body = body),
       status(code: number): any {
@@ -42,7 +45,7 @@ export class ExpressMocks {
       setHeader(name: string, value: number | string | ReadonlyArray<string>): any {
         response.header = [name, String(value)];
       },
-      locals: {},
+      locals: { ...locals },
     };
 
     this.spies.send = sinon.spy(this.mockRes, 'send');
