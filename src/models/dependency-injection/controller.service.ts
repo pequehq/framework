@@ -4,7 +4,7 @@ import { guardHandler } from '../../middlewares/guard.middleware';
 import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/interceptors.middleware';
 import { responder } from '../../middlewares/responder.middleware';
 import { LoggerService } from '../../services';
-import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { DECORATORS } from '../constants/decorators';
@@ -40,7 +40,7 @@ export class ControllerService {
     for (const controller of this.controllers) {
       const instance = new controller(...getClassDependencies(controller));
       this.instances.push(instance);
-      await LifeCycleService.triggerControllerInit(instance);
+      await LifeCycleManager.triggerControllerInit(instance);
 
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, controller);
@@ -148,7 +148,7 @@ export class ControllerService {
 
   async destroyControllers(): Promise<void> {
     for (const controller of this.instances) {
-      await LifeCycleService.triggerControllerDestroy(controller);
+      await LifeCycleManager.triggerControllerDestroy(controller);
     }
   }
 }

@@ -6,7 +6,7 @@ import { ServerOptions } from '../models';
 import { CONFIG_STORAGES } from '../models/constants/config';
 import { Server } from '../server';
 import { Config } from '../services/config/config.service';
-import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 import { clusterUtils } from '../utils/cluster.utils';
 import { ExpressFactory } from './express-factory';
 
@@ -26,7 +26,7 @@ test.after.each((context) => {
 
 test('should boot the server', async (context) => {
   // stub dependencies
-  const triggerServerBootstrap = context.sandbox.stub(LifeCycleService, 'triggerServerBootstrap');
+  const triggerServerBootstrap = context.sandbox.stub(LifeCycleManager, 'triggerServerBootstrap');
   const configSet = context.sandbox.stub(Config, 'set');
   const serverBootstrap = context.sandbox.stub(Server.prototype, 'bootstrap');
   const getServer = context.sandbox.stub(Server.prototype, 'getServer');

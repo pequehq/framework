@@ -1,4 +1,4 @@
-import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { DECORATORS } from '../constants/decorators';
 import { NATIVE_SERVICES } from '../constants/native-services';
@@ -40,14 +40,14 @@ export class WebSocketsService<TServer = any> {
       );
 
       this.server = this.adapterService.create(webSocketDefinition.port, webSocketDefinition.config?.options);
-      await LifeCycleService.triggerWebSocketsInit(instance);
+      await LifeCycleManager.triggerWebSocketsInit(instance);
     }
   }
 
   async destroyWebSockets(): Promise<void> {
     this.adapterService.close();
     for (const module of this.instances) {
-      await LifeCycleService.triggerWebSocketsDestroy(module);
+      await LifeCycleManager.triggerWebSocketsDestroy(module);
     }
   }
 
