@@ -9,6 +9,8 @@ const test = suite('Responder Middleware');
 
 const expressMocks = new ExpressMocks();
 
+test.before.each(() => expressMocks.restore());
+
 test('should respond to the client correctly with set statusCode', () => {
   const body = { statusCode: HTTP_STATES.HTTP_200 };
 
