@@ -1,4 +1,4 @@
-import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { ProviderClass, ProviderInstance, ProviderType } from '../interfaces/types';
 import { Providers } from './provider.service';
 
@@ -22,7 +22,7 @@ class InjectorService {
   ): Promise<void> {
     if (!Providers.hasProviderInstance(type, provider)) {
       const instance = new target(...dependencies);
-      await LifeCycleService.triggerProviderInit(instance);
+      await LifeCycleManager.triggerProviderInit(instance);
       Providers.setProviderInstance(type, provider, instance);
     }
   }

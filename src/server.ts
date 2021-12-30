@@ -4,7 +4,6 @@ import express, { Application } from 'express';
 import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
 import http from 'http';
-import { Socket } from 'net';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -23,7 +22,7 @@ import { WebSockets } from './models/dependency-injection/websockets.service';
 import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
-import { LifeCycleService } from './services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Sockets } from './services/socket/socket.service';
 import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
@@ -49,16 +48,16 @@ export class Server {
   }
 
   async terminator(): Promise<void> {
-    await Server.destroyControllers();
-    await Server.destroyWebSockets();
-    await Server.destroyModules();
-    await Server.destroyProviders();
+    await this.destroyControllers();
+    await this.destroyWebSockets();
+    await this.destroyModules();
+    await this.destroyProviders();
 
-    await Server.serverListenStop();
+    await this.serverListenStop();
     await this.closeServer();
 
-    await Server.serverShutdown();
-    Server.unsetAllProviders();
+    await this.serverShutdown();
+    this.unsetAllProviders();
 
     process.exit(1);
   }
@@ -81,8 +80,8 @@ export class Server {
     this.terminationProcess();
 
     // Load injectables and controllers.
-    await Server.loadInjectables();
-    await Server.loadModules();
+    await this.loadInjectables();
+    await this.loadModules();
 
     // Load existing app or one from scratch.
     this.application = this.options.existingApp ?? express();
@@ -108,7 +107,7 @@ export class Server {
     this.addMiddlewares(preRoutes);
 
     await this.loadControllers();
-    await Server.loadWebSockets();
+    await this.loadWebSockets();
 
     // OpenAPI.
     if (this.options.swagger) {
@@ -141,12 +140,12 @@ export class Server {
     const port = this.options.port || 8888;
     const hostname = this.options.hostname || 'localhost';
 
-    await LifeCycleService.triggerServerListen();
+    await LifeCycleManager.triggerServerListen();
 
     this.server = this.application.listen(port, hostname, async () => {
       this.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
       this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.options.isCpuClustered ? 'ON' : 'OFF'}` });
-      await LifeCycleService.triggerServerStarted();
+      await LifeCycleManager.triggerServerStarted();
     });
 
     // Connections management.
@@ -175,43 +174,43 @@ export class Server {
     await Controllers.initControllers(this.application);
   }
 
-  private static async destroyControllers(): Promise<void> {
+  private async destroyControllers(): Promise<void> {
     await Controllers.destroyControllers();
   }
 
-  private static async loadModules(): Promise<void> {
+  private async loadModules(): Promise<void> {
     await Modules.initModules();
   }
 
-  private static async destroyModules(): Promise<void> {
+  private async destroyModules(): Promise<void> {
     await Modules.destroyModules();
   }
 
-  private static async loadWebSockets(): Promise<void> {
+  private async loadWebSockets(): Promise<void> {
     await WebSockets.initWebSockets();
   }
 
-  private static async destroyWebSockets(): Promise<void> {
+  private async destroyWebSockets(): Promise<void> {
     await WebSockets.destroyWebSockets();
   }
 
-  private static async loadInjectables(): Promise<void> {
+  private async loadInjectables(): Promise<void> {
     await loadInjectables();
   }
 
-  private static async destroyProviders(): Promise<void> {
+  private async destroyProviders(): Promise<void> {
     await destroyProviders();
   }
 
-  private static async serverShutdown(): Promise<void> {
-    await LifeCycleService.triggerServerShutdown();
+  private async serverShutdown(): Promise<void> {
+    await LifeCycleManager.triggerServerShutdown();
   }
 
-  private static async serverListenStop(): Promise<void> {
-    await LifeCycleService.triggerServerListenStop();
+  private async serverListenStop(): Promise<void> {
+    await LifeCycleManager.triggerServerListenStop();
   }
 
-  private static unsetAllProviders(): void {
+  private unsetAllProviders(): void {
     Providers.unsetAll();
   }
 
@@ -222,10 +221,10 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => await LifeCycleService.triggerUncaughtException(error));
+    process.on('uncaughtException', async (error) => await LifeCycleManager.triggerUncaughtException(error));
     process.on(
       'unhandledRejection',
-      async (error: string) => await LifeCycleService.triggerUncaughtRejection(new Error(error)),
+      async (error: string) => await LifeCycleManager.triggerUncaughtRejection(new Error(error)),
     );
   }
 }

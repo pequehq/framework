@@ -2,7 +2,7 @@ import http from 'http';
 
 import { ServerOptions } from '../models';
 import { Server } from '../server';
-import { LifeCycleService } from '../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 import { clusterUtils } from '../utils/cluster.utils';
 
 export class ExpressFactory {
@@ -14,7 +14,7 @@ export class ExpressFactory {
       return ExpressFactory.expressServer;
     }
 
-    await LifeCycleService.triggerServerBootstrap();
+    await LifeCycleManager.triggerServerBootstrap();
     const server = new Server(options);
     await server.bootstrap();
 

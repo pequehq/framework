@@ -1,4 +1,4 @@
-import { LifeCycleService } from '../../services/life-cycle/life-cycle.service';
+import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { ModuleClass, ModuleInstance } from '../interfaces/types';
 import { Injector } from './injector.service';
@@ -27,13 +27,13 @@ export class ModuleService {
     for (const module of this.modules) {
       const instance = new module();
       this.instances.push(instance);
-      await LifeCycleService.triggerModuleInit(instance);
+      await LifeCycleManager.triggerModuleInit(instance);
     }
   }
 
   async destroyModules(): Promise<void> {
     for (const module of this.instances) {
-      await LifeCycleService.triggerModuleDestroy(module);
+      await LifeCycleManager.triggerModuleDestroy(module);
     }
   }
 }
