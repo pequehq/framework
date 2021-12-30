@@ -29,7 +29,7 @@ export class ExpressMocks {
     return this.#spies[what];
   }
 
-  mockResponse(response: MockedResponse = {}): Response {
+  mockResponse(response: MockedResponse = {}, locals: any = { data: {} }): Response {
     const mockRes = {
       send(body) {
         response.body = body;
@@ -43,7 +43,7 @@ export class ExpressMocks {
       setHeader(name: string, value: number | string | ReadonlyArray<string>) {
         response.header = [name, String(value)];
       },
-      locals: {},
+      locals,
     } as Response;
 
     this.#spies.send = this.#sandbox.spy(mockRes, 'send');
