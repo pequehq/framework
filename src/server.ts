@@ -24,6 +24,7 @@ import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleService } from './services/life-cycle/life-cycle.service';
+import { Sockets } from './services/socket/socket.service';
 import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
@@ -35,7 +36,6 @@ export class Server {
 
   private application: Application;
   private server: http.Server;
-  private sockets = new Set<Socket>();
 
   constructor(options: ServerOptions) {
     this.options = options;
@@ -151,18 +151,15 @@ export class Server {
 
     // Connections management.
     this.server.on('connection', (socket) => {
-      this.server.once('close', () => this.sockets.delete(socket));
-      this.sockets.add(socket);
+      this.server.once('close', () => Sockets.delete('http', socket));
+      Sockets.set('http', socket);
     });
   }
 
   async closeServer(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // Ending all the open connections first.
-      for (const socket of this.sockets) {
-        socket.destroy();
-        this.sockets.delete(socket);
-      }
+      Sockets.closeAllByType('http');
 
       this.server.close((err) => {
         if (err) {
