@@ -7,8 +7,7 @@ export const guardHandler = (guard: any) => {
     try {
       const canExecute = await guard.canExecute({ request: req, response: res });
       if (canExecute) {
-        res.send({});
-        return next();
+        next();
       } else {
         res.status(HTTP_STATES.HTTP_403);
         res.send({
