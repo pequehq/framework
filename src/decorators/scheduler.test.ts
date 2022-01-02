@@ -2,7 +2,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { DECORATORS } from '../models/constants/decorators';
-import { SchedulerService } from '../services/scheduler/scheduler.service';
+import { SchedulerService } from '../services';
 import { Scheduler, SchedulerConfig } from './scheduler';
 
 const test = suite('Scheduler');

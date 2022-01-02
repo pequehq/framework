@@ -50,7 +50,7 @@ export class ControllerService {
       let controllerErrorInterceptors: ErrorRequestHandler[] = [];
 
       // Loading interceptors.
-      if (controllerMeta.interceptors?.length) {
+      if (controllerMeta.interceptors?.length && controllerMeta.interceptors?.length > 0) {
         controllerAfterInterceptors = controllerMeta.interceptors.map((interceptor) =>
           interceptorHandler(Injector.resolve<InterceptorHandler>('interceptor', interceptor.name), 'after'),
         );
@@ -63,7 +63,7 @@ export class ControllerService {
       }
 
       // Controller root guards.
-      if (controllerMeta.guards?.length) {
+      if (controllerMeta.guards?.length && controllerMeta.guards?.length > 0) {
         const guards = controllerMeta.guards.map((guard) =>
           guardHandler(Injector.resolve<CanExecute>('injectable', guard.name)),
         );
@@ -71,7 +71,7 @@ export class ControllerService {
       }
 
       // Controller root middlewares.
-      if (controllerMeta.middlewares?.length) {
+      if (controllerMeta.middlewares?.length && controllerMeta.middlewares?.length > 0) {
         application.use(controllerMeta.prefix, ...controllerMeta.middlewares);
       }
 

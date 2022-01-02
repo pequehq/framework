@@ -97,7 +97,9 @@ export class Server {
     // Global guards.
     const guards =
       this.options.guards?.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
-    this.application.use(...guards);
+    if (guards.length > 0) {
+      this.application.use(...guards);
+    }
 
     // Push HTTP event.
     this.application.use(pushHttpEvents);

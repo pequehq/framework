@@ -6,6 +6,7 @@ import { DECORATORS } from '../models/constants/decorators';
 import { Providers } from '../models/dependency-injection/provider.service';
 import { Context } from '../models/interfaces/context.interface';
 import { HandlerAfterOptions, HandlerBeforeOptions } from '../models/interfaces/interceptor/handler-options.interface';
+import { loadInjectables } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';
 import { Intercept, Interceptor } from './interceptor';
@@ -16,7 +17,7 @@ test.before.each(() => {
   Providers.unsetAll();
 });
 
-test('should set an interceptor provider', () => {
+test('should set an interceptor provider', async () => {
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
     after<TResult>(
@@ -34,6 +35,8 @@ test('should set an interceptor provider', () => {
       return;
     }
   }
+
+  await loadInjectables();
 
   const interceptors = Providers.getProvidersByType('interceptor');
 
@@ -63,9 +66,11 @@ test('should set an interceptor metadata for routes and controllers', async () =
     }
   }
 
+  await loadInjectables();
+
   @Intercept(TestInterceptor)
   @Controller('/test')
-  class TestController {
+  class TestInterceptorController {
     @Intercept(TestInterceptor)
     @Get('/path')
     testRoute() {
@@ -73,11 +78,15 @@ test('should set an interceptor metadata for routes and controllers', async () =
     }
   }
 
-  const controllerMetadata: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, TestController);
+  console.log('test');
+  const controllerMetadata: ControllerDefinition = Reflect.getMetadata(
+    DECORATORS.metadata.CONTROLLER,
+    TestInterceptorController,
+  );
   assert.is(controllerMetadata.interceptors.length, 1);
   assert.is(controllerMetadata.interceptors[0], TestInterceptor);
 
-  const routesMetadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestController);
+  const routesMetadata: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, TestInterceptorController);
   assert.is(routesMetadata.length, 1);
   assert.is(routesMetadata[0].interceptors.length, 1);
   assert.is(routesMetadata[0].interceptors[0], TestInterceptor);

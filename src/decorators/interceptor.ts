@@ -18,10 +18,9 @@ export const Intercept = (interceptor: InterceptorClass): MethodDecorator & Clas
 
     const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor);
 
-    if (routes.length > 0) {
+    if (routes?.length > 0) {
       routes[routes.length - 1].interceptors.push(interceptor);
+      Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
     }
-
-    Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
   };
 };

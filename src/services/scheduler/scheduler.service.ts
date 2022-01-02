@@ -1,10 +1,10 @@
 import cron, { ScheduledTask } from 'node-cron';
 
-import { Injectable } from '../../decorators';
-import { SchedulerConfig } from '../../decorators/scheduler';
+import { SchedulerConfig } from '../../decorators';
 import { DECORATORS } from '../../models/constants/decorators';
+import { NATIVE_SERVICES } from '../../models/constants/native-services';
+import { Injector } from '../../models/dependency-injection/injector.service';
 
-@Injectable()
 export class SchedulerService {
   private tasks: Map<string, ScheduledTask> = new Map<string, ScheduledTask>();
 
@@ -25,3 +25,5 @@ export class SchedulerService {
     return this.tasks;
   }
 }
+
+Injector.setNative('injectable', NATIVE_SERVICES.SCHEDULER, SchedulerService);

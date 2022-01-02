@@ -1,7 +1,7 @@
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
 
 import { InterceptorInstance, InterceptorStage } from '../models';
-import { HandlerAfterOptions } from '../models/interfaces/interceptor/handler-options.interface';
+import { HandlerAfterOptions } from '../models';
 
 export const interceptorHandler = (interceptor: InterceptorInstance, stage: InterceptorStage): RequestHandler => {
   return async (req: express.Request, res: express.Response, next): Promise<void> => {
