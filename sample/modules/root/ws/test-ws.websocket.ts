@@ -1,9 +1,13 @@
 import { Server } from 'socket.io';
 
-import { ConsumeEvent } from '../../../../src/decorators/events';
-import { GetWebSocketServer, WebSocketServer } from '../../../../src/decorators/websockets';
-import { OnWebSocketDestroy, OnWebSocketInit } from '../../../../src/models/interfaces/life-cycle.interface';
-import { EventPayload } from '../../../../src/services/events/event-manager.service';
+import {
+  ConsumeEvent,
+  EventPayload,
+  GetWebSocketServer,
+  OnWebSocketDestroy,
+  OnWebSocketInit,
+  WebSocketServer,
+} from '../../../../dist';
 
 class Testalo {
   @GetWebSocketServer()

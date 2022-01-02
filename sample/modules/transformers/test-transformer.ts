@@ -1,5 +1,4 @@
-import { TransformerHandler } from '../../../src';
-import { Transformer } from '../../../src/decorators/transformer';
+import { Transformer, TransformerHandler } from '../../../dist';
 
 @Transformer()
 export class TestTransformer implements TransformerHandler {

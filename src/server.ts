@@ -13,13 +13,13 @@ import { fallback, pushHttpEvents } from './middlewares';
 import { errorHandler } from './middlewares/error-handler.middleware';
 import { guardHandler } from './middlewares/guard.middleware';
 import { ServerOptions } from './models';
+import { CanExecute } from './models';
 import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
 import { Providers } from './models/dependency-injection/provider.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
-import { CanExecute } from './models/interfaces/authorization.interface';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
@@ -221,10 +221,15 @@ export class Server {
   }
 
   private setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => await LifeCycleManager.triggerUncaughtException(error));
-    process.on(
-      'unhandledRejection',
-      async (error: string) => await LifeCycleManager.triggerUncaughtRejection(new Error(error)),
-    );
+    process.on('uncaughtException', async (error) => {
+      await LifeCycleManager.triggerUncaughtException(error);
+      console.error(error);
+      process.exit(0);
+    });
+    process.on('unhandledRejection', async (error: string) => {
+      await LifeCycleManager.triggerUncaughtRejection(new Error(error));
+      console.error(error);
+      process.exit(0);
+    });
   }
 }

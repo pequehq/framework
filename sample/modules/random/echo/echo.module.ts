@@ -1,4 +1,4 @@
-import { Module } from '../../../../src/decorators/module';
+import { Module } from '../../../../dist';
 import { EchoController } from './controllers/echo.controller';
 
 @Module({

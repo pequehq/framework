@@ -3,6 +3,7 @@ import {
   Cookie,
   ForbiddenError,
   Get,
+  Guard,
   HttpService,
   Intercept,
   LoggerService,
@@ -10,8 +11,7 @@ import {
   Session,
   SwaggerResponse,
   SwaggerTag,
-} from '../../../../src';
-import { Guard } from '../../../../src/decorators/authorization';
+} from '../../../../dist';
 import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';

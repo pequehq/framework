@@ -1,4 +1,4 @@
-import { SwaggerComponent, SwaggerDtoProperty } from '../../../src/decorators/swagger';
+import { SwaggerComponent, SwaggerDtoProperty } from '../../../dist';
 
 @SwaggerComponent()
 export class HelloWorldDto {

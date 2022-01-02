@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { Injectable } from '../../decorators';
 import { NativeEventsType } from '../../models';
-import { OnProviderDestroy, OnProviderInit } from '../../models/interfaces/life-cycle.interface';
+import { OnProviderDestroy, OnProviderInit } from '../../models';
 import { SubjectEvent } from '../../models/interfaces/subject.interface';
 import { Subjects } from '../subjects/subjects';
 import { EventStorage } from './event-storage.service';

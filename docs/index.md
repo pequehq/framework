@@ -12,3 +12,14 @@ It can also be used to **invert the control** in a pre-existent Express applicat
 
 # Install
 `npm i peque.ts`
+
+# Getting started CLI
+
+`npm i -g peque.ts-cli`
+
+## Create a project boilerplate
+
+`peque --init project-name`
+
+## Create components
+`peque --generate module | controller | service | guard | interceptor | transformer path/of/the/component.ts`

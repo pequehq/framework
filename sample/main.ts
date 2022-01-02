@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import { ExpressFactory } from '../src';
+import { ExpressFactory } from '../dist';
 import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
 

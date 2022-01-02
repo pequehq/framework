@@ -1,5 +1,4 @@
-import { Injectable } from '../../../src';
-import { CanExecute } from '../../../src/models/interfaces/authorization.interface';
+import { CanExecute, Injectable } from '../../../dist';
 
 @Injectable()
 export class TestGuard implements CanExecute {

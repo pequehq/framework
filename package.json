@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start:sample": "rimraf dist && ts-node sample/main.ts",
+    "start:sample": "rimraf dist && npm run build && ts-node sample/main.ts",
     "test": "uvu -r tsm src .test.ts",
     "test:coverage": "c8 npm run test && make-coverage-badge --output-path=.badge-coverage.svg",
     "build": "rimraf dist && tsc && node post-build-actions.js",

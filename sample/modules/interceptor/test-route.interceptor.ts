@@ -1,10 +1,11 @@
-import { HttpException, Interceptor } from '../../../src';
-import { InterceptorHandler } from '../../../src';
-import { Context } from '../../../src/models/interfaces/context.interface';
 import {
+  Context,
   HandlerAfterOptions,
   HandlerBeforeOptions,
-} from '../../../src/models/interfaces/interceptor/handler-options.interface';
+  HttpException,
+  Interceptor,
+  InterceptorHandler,
+} from '../../../dist';
 
 @Interceptor()
 export class TestRouteInterceptor implements InterceptorHandler {

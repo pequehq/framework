@@ -1,5 +1,13 @@
-import { Cacheable, Controller, Get, Query, Request, Response } from '../../../../src/decorators';
-import { OnControllerDestroy, OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
+import {
+  Cacheable,
+  Controller,
+  Get,
+  OnControllerDestroy,
+  OnControllerInit,
+  Query,
+  Request,
+  Response,
+} from '../../../../dist';
 
 @Controller('/random')
 export class RandomController implements OnControllerInit, OnControllerDestroy {

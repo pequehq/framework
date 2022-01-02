@@ -1,5 +1,12 @@
-import { HttpService, LoggerService, Module, SocketIoServiceAdapter } from '../../../src';
-import { OnModuleDestroy, OnModuleInit, OnServerShutdown } from '../../../src/models/interfaces/life-cycle.interface';
+import {
+  HttpService,
+  LoggerService,
+  Module,
+  OnModuleDestroy,
+  OnModuleInit,
+  OnServerShutdown,
+  SocketIoServiceAdapter,
+} from '../../../dist';
 import { TestRouteInterceptor } from '../interceptor/test-route.interceptor';
 import { RandomModule } from '../random/random.module';
 import { TestController } from './controllers/test.controller';
