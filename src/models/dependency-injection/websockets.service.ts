@@ -45,9 +45,11 @@ export class WebSocketsService<TServer = any> {
   }
 
   async destroyWebSockets(): Promise<void> {
-    this.adapterService.close();
-    for (const module of this.instances) {
-      await LifeCycleManager.triggerWebSocketsDestroy(module);
+    if (this.adapterService) {
+      this.adapterService.close();
+      for (const module of this.instances) {
+        await LifeCycleManager.triggerWebSocketsDestroy(module);
+      }
     }
   }
 
