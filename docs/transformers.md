@@ -25,6 +25,7 @@ Transformers can be applied to the following route parameters decorators:
 - `@Param(key: string, transformer?: TransformerClass)`
 - `@Query(key: string, transformer?: TransformerClass)`
 - `@Header(key: string, transformer?: TransformerClass)`
+- `@Body(transformer?: TransformerClass)`
 
 ```typescript
 @Controller('/test')

@@ -9,21 +9,16 @@ import {
   WebSocketServer,
 } from '../../../../dist';
 
-class Testalo {
-  @GetWebSocketServer()
-  server: any;
-}
-
 @WebSocketServer(8899)
 export class TestWebsocket implements OnWebSocketInit, OnWebSocketDestroy {
   @GetWebSocketServer()
   private server: Server;
 
-  onWebSocketDestroy() {
+  onWebSocketDestroy(): void {
     console.log('I have been destroyed', TestWebsocket.name);
   }
 
-  onWebSocketInit() {
+  onWebSocketInit(): void {
     console.log('I have been initialized', TestWebsocket.name);
     console.log('Socket max listeners', this.server.getMaxListeners());
   }
