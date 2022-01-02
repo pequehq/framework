@@ -4,7 +4,7 @@ import {
   HandlerAfterOptions,
   HandlerBeforeOptions,
 } from '../../../src/models/interfaces/interceptor/handler-options.interface';
-import { InterceptorHandler } from '../../../src/models/interfaces/interceptor/interceptor.interface';
+import { InterceptorHandler } from '../../../src';
 
 @Interceptor()
 export class TestControllerInterceptor implements InterceptorHandler {

@@ -9,3 +9,7 @@ export * from './injectable';
 export * from './module';
 export * from './events';
 export * from './interceptor';
+export * from './transformer';
+export * from './authorization';
+export * from './websockets';
+export * from './scheduler';
