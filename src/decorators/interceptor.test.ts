@@ -78,7 +78,6 @@ test('should set an interceptor metadata for routes and controllers', async () =
     }
   }
 
-  console.log('test');
   const controllerMetadata: ControllerDefinition = Reflect.getMetadata(
     DECORATORS.metadata.CONTROLLER,
     TestInterceptorController,

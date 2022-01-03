@@ -11,6 +11,10 @@ test.before.each(() => {
   Providers.unsetAll();
 });
 
+test.after.each(() => {
+  Providers.unsetAll();
+});
+
 test('should set a transformer provider', () => {
   @Transformer()
   class TestTransformer implements TransformerHandler {

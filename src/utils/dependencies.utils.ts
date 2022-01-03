@@ -1,7 +1,5 @@
 import { ClassDeclaration } from '../models';
-import { ControllerService } from '../models/dependency-injection/controller.service';
 import { Injector } from '../models/dependency-injection/injector.service';
-import { ModuleService } from '../models/dependency-injection/module.service';
 import { Providers } from '../models/dependency-injection/provider.service';
 import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 
@@ -39,16 +37,4 @@ export const destroyProviders = async (): Promise<void> => {
   for (const key of Providers.getProviderInstancesByType('interceptor').keys()) {
     await LifeCycleManager.triggerProviderDestroy(key);
   }
-};
-
-export const getAllInstances = (): unknown[] => {
-  const controllers = Injector.resolve<ControllerService>('injectable', 'ControllerService');
-  const modules = Injector.resolve<ModuleService>('injectable', 'ModuleService');
-
-  return [
-    ...controllers.getInstances(),
-    ...modules.getInstances(),
-    ...Providers.getProviderInstancesByType('injectable').values(),
-    ...Providers.getProviderInstancesByType('interceptor').values(),
-  ];
 };
