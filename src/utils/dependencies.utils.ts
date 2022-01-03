@@ -27,6 +27,12 @@ export const loadInjectables = async (): Promise<void> => {
   for (const transformer of transformers) {
     await Injector.set('transformer', transformer.name, transformer.clazz, getClassDependencies(transformer.clazz));
   }
+
+  // Load middlewares.
+  const middlewares = Providers.getProvidersByType('middleware');
+  for (const middleware of middlewares) {
+    await Injector.set('middleware', middleware.name, middleware.clazz, getClassDependencies(middleware.clazz));
+  }
 };
 
 export const destroyProviders = async (): Promise<void> => {

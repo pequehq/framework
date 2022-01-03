@@ -1,11 +1,11 @@
 import { MethodDefinition } from './method-definition.interface';
-import { ExpressMethods, GuardClass, InterceptorClass, MiddlewareHandler } from './types';
+import { ExpressMethods, GuardClass, InterceptorClass, MiddlewareClass } from './types';
 
 export interface RouteDefinition {
   path: string;
   requestMethod: ExpressMethods;
   method: MethodDefinition;
-  middlewareFunctions: MiddlewareHandler;
+  middlewareFunctions: MiddlewareClass[];
   documentOnly: boolean;
   guards: GuardClass[];
   interceptors: InterceptorClass[];

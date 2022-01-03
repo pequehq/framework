@@ -13,3 +13,4 @@ export * from './transformer';
 export * from './authorization';
 export * from './websockets';
 export * from './scheduler';
+export * from './middleware';

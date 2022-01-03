@@ -1,17 +1,14 @@
-import type { Handler } from 'express';
-
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
 }
 
 export type Listener = (...args: unknown[]) => void;
-export type MiddlewareHandler = Handler | Handler[];
 export type ExpressMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options';
 export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'response' | 'cookies' | 'session';
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
 export type LogLevelsType = 'debug' | 'info' | 'warn' | 'error';
 export type InterceptorType = 'exception';
-export type ProviderType = 'injectable' | 'interceptor' | 'transformer';
+export type ProviderType = 'injectable' | 'interceptor' | 'transformer' | 'middleware';
 export type NativeEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'
@@ -53,6 +50,9 @@ export type ControllerInstance = InstanceType<ControllerClass>;
 
 export type GuardClass = ClassDeclaration;
 export type GuardInstance = InstanceType<GuardClass>;
+
+export type MiddlewareClass = ClassDeclaration;
+export type MiddlewareInstance = InstanceType<GuardClass>;
 
 export type WebSocketClass = ClassDeclaration;
 export type WebSocketInstance = InstanceType<WebSocketClass>;

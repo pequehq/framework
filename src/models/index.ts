@@ -19,4 +19,5 @@ export * from './interfaces/life-cycle.interface';
 export * from './interfaces/server-options.interface';
 export * from './interfaces/context.interface';
 export * from './interfaces/interceptor/handler-options.interface';
+export * from './interfaces/middleware.interface';
 export * from './errors/errors';

@@ -5,6 +5,7 @@ import { interceptorErrorHandler, interceptorHandler } from '../../middlewares/i
 import { responder } from '../../middlewares/responder.middleware';
 import { LoggerService } from '../../services';
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
+import { Middlewares } from '../../services/middleware/middleware.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { buildParameters } from '../../utils/express/factory';
 import { DECORATORS } from '../constants/decorators';
@@ -72,7 +73,7 @@ export class ControllerService {
 
       // Controller root middlewares.
       if (controllerMeta.middlewares?.length && controllerMeta.middlewares?.length > 0) {
-        application.use(controllerMeta.prefix, ...controllerMeta.middlewares);
+        application.use(controllerMeta.prefix, ...Middlewares.returnHandlers(controllerMeta.middlewares));
       }
 
       // Iterate the routes for express registration.
@@ -122,10 +123,8 @@ export class ControllerService {
           }
         };
 
-        if (route.middlewareFunctions) {
-          routeMiddlewares = Array.isArray(route.middlewareFunctions)
-            ? [...route.middlewareFunctions]
-            : [route.middlewareFunctions];
+        if (route.middlewareFunctions.length > 0) {
+          routeMiddlewares = Middlewares.returnHandlers(route.middlewareFunctions);
         }
 
         // Route registration.

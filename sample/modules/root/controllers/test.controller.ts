@@ -12,12 +12,14 @@ import {
   Session,
   SwaggerResponse,
   SwaggerTag,
+  UseMiddleware,
 } from '../../../../dist';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
 import { TestControllerInterceptor } from '../../interceptor/test-controller.interceptor';
 import { TestRouteInterceptor } from '../../interceptor/test-route.interceptor';
+import { TestMwMiddleware } from '../../middlewares/test-mw.middleware';
 import { TestTransformer } from '../../transformers/test-transformer';
 import { ExternalTestService } from '../external-test.service';
 
@@ -74,6 +76,7 @@ export class TestController implements OnControllerInit {
     ],
   )
   @Intercept(TestRouteInterceptor)
+  @UseMiddleware(TestMwMiddleware)
   @Get('/external')
   async external() {
     return { external: await this.externalService.getExternalCall() };

@@ -2,10 +2,10 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { ControllerDefinition, HttpException, InterceptorHandler, RouteDefinition } from '../models';
+import { Context } from '../models';
+import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { Context } from '../models/interfaces/context.interface';
-import { HandlerAfterOptions, HandlerBeforeOptions } from '../models/interfaces/interceptor/handler-options.interface';
 import { loadInjectables } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';

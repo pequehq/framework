@@ -4,7 +4,7 @@ import {
   ExpressMethods,
   InterceptorClass,
   InterceptorType,
-  MiddlewareHandler,
+  MiddlewareClass,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
@@ -52,11 +52,11 @@ const extractParameters = (param: ParamType, target: object, propertyKey: string
     .filter(Boolean);
 };
 
-export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler): ClassDecorator => {
+export const controllerBuilder = (prefix: string): ClassDecorator => {
   return (target): void => {
     const controllerDefinition: ControllerDefinition = {
       prefix,
-      middlewares: Array.isArray(middlewares) ? middlewares : [middlewares],
+      middlewares: [],
       guards: [],
       interceptors: [],
     };
@@ -70,12 +70,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
 };
 
 // @TODO refactor to take an object instead of N parameters
-export const methodBuilder = (
-  method: ExpressMethods,
-  path: string,
-  middleware: MiddlewareHandler,
-  documentOnly: boolean,
-): MethodDecorator => {
+export const methodBuilder = (method: ExpressMethods, path: string, documentOnly: boolean): MethodDecorator => {
   return (target, propertyKey): void => {
     if (!Reflect.hasMetadata(DECORATORS.metadata.ROUTES, target.constructor)) {
       Reflect.defineMetadata(DECORATORS.metadata.ROUTES, [], target.constructor);
@@ -98,7 +93,7 @@ export const methodBuilder = (
         cookies: extractParameters('cookies', target, propertyKey),
         session: extractParameters('session', target, propertyKey),
       },
-      middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
+      middlewareFunctions: [],
       documentOnly,
       interceptors: [],
       guards: [],
@@ -150,6 +145,12 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
 export const transformerBuilder = (): ClassDecorator => {
   return (target): void => {
     Providers.addProvider('transformer', { name: target.name, clazz: target as unknown as TransformerClass });
+  };
+};
+
+export const middlewareBuilder = (): ClassDecorator => {
+  return (target): void => {
+    Providers.addProvider('middleware', { name: target.name, clazz: target as unknown as MiddlewareClass });
   };
 };
 
