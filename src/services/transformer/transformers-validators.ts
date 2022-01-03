@@ -1,5 +1,3 @@
-import { isNumber } from 'util';
-
 import { Transformer } from '../../decorators';
 import { BadRequestException, TransformerHandler } from '../../models';
 
@@ -24,10 +22,15 @@ export class ToNumber implements TransformerHandler {
 @Transformer()
 export class ToBoolean implements TransformerHandler {
   transform(value: unknown): boolean | Promise<boolean> {
-    if (typeof Boolean(value) === 'boolean') {
-      return Boolean(value);
-    } else {
-      throw new BadRequestException({ error: {}, message: 'Not a valid boolean' });
+    switch (String(value).toLocaleLowerCase()) {
+      case 'true':
+      case '1':
+        return true;
+      case 'false':
+      case '0':
+        return false;
+      default:
+        throw new BadRequestException({ error: {}, message: 'Not a valid boolean' });
     }
   }
 }

@@ -53,3 +53,11 @@ export class NumberTransform implements TransformerHandler {
   }
 }
 ```
+
+# Built-in transformers and validators
+
+| Component      | Type                   | Description                                                                                                                                  |
+|----------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `@ToString()`  | Transformer            | It converts the received into string                                                                                                         |
+| `@ToNumber()`  | Transformer, Validator | It checks if the value can be converted into a number and eventually converts it. It can throw a `BadRequestException`.                      |
+| `@ToBoolean()` | Transformer, Validator | It checks if the value can be converted into a boolean (true, 1, false, 0) and eventually converts it. It can throw a `BadRequestException`. |
