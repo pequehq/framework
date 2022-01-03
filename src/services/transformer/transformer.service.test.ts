@@ -9,10 +9,6 @@ import { loadInjectables } from '../../utils/dependencies.utils';
 
 const test = suite('TransformerService');
 
-test.before.each(() => {
-  Providers.unsetAll();
-});
-
 test.after.each(() => {
   Providers.unsetAll();
 });
