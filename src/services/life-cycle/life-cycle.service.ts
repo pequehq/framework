@@ -1,5 +1,5 @@
 import { ClassDeclaration, NativeEventsType } from '../../models';
-import { getAllInstances } from '../../utils/dependencies.utils';
+import { getAllInstances } from '../../utils/instances.utils';
 import { Subjects } from '../subjects/subjects';
 
 class LifeCycleManagerService {

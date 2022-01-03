@@ -7,7 +7,7 @@ import { Transformer } from './transformer';
 
 const test = suite('Transformers');
 
-test.before.each(() => {
+test.after.each(() => {
   Providers.unsetAll();
 });
 

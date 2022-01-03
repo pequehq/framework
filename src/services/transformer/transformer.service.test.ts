@@ -1,7 +1,7 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { Transformer } from '../../decorators/transformer';
+import { Transformer } from '../../decorators';
 import { TransformerHandler } from '../../models';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
@@ -9,7 +9,7 @@ import { loadInjectables } from '../../utils/dependencies.utils';
 
 const test = suite('TransformerService');
 
-test.before.each(() => {
+test.after.each(() => {
   Providers.unsetAll();
 });
 

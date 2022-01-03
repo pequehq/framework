@@ -7,12 +7,12 @@ import {
   HttpService,
   Intercept,
   LoggerService,
+  OnControllerInit,
   Query,
   Session,
   SwaggerResponse,
   SwaggerTag,
 } from '../../../../dist';
-import { OnControllerInit } from '../../../../src/models/interfaces/life-cycle.interface';
 import { ExternalDto } from '../../../models/dto/external.dto';
 import { HelloWorldDto } from '../../../models/dto/hello-world.dto';
 import { TestGuard } from '../../guards/test.guard';
