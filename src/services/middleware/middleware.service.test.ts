@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { Handler, NextFunction, Request, Response } from 'express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';

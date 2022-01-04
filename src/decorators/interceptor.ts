@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ControllerDefinition, InterceptorClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { interceptorBuilder } from './utils/decorators';

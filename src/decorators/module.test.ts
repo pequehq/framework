@@ -11,7 +11,7 @@ import { Module } from './module';
 
 const test = suite('Module');
 
-test.before.each(() => {
+test.after.each(() => {
   Modules.flush();
 });
 
@@ -61,9 +61,10 @@ test('should add custom providers to the framework providers when specified as {
   assert.is(Modules.getAll()[0], TestModule);
   assert.ok(
     // @ts-ignore
-    providersAdd.calledWith('injectable', {
+    providersAdd.calledWith({
       name: 'TestProvider',
       clazz: NativeProvider,
+      type: 'injectable',
     }),
   );
 

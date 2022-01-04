@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
@@ -13,7 +15,7 @@ import { Intercept, Interceptor } from './interceptor';
 
 const test = suite('Interceptors');
 
-test.before.each(() => {
+test.after.each(() => {
   Providers.unsetAll();
 });
 
@@ -44,6 +46,7 @@ test('should set an interceptor provider', async () => {
   assert.equal(interceptors[0], {
     name: 'TestInterceptor',
     clazz: TestInterceptor,
+    type: 'interceptor',
   });
 });
 

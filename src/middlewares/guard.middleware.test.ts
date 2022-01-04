@@ -17,6 +17,9 @@ const expressMocks = new ExpressMocks();
 
 test.before.each(() => {
   expressMocks.restore();
+});
+
+test.after.each(() => {
   Providers.unsetAll();
 });
 

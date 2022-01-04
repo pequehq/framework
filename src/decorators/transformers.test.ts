@@ -25,6 +25,7 @@ test('should set a transformer provider', () => {
   assert.equal(transformers[0], {
     name: 'TestTransformer',
     clazz: TestTransformer,
+    type: 'transformer',
   });
 });
 

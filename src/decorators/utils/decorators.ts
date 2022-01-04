@@ -1,16 +1,16 @@
+import 'reflect-metadata';
+
 import {
   ClassDeclaration,
   ControllerDefinition,
   ExpressMethods,
   InterceptorClass,
-  InterceptorType,
   MiddlewareClass,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
   ProviderClass,
-  ProviderType,
   RouteDefinition,
   TransformerClass,
 } from '../../models';

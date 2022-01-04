@@ -1,8 +1,8 @@
+import 'reflect-metadata';
+
 import { WebSocketClass } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { NATIVE_SERVICES } from '../models/constants/native-services';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { WebSockets, WebSocketsService } from '../models/dependency-injection/websockets.service';
+import { WebSockets } from '../models/dependency-injection/websockets.service';
 
 export function WebSocketServer<TOptions, TAdapter>(
   port: number,
@@ -17,7 +17,7 @@ export function WebSocketServer<TOptions, TAdapter>(
 export const GetWebSocketServer = (): PropertyDecorator => {
   return (target, key): void => {
     Object.defineProperty(target, key, {
-      get: () => Injector.resolve<WebSocketsService>('injectable', NATIVE_SERVICES.WEBSOCKETS).getServer(),
+      get: () => WebSockets.getServer(),
       enumerable: true,
       configurable: true,
     });

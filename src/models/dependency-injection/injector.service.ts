@@ -1,6 +1,6 @@
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { ProviderClass, ProviderInstance, ProviderType } from '../interfaces/types';
-import { ProviderInstances, Providers } from './provider.service';
+import { Providers } from './provider.service';
 
 class InjectorService {
   resolve<TClass extends ProviderInstance>(type: ProviderType, provider: string): TClass {

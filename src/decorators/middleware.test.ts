@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { NextFunction, Request, Response } from 'express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -36,6 +38,7 @@ test('should load the correct middlewares', async (context) => {
   assert.equal(middlewares[0], {
     name: 'TestMiddleware',
     clazz: context.middleware,
+    type: 'middleware',
   });
   assert.is.not(Injector.resolve('middleware', context.middleware.name), undefined);
 });

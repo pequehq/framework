@@ -7,7 +7,7 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
 import { loadInjectables } from '../../utils/dependencies.utils';
 
-const test = suite('TransformerService');
+const test = suite('Transformer Service');
 
 test.after.each(() => {
   Providers.unsetAll();
@@ -22,7 +22,6 @@ test('should execute correctly a transformer', async () => {
   }
 
   await loadInjectables();
-
   const transformer = Injector.resolve<TransformerHandler>('transformer', 'TestTransformer');
   const result = transformer.transform('testValue');
   assert.is(result, 'Adding some text: testValue');

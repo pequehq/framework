@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import cron, { ScheduledTask } from 'node-cron';
 
 import { SchedulerConfig } from '../../decorators';

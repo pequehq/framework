@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ClassDeclaration, RouteDefinition, RouteOptions } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { SWAGGER } from '../../models/constants/swagger';

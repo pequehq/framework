@@ -4,11 +4,11 @@ import * as assert from 'uvu/assert';
 import { ExpressMocks, NextError } from '../../test/mocks/express.mocks';
 import { Interceptor } from '../decorators';
 import { HttpException, InterceptorHandler } from '../models';
+import { Context } from '../models';
+import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { Context } from '../models/interfaces/context.interface';
-import { HandlerAfterOptions, HandlerBeforeOptions } from '../models/interfaces/interceptor/handler-options.interface';
 import { loadInjectables } from '../utils/dependencies.utils';
 import { interceptorErrorHandler, interceptorHandler } from './interceptors.middleware';
 
@@ -18,7 +18,6 @@ const expressMocks = new ExpressMocks();
 
 test.before.each(async () => {
   expressMocks.restore();
-  Providers.unsetAll();
 
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
@@ -57,6 +56,10 @@ test.before.each(async () => {
   }
 
   await loadInjectables();
+});
+
+test.after.each(() => {
+  Providers.unsetAll();
 });
 
 test('should execute an interceptor class before method', async () => {

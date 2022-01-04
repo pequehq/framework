@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { Application, ErrorRequestHandler, RequestHandler } from 'express';
 
 import { guardHandler } from '../../middlewares/guard.middleware';

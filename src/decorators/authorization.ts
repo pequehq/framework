@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ControllerDefinition, GuardClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 

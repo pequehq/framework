@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ControllerDefinition, MiddlewareClass, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { middlewareBuilder } from './utils/decorators';
