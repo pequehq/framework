@@ -43,7 +43,6 @@ test('should return an array of middleware handlers', (context) => {
   const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, context.controller);
   const controllerMws: Handler[] = Middlewares.returnHandlers(controller.middlewares);
   const routeMws: Handler[] = Middlewares.returnHandlers(routes[0].middlewareFunctions);
-  console.log(controllerMws, routeMws);
 
   assert.is(controllerMws.length, 1);
   assert.is(routeMws.length, 1);

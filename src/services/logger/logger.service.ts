@@ -20,7 +20,7 @@ const calculateLogLevel = (level: LogLevelsType): number => LOG_LEVELS_MAPPING[l
 
 @Injectable()
 export class LoggerService {
-  constructor(private readonly eventManager: EventManagerService, private readonly configService: ConfigService) {
+  constructor(public readonly eventManager: EventManagerService, public readonly configService: ConfigService) {
     this.subscribe((value) => {
       const serverOptions = this.configService.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
       if (
