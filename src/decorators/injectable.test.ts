@@ -6,7 +6,7 @@ import { NATIVE_SERVICES } from '../models/constants/native-services';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
 import { HttpService } from '../services';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { getClassDependencies, loadInjectables } from '../utils/dependencies.utils';
 import { Inject, Injectable } from './injectable';
 
 const test = suite('Injectable');
@@ -66,6 +66,35 @@ test('@Inject should inject a custom provider', async () => {
   assert.instance(subject.testService, TestService);
   assert.instance(Injector.resolve('injectable', NATIVE_SERVICES.HTTP_SERVICE), TestService);
   assert.is(subject.testService.request(undefined), 'custom service');
+});
+
+test('should work when dependencies are injected in the constructor', async () => {
+  @Injectable()
+  class TestDependency {
+    run() {
+      return true;
+    }
+  }
+
+  @Injectable()
+  class TestClass {
+    constructor(public testDependency: TestDependency) {}
+
+    run() {
+      return this.testDependency.run();
+    }
+  }
+
+  await loadInjectables();
+
+  const testClass = Injector.resolve<TestClass>('injectable', 'TestClass');
+
+  assert.instance(testClass.testDependency, TestDependency);
+  assert.is(testClass.run(), true);
+
+  assert.is(getClassDependencies(TestDependency).length, 0);
+  assert.is(getClassDependencies(TestClass).length, 1);
+  assert.instance(getClassDependencies(TestClass)[0], TestDependency);
 });
 
 test.run();
