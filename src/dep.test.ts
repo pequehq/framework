@@ -13,8 +13,7 @@ test('should work as expected', async () => {
   @Injectable()
   class PippoService {
     yell() {
-      console.log('yelled');
-      return 'aaaah!!';
+      return 'aaaaah!!';
     }
   }
 
@@ -31,7 +30,7 @@ test('should work as expected', async () => {
 
   const testClass = Injector.resolve<TestClass>('injectable', 'TestClass');
 
-  assert.is(testClass.makePippoYell(), 'aaaah!!');
+  assert.is(testClass.makePippoYell(), 'aaaaah!!');
 });
 
 test.run();
