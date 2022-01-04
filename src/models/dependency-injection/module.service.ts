@@ -1,7 +1,5 @@
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
-import { NATIVE_SERVICES } from '../constants/native-services';
 import { ModuleClass, ModuleInstance } from '../interfaces/types';
-import { Injector } from './injector.service';
 
 export class ModuleService {
   private modules: ModuleClass[] = [];
@@ -38,6 +36,4 @@ export class ModuleService {
   }
 }
 
-Injector.setNative('injectable', NATIVE_SERVICES.MODULE, ModuleService);
-
-export const Modules = Injector.resolve<ModuleService>('injectable', NATIVE_SERVICES.MODULE);
+export const Modules = new ModuleService();
