@@ -6,7 +6,7 @@ import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
   // Getting the params to be injected declared inside the constructor.
   const providers = Reflect.getMetadata('design:paramtypes', clazz) ?? [];
-  console.log('getClassDependencies > design:paramtypes', providers);
+  console.log('getClassDependencies called with', clazz, ' and returned ', providers);
   return providers.map((provider) => Injector.resolve('injectable', provider.name));
 };
 

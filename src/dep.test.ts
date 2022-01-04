@@ -18,8 +18,7 @@ test('should work as expected', async () => {
     }
   }
 
-  await loadInjectables();
-
+  @Injectable()
   class TestClass {
     constructor(public pippoService: PippoService) {}
 
@@ -28,11 +27,9 @@ test('should work as expected', async () => {
     }
   }
 
-  let testClass;
+  await loadInjectables();
 
-  assert.not.throws(() => {
-    testClass = Injector.resolve<TestClass>('injectable', 'TestClass');
-  });
+  const testClass = Injector.resolve<TestClass>('injectable', 'TestClass');
 
   assert.is(testClass.makePippoYell(), 'aaaah!!');
 });
