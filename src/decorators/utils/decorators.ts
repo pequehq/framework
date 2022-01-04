@@ -167,7 +167,6 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
       name = options.customProvider.interface;
     }
 
-    console.log('adding injectable', target);
     Providers.addProvider('injectable', { name, clazz: target as unknown as ProviderClass });
   };
 };

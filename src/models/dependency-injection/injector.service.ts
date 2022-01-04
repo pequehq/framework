@@ -6,7 +6,6 @@ class InjectorService {
   private providers = new Map<string, ProviderInstance>();
 
   resolve<TClass extends ProviderInstance>(type: ProviderType, provider: string): TClass {
-    console.log('InjectorService.resolve called with', { type, provider });
     const matchedProvider = Providers.getProviderInstanceByType(type, provider) as TClass;
     if (!matchedProvider) {
       throw new Error(`No provider found for ${provider}!`);
@@ -23,7 +22,7 @@ class InjectorService {
   ): Promise<void> {
     if (!Providers.hasProviderInstance(type, provider)) {
       const instance = new target(...dependencies);
-      //await LifeCycleManager.triggerProviderInit(instance);
+      // await LifeCycleManager.triggerProviderInit(instance);
       Providers.setProviderInstance(type, provider, instance);
     }
   }

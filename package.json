@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && npm run build && ts-node sample/main.ts",
-    "test": "ts-node src/dep.test.ts",
+    "test": "uvu -r tsm src dep.test.ts",
+    "testa": "ts-node src/dep.test.ts",
     "test:coverage": "c8 npm run test && make-coverage-badge --output-path=.badge-coverage.svg",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
