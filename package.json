@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && npm run build && ts-node sample/main.ts",
-    "test": "uvu -r tsm src .test.ts",
+    "test": "node --loader ts-node/esm ./node_modules/uvu/bin.js src .test.ts",
     "test:coverage": "c8 npm run test && make-coverage-badge --output-path=.badge-coverage.svg",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
@@ -58,7 +58,6 @@
     "rimraf": "^3.0.2",
     "sinon": "^12.0.1",
     "ts-node": "^10.4.0",
-    "tsm": "^2.2.1",
     "typescript": "^4.5.4",
     "uvu": "^0.5.2"
   }

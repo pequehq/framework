@@ -152,5 +152,4 @@ export class ControllerService {
   }
 }
 
-Injector.setNative('injectable', NATIVE_SERVICES.CONTROLLER, ControllerService);
-export const Controllers = Injector.resolve<ControllerService>('injectable', NATIVE_SERVICES.CONTROLLER);
+export const Controllers = new ControllerService();

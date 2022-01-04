@@ -58,6 +58,4 @@ export class WebSocketsService<TServer = any> {
   }
 }
 
-Injector.setNative('injectable', NATIVE_SERVICES.WEBSOCKETS, WebSocketsService);
-
-export const WebSockets = Injector.resolve<WebSocketsService>('injectable', NATIVE_SERVICES.WEBSOCKETS);
+export const WebSockets = new WebSocketsService();
