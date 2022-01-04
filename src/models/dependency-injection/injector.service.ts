@@ -22,7 +22,7 @@ class InjectorService {
   ): Promise<void> {
     if (!Providers.hasProviderInstance(type, provider)) {
       const instance = new target(...dependencies);
-      // await LifeCycleManager.triggerProviderInit(instance);
+      await LifeCycleManager.triggerProviderInit(instance);
       Providers.setProviderInstance(type, provider, instance);
     }
   }
