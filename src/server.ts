@@ -1,5 +1,6 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express, { Application } from 'express';
 import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
@@ -75,7 +76,7 @@ export class Server {
     });
   }
 
-  async bootstrap(): Promise<Application> {
+  async bootstrap(): Promise<void> {
     // Set terminators.
     this.terminationProcess();
 
@@ -91,14 +92,27 @@ export class Server {
       this.application.use(expressSession(this.options.session));
     }
 
+    // Body parser.
+    this.application.use(express.json({ limit: '2m' }));
+    this.application.use(express.urlencoded({ extended: true }));
+
     // Cookie parser.
     this.application.use(cookieParser());
 
+    // CORS.
+    if (this.options.cors) {
+      if (typeof this.options.cors === 'boolean') {
+        this.application.use(cors());
+      } else {
+        this.application.use(cors(this.options.cors));
+      }
+    }
+
     // Global guards.
-    const guards =
-      this.options.guards?.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))) ?? [];
-    if (guards.length > 0) {
-      this.application.use(...guards);
+    if (this.options.guards?.length) {
+      this.application.use(
+        this.options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
+      );
     }
 
     // Push HTTP event.
@@ -122,7 +136,7 @@ export class Server {
       this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
     }
 
-    // Add fallback.
+    // Add fallback for not existing routes.
     this.application.use(fallback);
 
     // Add post-route Middlewares.
@@ -134,8 +148,6 @@ export class Server {
 
     // Server listener.
     await this.listen();
-
-    return this.application;
   }
 
   private async listen(): Promise<void> {

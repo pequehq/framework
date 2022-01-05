@@ -1,9 +1,10 @@
+import type { CorsOptions } from 'cors';
 import type { Application, RequestHandler } from 'express';
-import { SessionOptions } from 'express-session';
+import type { SessionOptions } from 'express-session';
 
-import { LoggerInterface } from './logger.interface';
-import { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
-import { GuardClass, ModuleClass } from './types';
+import type { LoggerInterface } from './logger.interface';
+import type { SwaggerOptionsInterface } from './swagger/swagger-options.interface';
+import type { GuardClass, ModuleClass } from './types';
 
 interface GlobalMiddlewares {
   preRoutes?: RequestHandler[];
@@ -25,4 +26,5 @@ export interface ServerOptions {
   guards?: GuardClass[];
   session?: SessionOptions;
   showOriginalErrorObject?: boolean;
+  cors?: boolean | CorsOptions;
 }
