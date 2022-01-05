@@ -14,3 +14,4 @@ export * from './authorization';
 export * from './websockets';
 export * from './scheduler';
 export * from './middleware';
+export * from './microservice';

@@ -5,6 +5,7 @@ import {
   ControllerDefinition,
   ExpressMethods,
   InterceptorClass,
+  MicroserviceClass,
   MiddlewareClass,
   ModuleClass,
   ModuleDefinition,
@@ -20,6 +21,7 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
 import { CustomProvider } from '../injectable';
+import { MicroserviceOptions } from '../microservice';
 
 interface InjectableInterface {
   customProvider?: CustomProvider;
@@ -129,6 +131,13 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
         });
       }
     });
+  };
+};
+
+export const microserviceBuilder = (options: MicroserviceOptions): ClassDecorator => {
+  return (target): void => {
+    Reflect.defineMetadata(DECORATORS.metadata.microservice.OPTIONS, options, target);
+    Providers.addProvider({ name: target.name, clazz: target as unknown as MicroserviceClass, type: 'microservice' });
   };
 };
 

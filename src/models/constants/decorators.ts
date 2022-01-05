@@ -33,5 +33,8 @@ export const DECORATORS = {
     interceptor: {
       INTERCEPTORS: 'interceptors',
     },
+    microservice: {
+      OPTIONS: 'microservice_options',
+    },
   },
 };

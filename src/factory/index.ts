@@ -1,1 +1,1 @@
-export * from './express-factory';
+export * from './peque-factory';
