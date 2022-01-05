@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ClassDeclaration } from '../models';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
@@ -10,22 +12,15 @@ export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
 };
 
 export const loadInjectables = async (): Promise<void> => {
-  // Load injectables.
-  const injectables = Providers.getProvidersByType('injectable');
-  for (const injectable of injectables) {
-    await Injector.set('injectable', injectable.name, injectable.clazz, getClassDependencies(injectable.clazz));
-  }
+  const providers = [
+    ...Providers.getProvidersByType('injectable'),
+    ...Providers.getProvidersByType('interceptor'),
+    ...Providers.getProvidersByType('transformer'),
+    ...Providers.getProvidersByType('middleware'),
+  ];
 
-  // Load interceptors.
-  const interceptors = Providers.getProvidersByType('interceptor');
-  for (const interceptor of interceptors) {
-    await Injector.set('interceptor', interceptor.name, interceptor.clazz, getClassDependencies(interceptor.clazz));
-  }
-
-  // Load transformers.
-  const transformers = Providers.getProvidersByType('transformer');
-  for (const transformer of transformers) {
-    await Injector.set('transformer', transformer.name, transformer.clazz, getClassDependencies(transformer.clazz));
+  for (const provider of providers) {
+    await Injector.set(provider.type, provider.name, provider.clazz, getClassDependencies(provider.clazz));
   }
 };
 

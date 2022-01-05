@@ -1,17 +1,18 @@
+import 'reflect-metadata';
+
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { CacheManager, HttpClient } from '../models';
+import { HttpClient } from '../models';
 import { NATIVE_SERVICES } from '../models/constants/native-services';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { HttpService } from '../services';
 import { getClassDependencies, loadInjectables } from '../utils/dependencies.utils';
 import { Inject, Injectable } from './injectable';
 
 const test = suite('Injectable');
 
-test.before.each(() => {
+test.after.each(() => {
   Providers.unsetAll();
 });
 

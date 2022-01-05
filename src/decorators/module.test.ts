@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -9,7 +11,7 @@ import { Module } from './module';
 
 const test = suite('Module');
 
-test.before.each(() => {
+test.after.each(() => {
   Modules.flush();
 });
 
@@ -58,9 +60,10 @@ test('should add custom providers to the framework providers when specified as {
 
   assert.is(Modules.getAll()[0], TestModule);
   assert.ok(
-    providersAdd.calledWith('injectable', {
+    providersAdd.calledWith({
       name: 'TestProvider',
       clazz: NativeProvider,
+      type: 'injectable',
     }),
   );
 
@@ -86,9 +89,10 @@ test('should add custom providers to the framework providers when specified as {
 
   assert.is(Modules.getAll()[0], TestModule);
   assert.ok(
-    providersAdd.calledWith('injectable', {
+    providersAdd.calledWith({
       name: 'TestProvider',
       clazz: NativeProvider,
+      type: 'injectable',
     }),
   );
 

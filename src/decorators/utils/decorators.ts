@@ -1,16 +1,16 @@
+import 'reflect-metadata';
+
 import {
   ClassDeclaration,
   ControllerDefinition,
   ExpressMethods,
   InterceptorClass,
-  InterceptorType,
-  MiddlewareHandler,
+  MiddlewareClass,
   ModuleClass,
   ModuleDefinition,
   ParamDefinition,
   ParamType,
   ProviderClass,
-  ProviderType,
   RouteDefinition,
   TransformerClass,
 } from '../../models';
@@ -21,18 +21,8 @@ import { Modules } from '../../models/dependency-injection/module.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
 import { CustomProvider } from '../injectable';
 
-interface ProviderOptions {
-  type: ProviderType;
-}
-
-interface InjectableInterface extends ProviderOptions {
+interface InjectableInterface {
   customProvider?: CustomProvider;
-}
-
-// @TODO check why this interface is unused
-interface InterceptorInterface extends ProviderOptions {
-  interceptorType: InterceptorType;
-  clazz: ClassDeclaration;
 }
 
 const metadataKeys: Record<ParamType, string> = {
@@ -52,11 +42,11 @@ const extractParameters = (param: ParamType, target: object, propertyKey: string
     .filter(Boolean);
 };
 
-export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler): ClassDecorator => {
+export const controllerBuilder = (prefix: string): ClassDecorator => {
   return (target): void => {
     const controllerDefinition: ControllerDefinition = {
       prefix,
-      middlewares: Array.isArray(middlewares) ? middlewares : [middlewares],
+      middlewares: [],
       guards: [],
       interceptors: [],
     };
@@ -69,13 +59,7 @@ export const controllerBuilder = (prefix: string, middlewares: MiddlewareHandler
   };
 };
 
-// @TODO refactor to take an object instead of N parameters
-export const methodBuilder = (
-  method: ExpressMethods,
-  path: string,
-  middleware: MiddlewareHandler,
-  documentOnly: boolean,
-): MethodDecorator => {
+export const methodBuilder = (method: ExpressMethods, path: string, documentOnly: boolean): MethodDecorator => {
   return (target, propertyKey): void => {
     if (!Reflect.hasMetadata(DECORATORS.metadata.ROUTES, target.constructor)) {
       Reflect.defineMetadata(DECORATORS.metadata.ROUTES, [], target.constructor);
@@ -98,7 +82,7 @@ export const methodBuilder = (
         cookies: extractParameters('cookies', target, propertyKey),
         session: extractParameters('session', target, propertyKey),
       },
-      middlewareFunctions: Array.isArray(middleware) ? middleware : [middleware],
+      middlewareFunctions: [],
       documentOnly,
       interceptors: [],
       guards: [],
@@ -138,9 +122,10 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
     // Setting custom providers.
     (module.providers ?? []).forEach((provider) => {
       if (provider.useClass) {
-        Providers.addProvider('injectable', {
+        Providers.addProvider({
           name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
           clazz: provider.useClass as ClassDeclaration,
+          type: 'injectable',
         });
       }
     });
@@ -149,13 +134,19 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
 
 export const transformerBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider('transformer', { name: target.name, clazz: target as unknown as TransformerClass });
+    Providers.addProvider({ name: target.name, clazz: target as unknown as TransformerClass, type: 'transformer' });
+  };
+};
+
+export const middlewareBuilder = (): ClassDecorator => {
+  return (target): void => {
+    Providers.addProvider({ name: target.name, clazz: target as unknown as MiddlewareClass, type: 'middleware' });
   };
 };
 
 export const interceptorBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider('interceptor', { name: target.name, clazz: target as unknown as InterceptorClass });
+    Providers.addProvider({ name: target.name, clazz: target as unknown as InterceptorClass, type: 'interceptor' });
   };
 };
 
@@ -167,7 +158,7 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
       name = options.customProvider.interface;
     }
 
-    Providers.addProvider('injectable', { name, clazz: target as unknown as ProviderClass });
+    Providers.addProvider({ name, clazz: target as unknown as ProviderClass, type: 'injectable' });
   };
 };
 

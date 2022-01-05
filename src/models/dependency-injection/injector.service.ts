@@ -3,8 +3,6 @@ import { ProviderClass, ProviderInstance, ProviderType } from '../interfaces/typ
 import { Providers } from './provider.service';
 
 class InjectorService {
-  private providers = new Map<string, ProviderInstance>();
-
   resolve<TClass extends ProviderInstance>(type: ProviderType, provider: string): TClass {
     const matchedProvider = Providers.getProviderInstanceByType(type, provider) as TClass;
     if (!matchedProvider) {
@@ -22,8 +20,8 @@ class InjectorService {
   ): Promise<void> {
     if (!Providers.hasProviderInstance(type, provider)) {
       const instance = new target(...dependencies);
-      await LifeCycleManager.triggerProviderInit(instance);
       Providers.setProviderInstance(type, provider, instance);
+      await LifeCycleManager.triggerProviderInit(instance);
     }
   }
 
@@ -44,8 +42,8 @@ class InjectorService {
     }
   }
 
-  getProviders(): Map<string, ProviderInstance> {
-    return this.providers;
+  getProviders() {
+    return Providers.getAllInstances();
   }
 }
 

@@ -44,28 +44,3 @@ Decorators to intercept directly the content of the **response** and the **reque
 | `@Body(, transformer?: TransformerClass)`               | `req.body`                           |
 | `@Session()`                                            | `req.session`                        |
 | `@Cookie(name: string)`                                 | `req.cookies`                        |
-
-
-## Middlewares
-Middlewares can be injected as **single** or **array** at controller time or HTTP method time.
-They are always called **before** the endpoint handler.
-
-![Middlewares](images/middlewares.png)
-
-The middlewares placed at Controller time are applied for **all the routes** that belongs to the controller itself:
-- `@Controller('/path', middlewareFunction)`
-  The middlewares placed at HTTP method time are applied for the **single route**:
-- `@Get('/endpoint', [functionOne, functionTwo])`
-
-```typescript
-@Controller('/test', middlewareFunction)
-export class TestController {
-  constructor() {
-  }
-  
-  @Get('/hello-world', [functionOne, functionTwo])
-  async helloWorld() {
-    return { test: 'hello world' };
-  }
-}
-```

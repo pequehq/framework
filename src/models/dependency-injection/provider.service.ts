@@ -3,49 +3,43 @@ import { ProviderClass, ProviderInstance, ProviderType } from '../interfaces/typ
 interface ProviderInterface {
   name: string;
   clazz: ProviderClass;
+  type: ProviderType;
 }
 
-interface InjectableInstance<TClass> {
-  injectable: TClass;
+interface InjectableInstance {
+  injectable: ProviderInstance;
 }
 
-interface InterceptorInstance<TClass> {
-  interceptor: TClass;
+interface InterceptorInstance {
+  interceptor: ProviderInstance;
 }
 
-interface TransformerInstance<TClass> {
-  transformer: TClass;
+interface TransformerInstance {
+  transformer: ProviderInstance;
 }
 
-export type ProviderInstances<TClass> = InjectableInstance<TClass> &
-  InterceptorInstance<TClass> &
-  TransformerInstance<TClass>;
+interface MiddlewareInstance {
+  middleware: ProviderInstance;
+}
 
-export class ProviderService {
+export type ProviderInstances = InjectableInstance & InterceptorInstance & TransformerInstance & MiddlewareInstance;
+
+class ProviderService {
   private providerMaps: Record<ProviderType, Map<string, ProviderInstance>> = {
     injectable: new Map<string, ProviderInstance>(),
     interceptor: new Map<string, ProviderInstance>(),
     transformer: new Map<string, ProviderInstance>(),
+    middleware: new Map<string, ProviderInstance>(),
   };
 
-  private providerArrays: Record<ProviderType, ProviderInterface[]> = {
-    injectable: [],
-    interceptor: [],
-    transformer: [],
-  };
+  private providerArray: ProviderInterface[] = [];
 
-  private types = new Map<string, ProviderType[]>();
-
-  addProvider(type: ProviderType, provider: ProviderInterface) {
-    this.providerArrays[type].push(provider);
-
-    const types = this.types.get(provider.name) || [];
-    types.push(type);
-    this.types.set(provider.name, types);
+  addProvider(provider: ProviderInterface) {
+    this.providerArray.push(provider);
   }
 
   getProvidersByType(type: ProviderType): ProviderInterface[] {
-    return this.providerArrays[type];
+    return this.providerArray.filter((provider) => provider.type === type);
   }
 
   getProviderInstancesByType(type: ProviderType): Map<string, ProviderInstance> {
@@ -60,12 +54,17 @@ export class ProviderService {
     return this.providerMaps[type].get(provider);
   }
 
-  getProviderInstances<TClass>(provider: string): ProviderInstances<TClass> {
+  getProviderInstances(provider: string): ProviderInstances {
     return {
       injectable: this.providerMaps.injectable.get(provider),
       interceptor: this.providerMaps.interceptor.get(provider),
       transformer: this.providerMaps.transformer.get(provider),
+      middleware: this.providerMaps.middleware.get(provider),
     };
+  }
+
+  getAllInstances() {
+    return this.providerMaps;
   }
 
   setProviderInstance(type: ProviderType, name: string, provider: ProviderInstance): void {
@@ -77,13 +76,11 @@ export class ProviderService {
   }
 
   getTypes(provider: string) {
-    return this.types.get(provider);
+    return this.providerArray.filter((prov) => prov.name === provider);
   }
 
   unsetAll(): void {
-    for (const key of Object.keys(this.providerArrays)) {
-      this.providerArrays[key] = [];
-    }
+    this.providerArray = [];
 
     for (const key of Object.keys(this.providerMaps)) {
       this.providerMaps[key] = new Map<string, ProviderInstance>();

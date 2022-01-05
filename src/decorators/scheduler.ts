@@ -1,5 +1,7 @@
+import 'reflect-metadata';
+
 import { DECORATORS } from '../models/constants/decorators';
-import { SchedulerService } from '../services/scheduler/scheduler.service';
+import { SchedulerService } from '../services';
 
 export interface SchedulerConfig {
   cron: string;

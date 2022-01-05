@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { getClassDependencies } from '../../utils/dependencies.utils';
 import { DECORATORS } from '../constants/decorators';

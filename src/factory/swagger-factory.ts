@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import * as mustache from 'mustache';
 
 import { SwaggerComponents, SwaggerParameters, SwaggerResponseBodies, SwaggerSecuritySchemas } from '../decorators';
