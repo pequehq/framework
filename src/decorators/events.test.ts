@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';

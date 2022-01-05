@@ -1,13 +1,14 @@
+import 'reflect-metadata';
+
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { ExpressMocks } from '../../test/mocks/express.mocks';
 import { Injectable } from '../decorators';
+import { CanExecute, Context } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { CanExecute } from '../models/interfaces/authorization.interface';
-import { Context } from '../models/interfaces/context.interface';
 import { loadInjectables } from '../utils/dependencies.utils';
 import { guardHandler } from './guard.middleware';
 
