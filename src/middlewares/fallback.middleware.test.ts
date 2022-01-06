@@ -19,8 +19,8 @@ test('should execute the Fallback middleware correctly', () => {
   const next = expressMocks.mockNextFunction();
 
   fallback(req, res, next);
-  assert.ok(expressMocks.spy('send').calledWith({ message: 'Route not found.' }));
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_404));
+  assert.ok(expressMocks.spy('res.send').calledWith({ message: 'Route not found.' }));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_404));
 });
 
 test.run();

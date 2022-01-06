@@ -37,10 +37,10 @@ test('should execute the Error handler middleware correctly with HttpException',
 
   errorHandler(error, req, res, next);
 
-  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_400));
-  assert.ok(expressMocks.spy('send').calledWith(error.httpException));
-  assert.ok(expressMocks.spy('end').called);
+  assert.ok(expressMocks.spy('res.setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_400));
+  assert.ok(expressMocks.spy('res.send').calledWith(error.httpException));
+  assert.ok(expressMocks.spy('res.end').called);
 });
 
 test('should execute the Error handler middleware correctly without HttpException', () => {
@@ -52,16 +52,16 @@ test('should execute the Error handler middleware correctly without HttpExceptio
 
   errorHandler(error, req, res, next);
 
-  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_500));
+  assert.ok(expressMocks.spy('res.setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_500));
   assert.ok(
-    expressMocks.spy('send').calledWith({
+    expressMocks.spy('res.send').calledWith({
       error,
       statusCode: HTTP_STATES.HTTP_500,
       message: 'Unknown error.',
     }),
   );
-  assert.ok(expressMocks.spy('end').called);
+  assert.ok(expressMocks.spy('res.end').called);
 });
 
 test.run();

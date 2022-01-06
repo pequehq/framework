@@ -1,7 +1,7 @@
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { ModuleClass, ModuleInstance } from '../interfaces/types';
 
-export class ModuleService {
+class ModuleService {
   private modules: ModuleClass[] = [];
   private instances: ModuleInstance[] = [];
 
@@ -14,6 +14,7 @@ export class ModuleService {
   }
 
   flush(): void {
+    this.instances = [];
     this.modules = [];
   }
 
