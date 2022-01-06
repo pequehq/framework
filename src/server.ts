@@ -120,8 +120,7 @@ export class Server {
 
     // OpenAPI.
     if (this.#options.swagger) {
-      const swaggerFactory = new SwaggerFactory();
-      swaggerFactory.generate();
+      SwaggerFactory.generate();
       const swaggerDocument = await $RefParser.dereference(
         YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')),
       );
