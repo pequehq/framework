@@ -137,6 +137,8 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
 export const microserviceBuilder = (options: MicroserviceOptions): ClassDecorator => {
   return (target): void => {
     Reflect.defineMetadata(DECORATORS.metadata.microservice.OPTIONS, options, target);
+    const callbacks: any[] = Reflect.getMetadata(DECORATORS.metadata.events.METHODS_CB, target) || [];
+    callbacks.forEach((fn) => fn(options.transport));
     Providers.addProvider({ name: target.name, clazz: target as unknown as MicroserviceClass, type: 'microservice' });
   };
 };

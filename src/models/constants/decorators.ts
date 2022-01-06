@@ -27,7 +27,7 @@ export const DECORATORS = {
       CONTROLLER: 'swagger_controller',
     },
     events: {
-      ON_EVENT: 'on_event',
+      METHODS_CB: 'methods_cb',
     },
     SCHEDULER: 'scheduler',
     interceptor: {

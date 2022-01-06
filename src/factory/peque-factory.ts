@@ -14,8 +14,13 @@ import { destroyProviders, loadProviders } from '../utils/dependencies.utils';
 
 export class PequeFactory {
   private static server: Server;
+  private static initialized = false;
 
   private static init = async (): Promise<void> => {
+    if (PequeFactory.initialized) {
+      return;
+    }
+
     const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
     terminationSignals.forEach((element) => {
       process.on(element, async () => {
@@ -37,6 +42,7 @@ export class PequeFactory {
 
     Gateways.startListening();
     await loadProviders();
+    PequeFactory.initialized = true;
   };
 
   private static terminator = async (): Promise<void> => {

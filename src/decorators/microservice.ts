@@ -1,8 +1,8 @@
-import { MicroserviceTransportType } from '../models';
+import { TransportType } from '../models';
 import { microserviceBuilder } from './utils/decorators';
 
 export interface MicroserviceOptions {
-  transport: MicroserviceTransportType;
+  transport: TransportType;
   broker: string;
 }
 

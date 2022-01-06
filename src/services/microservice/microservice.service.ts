@@ -14,7 +14,7 @@ class MicroserviceService {
 
     const microservices = Providers.getProviderInstancesByType('microservice');
     for (const microservice of microservices.values()) {
-      const microserviceOptions = Reflect.getMetadata(
+      const microserviceOptions: MicroserviceOptions = Reflect.getMetadata(
         DECORATORS.metadata.microservice.OPTIONS,
         Object.getPrototypeOf(microservice).constructor,
       );

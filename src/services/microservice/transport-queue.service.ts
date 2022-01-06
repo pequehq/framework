@@ -1,10 +1,16 @@
-import { CompleteTransportQueueItem, MicroserviceTransportType, TransportQueueItem } from '../../models';
+import { randomUUID } from 'crypto';
+
+import { CompleteTransportQueueItem, TransportQueueItem, TransportType } from '../../models';
+import { NATIVE_SERVICES } from '../../models/constants/native-services';
+import { Injector } from '../../models/dependency-injection/injector.service';
 import { TransportSubjects } from '../subjects/subjects';
 
-class TransportQueueService {
+export class TransportQueueService {
   private enqueueInterval: NodeJS.Timer;
-  private queues: Record<MicroserviceTransportType, Set<CompleteTransportQueueItem>> = {
+  private queues: Record<TransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
+    redis: new Set<CompleteTransportQueueItem>(),
+    internal: new Set<CompleteTransportQueueItem>(),
   };
 
   constructor() {
@@ -38,17 +44,13 @@ class TransportQueueService {
   }
 
   sendItem(item: TransportQueueItem): void {
-    console.log('send', item);
     TransportSubjects.sendTransportSubject.next({
-      event: item.event,
-      transport: item.transport,
+      ...item,
       retry: 0,
-      data: item.data,
-      id: 'zz',
-      timestamp: item.timestamp,
-      destination: item.destination,
+      id: randomUUID(),
     });
   }
 }
 
-export const TransportQueue = new TransportQueueService();
+Injector.setNative('injectable', NATIVE_SERVICES.TRANSPORT_QUEUE, TransportQueueService);
+export const TransportQueue = Injector.resolve<TransportQueueService>('injectable', NATIVE_SERVICES.TRANSPORT_QUEUE);

@@ -21,4 +21,5 @@ export * from './interfaces/context.interface';
 export * from './interfaces/interceptor/handler-options.interface';
 export * from './interfaces/middleware.interface';
 export * from './interfaces/microservice.interface';
+export * from './interfaces/events.interface';
 export * from './errors/errors';
