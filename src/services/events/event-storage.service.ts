@@ -6,28 +6,28 @@ export interface OnEventInterface {
 }
 
 class EventStorageService {
-  private listeners = new Map<string, Listener[]>();
+  #listeners = new Map<string, Listener[]>();
 
   add(event: string, listener: Listener): void {
-    const eventListeners = this.listeners.get(event) ?? [];
+    const eventListeners = this.#listeners.get(event) ?? [];
     eventListeners.push(listener);
-    this.listeners.set(event, eventListeners);
+    this.#listeners.set(event, eventListeners);
   }
 
   remove(event: string): void {
-    this.listeners.delete(event);
+    this.#listeners.delete(event);
   }
 
   get(event: string): OnEventInterface[] {
     const events: OnEventInterface[] = [];
-    const listeners = this.listeners.get(event) ?? [];
+    const listeners = this.#listeners.get(event) ?? [];
     listeners.forEach((listener) => events.push({ event, listener }));
     return events;
   }
 
   getAll(): OnEventInterface[] {
     const events: OnEventInterface[] = [];
-    this.listeners.forEach((listeners, event) => {
+    this.#listeners.forEach((listeners, event) => {
       listeners.forEach((listener) => events.push({ event, listener }));
     });
     return events;

@@ -29,152 +29,145 @@ import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export class Server {
-  private readonly options: ServerOptions;
+  readonly #options: ServerOptions;
 
   @Inject('LoggerService')
   private logService: LoggerService;
 
-  private application: Application;
-  private server: http.Server;
+  #application: Application;
+  #server: http.Server;
 
   constructor(options: ServerOptions) {
-    this.options = options;
+    this.#options = options;
     Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
 
-    this.setDefaultUnhandledExceptionsFallback();
+    this.#setDefaultUnhandledExceptionsFallback();
   }
 
   logger(): LoggerService {
     return this.logService;
   }
 
-  async terminator(): Promise<void> {
-    await this.destroyControllers();
-    await this.destroyWebSockets();
-    await this.destroyModules();
-    await this.destroyProviders();
+  async #gracefulShutdown(): Promise<void> {
+    await this.#destroyControllers();
+    await this.#destroyWebSockets();
+    await this.#destroyModules();
+    await this.#destroyProviders();
 
-    await this.serverListenStop();
-    await this.closeServer();
+    await this.#serverListenStop();
+    await this.#closeServer();
 
-    await this.serverShutdown();
-    this.unsetAllProviders();
+    await this.#serverShutdown();
+    this.#unsetAllProviders();
 
     process.exit(1);
   }
 
   getServer(): http.Server {
-    return this.server;
-  }
-
-  terminationProcess() {
-    const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
-    terminationSignals.forEach((element) => {
-      process.on(element, async () => {
-        await this.terminator();
-      });
-    });
+    return this.#server;
   }
 
   async bootstrap(): Promise<void> {
-    // Set terminators.
-    this.terminationProcess();
+    // Set graceful shutdown.
+    for (const terminationSignal of ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP']) {
+      process.on(terminationSignal, this.#gracefulShutdown);
+    }
 
     // Load injectables and controllers.
-    await this.loadInjectables();
-    await this.loadModules();
+    await this.#loadInjectables();
+    await this.#loadModules();
 
     // Load existing app or one from scratch.
-    this.application = this.options.existingApp ?? express();
+    this.#application = this.#options.existingApp ?? express();
 
     // Session.
-    if (this.options.session) {
-      this.application.use(expressSession(this.options.session));
+    if (this.#options.session) {
+      this.#application.use(expressSession(this.#options.session));
     }
 
     // Body parser.
-    this.application.use(express.json({ limit: '2m' }));
-    this.application.use(express.urlencoded({ extended: true }));
+    this.#application.use(express.json({ limit: '2m' }));
+    this.#application.use(express.urlencoded({ extended: true }));
 
     // Cookie parser.
-    this.application.use(cookieParser());
+    this.#application.use(cookieParser());
 
     // CORS.
-    if (this.options.cors) {
-      if (typeof this.options.cors === 'boolean') {
-        this.application.use(cors());
+    if (this.#options.cors) {
+      if (typeof this.#options.cors === 'boolean') {
+        this.#application.use(cors());
       } else {
-        this.application.use(cors(this.options.cors));
+        this.#application.use(cors(this.#options.cors));
       }
     }
 
     // Global guards.
-    if (this.options.guards?.length) {
-      this.application.use(
-        this.options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
+    if (this.#options.guards?.length) {
+      this.#application.use(
+        this.#options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
       );
     }
 
     // Push HTTP event.
-    this.application.use(pushHttpEvents);
+    this.#application.use(pushHttpEvents);
 
     // Add pre-route Middlewares.
-    const preRoutes = this.options.globalMiddlewares?.preRoutes ?? [];
-    this.addMiddlewares(preRoutes);
+    const preRoutes = this.#options.globalMiddlewares?.preRoutes ?? [];
+    this.#addMiddlewares(preRoutes);
 
-    await this.loadControllers();
-    await this.loadWebSockets();
+    await this.#loadControllers();
+    await this.#loadWebSockets();
 
     // OpenAPI.
-    if (this.options.swagger) {
+    if (this.#options.swagger) {
       const swaggerFactory = new SwaggerFactory();
       swaggerFactory.generate();
       const swaggerDocument = await $RefParser.dereference(
         YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')),
       );
-      this.application.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-      this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
+      this.#application.use(this.#options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+      this.logService.log({ level: 'info', data: `[openapi] ${this.#options.swagger.folder}` });
     }
 
     // Add fallback for not existing routes.
-    this.application.use(fallback);
+    this.#application.use(fallback);
 
     // Add post-route Middlewares.
-    const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
-    this.addMiddlewares([...postRoutes]);
+    const postRoutes = this.#options.globalMiddlewares?.postRoutes ?? [];
+    this.#addMiddlewares([...postRoutes]);
 
     // Add general error handling.
-    this.application.use(errorHandler);
+    this.#application.use(errorHandler);
 
     // Server listener.
-    await this.listen();
+    await this.#listen();
   }
 
-  private async listen(): Promise<void> {
-    const port = this.options.port || 8888;
-    const hostname = this.options.hostname || 'localhost';
+  async #listen(): Promise<void> {
+    const port = this.#options.port || 8888;
+    const hostname = this.#options.hostname || 'localhost';
 
     await LifeCycleManager.triggerServerListen();
 
-    this.server = this.application.listen(port, hostname, async () => {
+    this.#server = this.#application.listen(port, hostname, async () => {
       this.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
-      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.options.isCpuClustered ? 'ON' : 'OFF'}` });
+      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.#options.isCpuClustered ? 'ON' : 'OFF'}` });
       await LifeCycleManager.triggerServerStarted();
     });
 
     // Connections management.
-    this.server.on('connection', (socket) => {
-      this.server.once('close', () => Sockets.delete('http', socket));
+    this.#server.on('connection', (socket) => {
+      this.#server.once('close', () => Sockets.delete('http', socket));
       Sockets.set('http', socket);
     });
   }
 
-  async closeServer(): Promise<boolean> {
+  async #closeServer(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // Ending all the open connections first.
       Sockets.closeAllByType('http');
 
-      this.server.close((err) => {
+      this.#server.close((err) => {
         if (err) {
           reject(err);
         } else {
@@ -184,57 +177,57 @@ export class Server {
     });
   }
 
-  private async loadControllers(): Promise<void> {
-    await Controllers.initControllers(this.application);
+  async #loadControllers(): Promise<void> {
+    await Controllers.initControllers(this.#application);
   }
 
-  private async destroyControllers(): Promise<void> {
+  async #destroyControllers(): Promise<void> {
     await Controllers.destroyControllers();
   }
 
-  private async loadModules(): Promise<void> {
+  async #loadModules(): Promise<void> {
     await Modules.initModules();
   }
 
-  private async destroyModules(): Promise<void> {
+  async #destroyModules(): Promise<void> {
     await Modules.destroyModules();
   }
 
-  private async loadWebSockets(): Promise<void> {
+  async #loadWebSockets(): Promise<void> {
     await WebSockets.initWebSockets();
   }
 
-  private async destroyWebSockets(): Promise<void> {
+  async #destroyWebSockets(): Promise<void> {
     await WebSockets.destroyWebSockets();
   }
 
-  private async loadInjectables(): Promise<void> {
+  async #loadInjectables(): Promise<void> {
     await loadInjectables();
   }
 
-  private async destroyProviders(): Promise<void> {
+  async #destroyProviders(): Promise<void> {
     await destroyProviders();
   }
 
-  private async serverShutdown(): Promise<void> {
+  async #serverShutdown(): Promise<void> {
     await LifeCycleManager.triggerServerShutdown();
   }
 
-  private async serverListenStop(): Promise<void> {
+  async #serverListenStop(): Promise<void> {
     await LifeCycleManager.triggerServerListenStop();
   }
 
-  private unsetAllProviders(): void {
+  #unsetAllProviders(): void {
     Providers.unsetAll();
   }
 
-  private addMiddlewares(middlewares: RequestHandlerParams[]): void {
+  #addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.application.use(middleware);
+      this.#application.use(middleware);
     });
   }
 
-  private setDefaultUnhandledExceptionsFallback(): void {
+  #setDefaultUnhandledExceptionsFallback(): void {
     process.on('uncaughtException', async (error) => {
       await LifeCycleManager.triggerUncaughtException(error);
       console.error(error);
