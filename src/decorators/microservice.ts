@@ -1,8 +1,8 @@
-import { TransportType } from '../models';
+import { ExternalTransportType } from '../models';
 import { microserviceBuilder } from './utils/decorators';
 
 export interface MicroserviceOptions {
-  transport: TransportType;
+  transport: ExternalTransportType;
   broker: string;
 }
 

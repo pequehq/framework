@@ -1,4 +1,4 @@
-import { TransportType } from '../models';
+import { ExternalTransportType, TransportType } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { EventStorage } from '../services/events/event-storage.service';
 import { Subjects } from '../services/subjects/subjects';

@@ -9,7 +9,8 @@ export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boole
 export type LogLevelsType = 'debug' | 'info' | 'warn' | 'error';
 export type InterceptorType = 'exception';
 export type ProviderType = 'injectable' | 'interceptor' | 'transformer' | 'middleware' | 'microservice';
-export type TransportType = 'mqtt' | 'redis' | 'internal';
+export type ExternalTransportType = 'mqtt' | 'redis';
+export type TransportType = ExternalTransportType | 'internal';
 export type NativeEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'

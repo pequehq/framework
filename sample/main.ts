@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import { PequeFactory } from '../dist';
 import { TestMicroservice } from './microservices/test-microservice';
+import { TestRedisMicroservice } from './microservices/test-redis-microservice';
 import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
 
@@ -39,7 +40,7 @@ async function startUp() {
     showOriginalErrorObject: true,
   });
 
-  await PequeFactory.createMicroservices({ services: [TestMicroservice] });
+  await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
 }
 
 startUp();

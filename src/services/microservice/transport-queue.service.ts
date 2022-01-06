@@ -1,16 +1,15 @@
 import { randomUUID } from 'crypto';
 
-import { CompleteTransportQueueItem, TransportQueueItem, TransportType } from '../../models';
+import { CompleteTransportQueueItem, ExternalTransportType, TransportQueueItem } from '../../models';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { TransportSubjects } from '../subjects/subjects';
 
 export class TransportQueueService {
   private enqueueInterval: NodeJS.Timer;
-  private queues: Record<TransportType, Set<CompleteTransportQueueItem>> = {
+  private queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
-    internal: new Set<CompleteTransportQueueItem>(),
   };
 
   constructor() {

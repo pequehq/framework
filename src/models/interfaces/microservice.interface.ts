@@ -1,11 +1,11 @@
-import { TransportType } from './types';
+import { ExternalTransportType } from './types';
 
 export interface MicroserviceHandler {
   start();
 }
 
 export interface TransportQueueItem {
-  transport: TransportType;
+  transport: ExternalTransportType;
   destination: string;
   timestamp: number;
   event: string;

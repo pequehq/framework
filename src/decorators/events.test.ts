@@ -18,7 +18,7 @@ test.before.each(async () => {
 
 test('should set event listener metadata', () => {
   class TestClass {
-    @ConsumeEvent('testEvent')
+    @ConsumeEvent('testEvent', 'internal')
     testMethod(): string {
       return 'value';
     }
@@ -30,7 +30,7 @@ test('should set event listener metadata', () => {
 
 test('should push and event', async () => {
   class TestClass {
-    @ProduceEvent('testEvent')
+    @ProduceEvent('testEvent', 'internal')
     testMethod(): string {
       return 'value';
     }

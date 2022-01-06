@@ -3,19 +3,18 @@ import * as redis from 'redis';
 import { Subscription } from 'rxjs';
 
 import { MicroserviceOptions } from '../../decorators';
-import { CompleteTransportQueueItem, TransportType } from '../../models';
+import { CompleteTransportQueueItem, ExternalTransportType } from '../../models';
 import { Redis } from '../redis/redis.service';
 import { Subjects, TransportSubjects } from '../subjects/subjects';
 
 class MicroserviceGatewayService {
   private subscriptions: Subscription[] = [];
-  private gateways: Record<TransportType, Map<string, any>> = {
+  private gateways: Record<ExternalTransportType, Map<string, any>> = {
     mqtt: new Map<string, mqtt.MqttClient>(),
     redis: new Map<string, redis.RedisClientType>(),
-    internal: new Map<string, string>(),
   };
 
-  private register: Record<TransportType, (options: MicroserviceOptions) => void> = {
+  private register: Record<ExternalTransportType, (options: MicroserviceOptions) => void> = {
     mqtt: (options) => {
       this.gateways.mqtt.set(options.broker, mqtt.connect(options.broker));
       const client: mqtt.MqttClient = this.gateways.mqtt.get(options.broker);
@@ -42,11 +41,16 @@ class MicroserviceGatewayService {
       const client: { subscriber: redis.RedisClientType; publisher: redis.RedisClientType } = this.gateways.redis.get(
         options.broker,
       );
+      await client.subscriber.pSubscribe('*', (message, channel) => {
+        Subjects.pushEventSubject.next({
+          event: { event: channel, transport: 'redis' },
+          data: JSON.parse(message),
+        });
+      });
     },
-    internal: () => undefined,
   };
 
-  private publish: Record<TransportType, (item: CompleteTransportQueueItem) => void> = {
+  private publish: Record<ExternalTransportType, (item: CompleteTransportQueueItem) => void> = {
     mqtt: (item) => {
       const gateway: mqtt.MqttClient = this.gateways.mqtt.get(item.destination);
       gateway.publish(item.event, JSON.stringify(item.data), (error) => {
@@ -58,8 +62,12 @@ class MicroserviceGatewayService {
         }
       });
     },
-    redis: (item) => item.transport,
-    internal: (item) => item.transport,
+    redis: (item) => {
+      const client: { subscriber: redis.RedisClientType; publisher: redis.RedisClientType } = this.gateways.redis.get(
+        item.destination,
+      );
+      client.publisher.publish(item.event, JSON.stringify(item.data));
+    },
   };
 
   startListening(): void {
