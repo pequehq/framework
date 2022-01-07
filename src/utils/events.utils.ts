@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 
-import { MicroserviceOptions } from '../decorators';
-import { Event, TransportType } from '../models';
+import { Event, MicroserviceOptions, TransportType } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 
 export const buildEventName = (event: Event) => `${event.transport}.${event.event}`;

@@ -31,6 +31,10 @@ class EventStorageService {
     });
     return events;
   }
+
+  removeAll(): void {
+    this.listeners.clear();
+  }
 }
 
 export const EventStorage = new EventStorageService();

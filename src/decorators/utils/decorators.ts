@@ -6,6 +6,7 @@ import {
   ExpressMethods,
   InterceptorClass,
   MicroserviceClass,
+  MicroserviceOptions,
   MiddlewareClass,
   ModuleClass,
   ModuleDefinition,
@@ -21,7 +22,6 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
 import { CustomProvider } from '../injectable';
-import { MicroserviceOptions } from '../microservice';
 
 interface InjectableInterface {
   customProvider?: CustomProvider;

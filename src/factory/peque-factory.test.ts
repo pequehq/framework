@@ -30,6 +30,7 @@ test('should boot the server', async (context) => {
   const configSet = context.sandbox.stub(Config, 'set');
   const serverBootstrap = context.sandbox.stub(Server.prototype, 'bootstrap');
   const getServer = context.sandbox.stub(Server.prototype, 'getServer');
+  context.sandbox.stub(Server.prototype, 'closeServer');
 
   class RootModule {}
 
@@ -47,6 +48,7 @@ test('should boot the server', async (context) => {
 
 test('should call clusterUtils.setupWorkers() when is CPU clustered', async (context) => {
   context.sandbox.stub(clusterUtils, 'isMaster').returns(true);
+  context.sandbox.stub(Server.prototype, 'closeServer');
 
   const setupWorkers = context.sandbox.stub(clusterUtils, 'setupWorkers');
 

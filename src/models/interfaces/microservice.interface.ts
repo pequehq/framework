@@ -1,5 +1,10 @@
 import { ExternalTransportType } from './types';
 
+export interface MicroserviceOptions {
+  transport: ExternalTransportType;
+  broker: string;
+}
+
 export interface MicroserviceHandler {
   start();
 }

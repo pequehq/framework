@@ -12,15 +12,6 @@ export class TransportQueueService {
     redis: new Set<CompleteTransportQueueItem>(),
   };
 
-  constructor() {
-    this.enqueueInterval = setInterval(() => this.enqueueItems(), 5000);
-    TransportSubjects.failedTransportSubject.subscribe((item) => {
-      this.deleteItem(item);
-      this.addItem(item);
-    });
-    TransportSubjects.successTransportSubject.subscribe((item) => this.deleteItem(item));
-  }
-
   private enqueueItems(): void {
     for (const key of Object.keys(this.queues)) {
       [...this.queues[key]].forEach((item) => TransportSubjects.sendTransportSubject.next(item));
@@ -42,12 +33,33 @@ export class TransportQueueService {
     this.queues[item.transport].delete(item);
   }
 
-  sendItem(item: TransportQueueItem): void {
+  private startRecycler(): void {
+    this.enqueueInterval = setInterval(() => this.enqueueItems(), 2000);
+  }
+
+  init(): void {
+    this.startRecycler();
+    TransportSubjects.failedTransportSubject.subscribe((item) => {
+      this.deleteItem(item);
+      this.addItem(item);
+    });
+    TransportSubjects.successTransportSubject.subscribe((item) => this.deleteItem(item));
+  }
+
+  sendItem(item: TransportQueueItem): string {
+    const id = randomUUID();
     TransportSubjects.sendTransportSubject.next({
       ...item,
       retry: 0,
-      id: randomUUID(),
+      id,
     });
+    return id;
+  }
+
+  clear(): void {
+    for (const key of Object.keys(this.queues)) {
+      this.queues[key].clear();
+    }
   }
 }
 

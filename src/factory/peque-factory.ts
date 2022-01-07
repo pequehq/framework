@@ -6,6 +6,7 @@ import { Modules } from '../models/dependency-injection/module.service';
 import { Providers } from '../models/dependency-injection/provider.service';
 import { WebSockets } from '../models/dependency-injection/websockets.service';
 import { Server } from '../server';
+import { TransportQueue } from '../services';
 import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 import { Microservices } from '../services/microservice/microservice.service';
 import { Gateways } from '../services/microservice/microservice-gateway.service';
@@ -40,6 +41,7 @@ export class PequeFactory {
       process.exit(0);
     });
 
+    TransportQueue.init();
     Gateways.startListening();
     await loadProviders();
     PequeFactory.initialized = true;
@@ -53,6 +55,7 @@ export class PequeFactory {
 
     await LifeCycleManager.triggerServerListenStop();
     await PequeFactory.server.closeServer();
+    Gateways.stopListening();
 
     await LifeCycleManager.triggerServerShutdown();
     Providers.unsetAll();

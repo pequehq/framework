@@ -1,72 +1,38 @@
-import * as mqtt from 'mqtt';
-import * as redis from 'redis';
 import { Subscription } from 'rxjs';
 
-import { MicroserviceOptions } from '../../decorators';
-import { CompleteTransportQueueItem, ExternalTransportType } from '../../models';
-import { Redis } from '../redis/redis.service';
-import { Subjects, TransportSubjects } from '../subjects/subjects';
+import { CompleteTransportQueueItem, ExternalTransportType, MicroserviceOptions } from '../../models';
+import { MqttBrokerClient } from '../mqtt/mqtt-broker.client';
+import { RedisBrokerClient } from '../redis/redis-broker.client';
+import { TransportSubjects } from '../subjects/subjects';
+import { MqttGateway } from './gateway/mqtt-gateway.service';
+import { RedisGateway } from './gateway/redis-gateway.service';
 
 class MicroserviceGatewayService {
   private subscriptions: Subscription[] = [];
   private gateways: Record<ExternalTransportType, Map<string, any>> = {
-    mqtt: new Map<string, mqtt.MqttClient>(),
-    redis: new Map<string, redis.RedisClientType>(),
+    mqtt: new Map<string, MqttBrokerClient>(),
+    redis: new Map<string, RedisBrokerClient>(),
   };
 
   private register: Record<ExternalTransportType, (options: MicroserviceOptions) => void> = {
-    mqtt: (options) => {
-      this.gateways.mqtt.set(options.broker, mqtt.connect(options.broker));
-      const client: mqtt.MqttClient = this.gateways.mqtt.get(options.broker);
-      client.on('connect', (packet) => {
-        client.subscribe('#', (err) => {
-          if (err) {
-            // @TODO manage: error on mqtt subscription.
-            console.error('subs err', err);
-          }
-        });
-      });
-      client.on('message', (topic, payload) => {
-        Subjects.pushEventSubject.next({
-          event: { event: topic, transport: 'mqtt' },
-          data: JSON.parse(payload.toString()),
-        });
-      });
+    mqtt: async (options) => {
+      const client = await MqttGateway.register(options);
+      MqttGateway.subscribe(client);
+      this.gateways.mqtt.set(options.broker, client);
     },
     redis: async (options) => {
-      this.gateways.redis.set(options.broker, {
-        subscriber: await Redis.createClient({ url: options.broker }),
-        publisher: await Redis.createClient({ url: options.broker }),
-      });
-      const client: { subscriber: redis.RedisClientType; publisher: redis.RedisClientType } = this.gateways.redis.get(
-        options.broker,
-      );
-      await client.subscriber.pSubscribe('*', (message, channel) => {
-        Subjects.pushEventSubject.next({
-          event: { event: channel, transport: 'redis' },
-          data: JSON.parse(message),
-        });
-      });
+      const client = await RedisGateway.register(options);
+      await RedisGateway.subscribe(client);
+      this.gateways.redis.set(options.broker, client);
     },
   };
 
   private publish: Record<ExternalTransportType, (item: CompleteTransportQueueItem) => void> = {
-    mqtt: (item) => {
-      const gateway: mqtt.MqttClient = this.gateways.mqtt.get(item.destination);
-      gateway.publish(item.event, JSON.stringify(item.data), (error) => {
-        if (error) {
-          item.retry++;
-          TransportSubjects.failedTransportSubject.next(item);
-        } else {
-          TransportSubjects.successTransportSubject.next(item);
-        }
-      });
+    mqtt: async (item) => {
+      await MqttGateway.publish(this.gateways.mqtt.get(item.destination), item);
     },
-    redis: (item) => {
-      const client: { subscriber: redis.RedisClientType; publisher: redis.RedisClientType } = this.gateways.redis.get(
-        item.destination,
-      );
-      client.publisher.publish(item.event, JSON.stringify(item.data));
+    redis: async (item) => {
+      await RedisGateway.publish(this.gateways.redis.get(item.destination), item);
     },
   };
 
@@ -80,6 +46,10 @@ class MicroserviceGatewayService {
 
   registerGateway(options: MicroserviceOptions): void {
     this.register[options.transport](options);
+  }
+
+  stopListening(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }
 

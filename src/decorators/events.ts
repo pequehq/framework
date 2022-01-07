@@ -1,4 +1,4 @@
-import { ExternalTransportType, TransportType } from '../models';
+import { TransportType } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { EventStorage } from '../services/events/event-storage.service';
 import { Subjects } from '../services/subjects/subjects';
@@ -27,12 +27,7 @@ export const ProduceEvent = (event: string, transport?: TransportType): MethodDe
 
     descriptor.value = async function (...args: unknown[]): Promise<TValue> {
       const result = await Promise.resolve(originalMethod.apply(this, args));
-      let eventObj = buildEventObject({ event, target });
-      if (transport === 'internal') {
-        eventObj = buildEventObject({ event, transport, target });
-      }
-
-      Subjects.pushEventSubject.next({ event: eventObj, data: result });
+      Subjects.pushEventSubject.next({ event: buildEventObject({ event, transport, target }), data: result });
       return result;
     };
 

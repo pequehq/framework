@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { MicroserviceOptions } from '../../decorators';
+import { MicroserviceOptions } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
 import { Injector } from '../../models/dependency-injection/injector.service';
