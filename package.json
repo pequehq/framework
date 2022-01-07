@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start:sample": "rimraf dist && npm run build && ts-node sample/main.ts",
-    "test": "node --loader ts-node/esm ./node_modules/uvu/bin.js src/models/dependency-injection controller.service.test.ts",
+    "test": "node --loader ts-node/esm ./node_modules/uvu/bin.js src .test.ts",
     "test:coverage": "c8 npm run test && make-coverage-badge --output-path=.badge-coverage.svg",
     "build": "rimraf dist && tsc && node post-build-actions.js",
     "lint": "eslint \"{src,sample,test}/**/*.ts\" --fix"
