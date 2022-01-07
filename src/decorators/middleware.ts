@@ -16,13 +16,14 @@ export const UseMiddleware = (middleware: MiddlewareClass): MethodDecorator & Cl
       const controller: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, target);
       controller.middlewares.push(middleware);
       Reflect.defineMetadata(DECORATORS.metadata.CONTROLLER, controller, target);
-    } else {
-      const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor);
+      return;
+    }
 
-      if (routes.length > 0) {
-        routes[routes.length - 1].middlewareFunctions.push(middleware);
-        Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
-      }
+    const routes: RouteDefinition[] = Reflect.getMetadata(DECORATORS.metadata.ROUTES, target.constructor);
+
+    if (routes.length > 0) {
+      routes[routes.length - 1].middlewareFunctions.push(middleware);
+      Reflect.defineMetadata(DECORATORS.metadata.ROUTES, routes, target.constructor);
     }
   };
 };
