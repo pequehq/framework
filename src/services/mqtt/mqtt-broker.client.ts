@@ -7,7 +7,7 @@ export interface MqttSubscribePayload {
   payload: Buffer | string;
 }
 
-interface MqttPublishPayload {
+export interface MqttPublishPayload {
   topic: string;
   payload: string;
 }

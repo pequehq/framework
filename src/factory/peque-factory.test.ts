@@ -30,7 +30,6 @@ test('should boot the server', async (context) => {
   const configSet = context.sandbox.stub(Config, 'set');
   const serverBootstrap = context.sandbox.stub(Server.prototype, 'bootstrap');
   const getServer = context.sandbox.stub(Server.prototype, 'getServer');
-  const closeServer = context.sandbox.stub(Server.prototype, 'closeServer').resolves();
 
   class RootModule {}
 
