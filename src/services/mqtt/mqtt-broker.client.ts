@@ -18,7 +18,9 @@ export class MqttBrokerClient extends BrokerProxy<mqtt.IClientOptions> {
   async connect(): Promise<void> {
     return new Promise<void>((resolve) => {
       this.client = mqtt.connect(this.broker, this.options);
-      resolve();
+      this.client.on('connect', (packet) => {
+        resolve();
+      });
     });
   }
 

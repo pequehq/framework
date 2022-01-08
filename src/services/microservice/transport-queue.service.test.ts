@@ -19,7 +19,9 @@ test.after.each((context) => {
   context.sandbox.restore();
 });
 
-test('should subscribe to the success and fail subjects', (context) => {
+test.after(() => TransportQueue.stopRecycler());
+
+test('should subscribe to the success and fail subjects', async (context) => {
   const transportFailedSubscribeSpy = context.sandbox.spy(TransportSubjects.failedTransportSubject, 'subscribe');
   const transportSuccessSubscribeSpy = context.sandbox.spy(TransportSubjects.successTransportSubject, 'subscribe');
 
@@ -27,6 +29,8 @@ test('should subscribe to the success and fail subjects', (context) => {
   assert.is(transportSuccessSubscribeSpy.callCount, 0);
 
   TransportQueue.init();
+  await wait(2100);
+
   assert.is(transportFailedSubscribeSpy.callCount, 1);
   assert.is(transportSuccessSubscribeSpy.callCount, 1);
 });

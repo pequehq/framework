@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { clearInterval } from 'timers';
 
 import { CompleteTransportQueueItem, ExternalTransportType, TransportQueueItem } from '../../models';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
@@ -6,7 +7,7 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { TransportSubjects } from '../subjects/subjects';
 
 export class TransportQueueService {
-  private enqueueInterval: NodeJS.Timer;
+  private enqueueInterval: any;
   private queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
@@ -34,7 +35,13 @@ export class TransportQueueService {
   }
 
   private startRecycler(): void {
-    this.enqueueInterval = setInterval(() => this.enqueueItems(), 2000);
+    if (!this.enqueueInterval) {
+      this.enqueueInterval = setInterval(() => this.enqueueItems(), 2000);
+    }
+  }
+
+  stopRecycler(): void {
+    clearInterval(this.enqueueInterval);
   }
 
   init(): void {

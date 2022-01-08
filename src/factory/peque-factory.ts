@@ -13,19 +13,19 @@ import { Gateways } from '../services/microservice/microservice-gateway.service'
 import { clusterUtils } from '../utils/cluster.utils';
 import { destroyProviders, loadProviders } from '../utils/dependencies.utils';
 
-export class PequeFactory {
-  private static server: Server;
-  private static initialized = false;
+export class PequeFactoryService {
+  private server: Server;
+  private initialized = false;
 
-  private static init = async (): Promise<void> => {
-    if (PequeFactory.initialized) {
+  private async init(): Promise<void> {
+    if (this.initialized) {
       return;
     }
 
     const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
     terminationSignals.forEach((element) => {
       process.on(element, async () => {
-        await PequeFactory.terminator();
+        await this.terminator();
       });
     });
 
@@ -44,43 +44,45 @@ export class PequeFactory {
     TransportQueue.init();
     Gateways.startListening();
     await loadProviders();
-    PequeFactory.initialized = true;
-  };
+    this.initialized = true;
+  }
 
-  private static terminator = async (): Promise<void> => {
+  private async terminator(): Promise<void> {
     await Controllers.destroyControllers();
     await WebSockets.destroyWebSockets();
     await Modules.destroyModules();
     await destroyProviders();
 
     await LifeCycleManager.triggerServerListenStop();
-    await PequeFactory.server.closeServer();
+    await this.server.closeServer();
     Gateways.stopListening();
 
     await LifeCycleManager.triggerServerShutdown();
     Providers.unsetAll();
 
     process.exit(1);
-  };
+  }
 
-  static createServer = async (options: ServerOptions): Promise<http.Server> => {
+  async createServer(options: ServerOptions): Promise<http.Server> {
     if (options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
-      return PequeFactory.server.getServer();
+      return this.server.getServer();
     }
 
-    await PequeFactory.init();
+    await this.init();
 
     await LifeCycleManager.triggerServerBootstrap();
     const server = new Server(options);
     await server.bootstrap();
 
-    PequeFactory.server = server;
+    this.server = server;
     return server.getServer();
-  };
+  }
 
-  static createMicroservices = async (services: { services: MicroserviceClass[] }): Promise<void> => {
-    await PequeFactory.init();
+  async createMicroservices(services: { services: MicroserviceClass[] }): Promise<void> {
+    await this.init();
     await Microservices.startMicroservices();
-  };
+  }
 }
+
+export const PequeFactory = new PequeFactoryService();
