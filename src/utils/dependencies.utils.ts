@@ -22,6 +22,10 @@ export const destroyProviders = async (): Promise<void> => {
     await LifeCycleManager.triggerProviderDestroy(key);
   }
 
+  for (const key of Providers.getProviderInstancesByType('interceptor').keys()) {
+    await LifeCycleManager.triggerProviderDestroy(key);
+  }
+
   for (const key of Providers.getProviderInstancesByType('microservice').keys()) {
     await LifeCycleManager.triggerProviderDestroy(key);
   }

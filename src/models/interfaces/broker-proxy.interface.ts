@@ -1,4 +1,4 @@
-export abstract class BrokerProxy<TOptions> {
+export abstract class BrokerProxy<TOptions = any> {
   constructor(protected broker: string, protected options?: TOptions) {}
 
   abstract connect();

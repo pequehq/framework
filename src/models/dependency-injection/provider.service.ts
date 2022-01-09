@@ -55,7 +55,7 @@ class ProviderService {
     };
   }
 
-  getProviderByType(type: ProviderType, provider: string): ProviderInterface {
+  getProviderByType(type: ProviderType, provider: string): ProviderInterface | undefined {
     return this.providerArray.find((prov) => prov.type === type && prov.name === provider);
   }
 

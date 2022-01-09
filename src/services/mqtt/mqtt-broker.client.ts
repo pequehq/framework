@@ -28,7 +28,6 @@ export class MqttBrokerClient extends BrokerProxy<mqtt.IClientOptions> {
     this.client.subscribe('#', (err) => {
       if (err) {
         // @TODO manage: error on mqtt subscription.
-        console.error('subs err', err);
       }
     });
 

@@ -55,9 +55,6 @@ test('should forward an event', async (context) => {
   const id = TransportQueue.sendItem(event);
   assert.is(transportSendNextSpy.callCount, 1);
   assert.ok(transportSendNextSpy.calledWith({ id, retry: 0, ...event }));
-
-  TransportSubjects.successTransportSubject.next({ id, retry: 0, ...event });
-  TransportSubjects.failedTransportSubject.next({ id, retry: 0, ...event });
 });
 
 test.run();

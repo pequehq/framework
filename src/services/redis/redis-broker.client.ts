@@ -24,8 +24,7 @@ export class RedisBrokerClient extends BrokerProxy<unknown> {
     return new Promise(async (resolve) => {
       const subscriber = createClient({ url: this.broker });
       const publisher = createClient({ url: this.broker });
-      await subscriber.connect();
-      await publisher.connect();
+      await Promise.all([subscriber.connect(), publisher.connect()]);
       this.client = { subscriber, publisher };
       resolve();
     });

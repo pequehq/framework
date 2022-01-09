@@ -38,7 +38,7 @@ test.after.each(() => {
 });
 
 test('should load the correct microservice metadata', (context) => {
-  assert.is(Providers.getProviderByType('microservice', context.microservice.name).clazz, context.microservice);
+  assert.is(Providers.getProviderByType('microservice', context.microservice.name)?.clazz, context.microservice);
   assert.instance(Injector.resolve('microservice', context.microservice.name), context.microservice);
   assert.equal(Reflect.getMetadata(DECORATORS.metadata.microservice.OPTIONS, context.microservice), {
     broker: 'mqtt://localhost:1883',
