@@ -72,7 +72,7 @@ startUp();
 Hybrid web-server/microservices applications are possible as well.
 
 ```typescript
-import { PequeFactory } from '../dist';
+import { PequeFactory } from 'peque.ts';
 import { TestMicroservice } from './microservices/test-microservice';
 import { TestRedisMicroservice } from './microservices/test-redis-microservice';
 import { TestServerGuard } from './modules/guards/test-server.guard';
