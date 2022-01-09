@@ -40,7 +40,7 @@ export class EventManagerService implements OnProviderInit, OnProviderDestroy {
 
   registerListeners(): void {
     for (const { event, listener } of EventStorage.getAll()) {
-      this.emitter.addListener(buildEventName(event), listener);
+      this.emitter.addListener(buildEventName(event), listener.bind(this));
     }
   }
 
