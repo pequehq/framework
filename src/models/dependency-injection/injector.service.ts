@@ -41,10 +41,6 @@ class InjectorService {
       Providers.setProviderInstance(type, provider, instance);
     }
   }
-
-  getProviders() {
-    return Providers.getAllInstances();
-  }
 }
 
 export const Injector = new InjectorService();

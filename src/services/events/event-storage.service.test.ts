@@ -8,20 +8,20 @@ const test = suite('EventStorageService');
 test('should set event listener', () => {
   const methodOne = () => 'value 1';
   const methodTwo = () => 'value 2';
-  EventStorage.add('testMethodOne', methodOne);
-  EventStorage.add('testMethodTwo', methodTwo);
+  EventStorage.add({ event: 'testMethodOne', transport: 'internal' }, methodOne);
+  EventStorage.add({ event: 'testMethodTwo', transport: 'internal' }, methodTwo);
 
-  const event = EventStorage.get('testMethodOne');
-  assert.is(EventStorage.get('testMethodOne').length, 1);
+  const event = EventStorage.get({ event: 'testMethodOne', transport: 'internal' });
+  assert.is(EventStorage.get({ event: 'testMethodOne', transport: 'internal' }).length, 1);
   assert.is(event[0].listener(), 'value 1');
   assert.is(EventStorage.getAll().length, 2);
 });
 
 test('should remove event listener', () => {
-  EventStorage.remove('testMethodOne');
-  assert.is(EventStorage.get('testMethodOne').length, 0);
+  EventStorage.remove({ event: 'testMethodOne', transport: 'internal' });
+  assert.is(EventStorage.get({ event: 'testMethodOne', transport: 'internal' }).length, 0);
 
-  EventStorage.remove('testMethodTwo');
+  EventStorage.remove({ event: 'testMethodTwo', transport: 'internal' });
   assert.is(EventStorage.getAll().length, 0);
 });
 

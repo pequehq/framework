@@ -8,7 +8,9 @@ export type ParamType = 'body' | 'header' | 'param' | 'query' | 'request' | 'res
 export type SwaggerParamType = 'string' | 'number' | 'array' | 'object' | 'boolean';
 export type LogLevelsType = 'debug' | 'info' | 'warn' | 'error';
 export type InterceptorType = 'exception';
-export type ProviderType = 'injectable' | 'interceptor' | 'transformer' | 'middleware';
+export type ProviderType = 'injectable' | 'interceptor' | 'transformer' | 'middleware' | 'microservice';
+export type ExternalTransportType = 'mqtt' | 'redis';
+export type TransportType = ExternalTransportType | 'internal';
 export type NativeEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'
@@ -29,6 +31,7 @@ export type NativeEventsType =
   | 'logger'
   | 'interceptor.exception';
 export type SubjectType = 'lifeCycleSubject' | 'pushEventSubject';
+export type TransportSubjectType = 'sendTransportSubject' | 'failedTransportSubject' | 'successTransportSubject';
 export type InterceptorStage = 'after' | 'before' | 'error';
 
 export type ClassDeclaration = Type;
@@ -50,6 +53,9 @@ export type ControllerInstance = InstanceType<ControllerClass>;
 
 export type GuardClass = ClassDeclaration;
 export type GuardInstance = InstanceType<GuardClass>;
+
+export type MicroserviceClass = ClassDeclaration;
+export type MicroserviceInstance = InstanceType<TransformerClass>;
 
 export type MiddlewareClass = ClassDeclaration;
 export type MiddlewareInstance = InstanceType<GuardClass>;

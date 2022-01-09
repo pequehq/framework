@@ -4,17 +4,12 @@ import EventEmitter from 'events';
 import { Subscription } from 'rxjs';
 
 import { Injectable } from '../../decorators';
-import { NativeEventsType } from '../../models';
+import { EventPayload, NativeEventsType } from '../../models';
 import { OnProviderDestroy, OnProviderInit } from '../../models';
 import { SubjectEvent } from '../../models/interfaces/subject.interface';
+import { buildEventName } from '../../utils/events.utils';
 import { Subjects } from '../subjects/subjects';
 import { EventStorage } from './event-storage.service';
-
-export interface EventPayload<TData> {
-  event: string | NativeEventsType;
-  timestamp: number;
-  data: TData;
-}
 
 @Injectable()
 export class EventManagerService implements OnProviderInit, OnProviderDestroy {
@@ -28,7 +23,7 @@ export class EventManagerService implements OnProviderInit, OnProviderDestroy {
       this.subscriptions.push(
         Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
           if (event) {
-            this.push(event.event, event.data);
+            this.push(buildEventName(event.event), event.data);
           }
         }),
       );
@@ -45,13 +40,13 @@ export class EventManagerService implements OnProviderInit, OnProviderDestroy {
 
   registerListeners(): void {
     for (const { event, listener } of EventStorage.getAll()) {
-      this.emitter.addListener(event, listener);
+      this.emitter.addListener(buildEventName(event), listener);
     }
   }
 
   unregisterListeners(): void {
     for (const { event, listener } of EventStorage.getAll()) {
-      this.emitter.removeListener(event, listener);
+      this.emitter.removeListener(event.event, listener);
       EventStorage.remove(event);
     }
   }

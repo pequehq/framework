@@ -47,6 +47,7 @@ test('should boot the server', async (context) => {
 
 test('should call clusterUtils.setupWorkers() when is CPU clustered', async (context) => {
   context.sandbox.stub(clusterUtils, 'isMaster').returns(true);
+  context.sandbox.stub(Server.prototype, 'closeServer');
 
   const setupWorkers = context.sandbox.stub(clusterUtils, 'setupWorkers');
 

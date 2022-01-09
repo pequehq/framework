@@ -12,14 +12,7 @@ export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
 };
 
 export const loadProviders = async (): Promise<void> => {
-  const providers = [
-    ...Providers.getProvidersByType('injectable'),
-    ...Providers.getProvidersByType('interceptor'),
-    ...Providers.getProvidersByType('transformer'),
-    ...Providers.getProvidersByType('middleware'),
-  ];
-
-  for (const provider of providers) {
+  for (const provider of Providers.getAllProviders()) {
     await Injector.set(provider.type, provider.name, provider.clazz, getClassDependencies(provider.clazz));
   }
 };
@@ -30,6 +23,10 @@ export const destroyProviders = async (): Promise<void> => {
   }
 
   for (const key of Providers.getProviderInstancesByType('interceptor').keys()) {
+    await LifeCycleManager.triggerProviderDestroy(key);
+  }
+
+  for (const key of Providers.getProviderInstancesByType('microservice').keys()) {
     await LifeCycleManager.triggerProviderDestroy(key);
   }
 };

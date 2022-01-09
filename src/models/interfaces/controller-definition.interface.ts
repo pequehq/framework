@@ -1,4 +1,4 @@
-import { GuardClass, InterceptorClass, MiddlewareClass } from './interfaces/types';
+import { GuardClass, InterceptorClass, MiddlewareClass } from './types';
 
 export interface ControllerDefinition {
   prefix: string;
