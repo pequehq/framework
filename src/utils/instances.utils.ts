@@ -8,5 +8,8 @@ export const getAllInstances = (): unknown[] => {
     ...Modules.getInstances(),
     ...Providers.getProviderInstancesByType('injectable').values(),
     ...Providers.getProviderInstancesByType('interceptor').values(),
+    ...Providers.getProviderInstancesByType('transformer').values(),
+    ...Providers.getProviderInstancesByType('middleware').values(),
+    ...Providers.getProviderInstancesByType('microservice').values(),
   ];
 };

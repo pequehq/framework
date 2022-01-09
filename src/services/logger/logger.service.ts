@@ -1,8 +1,8 @@
 import { Injectable } from '../../decorators';
-import { LogLevelsType, ServerOptions } from '../../models';
+import { EventPayload, LogLevelsType, ServerOptions } from '../../models';
 import { CONFIG_STORAGES } from '../../models/constants/config';
 import { ConfigService } from '../config/config.service';
-import { EventManagerService, EventPayload } from '../events/event-manager.service';
+import { EventManagerService } from '../events/event-manager.service';
 
 interface LogEvent<TData> {
   level: LogLevelsType;

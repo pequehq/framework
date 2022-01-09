@@ -19,13 +19,11 @@ import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
-import { Providers } from './models/dependency-injection/provider.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Sockets } from './services/socket/socket.service';
-import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export class Server {
@@ -40,48 +38,18 @@ export class Server {
   constructor(options: ServerOptions) {
     this.options = options;
     Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
-
-    this.setDefaultUnhandledExceptionsFallback();
   }
 
   logger(): LoggerService {
     return this.logService;
   }
 
-  async terminator(): Promise<void> {
-    await this.destroyControllers();
-    await this.destroyWebSockets();
-    await this.destroyModules();
-    await this.destroyProviders();
-
-    await this.serverListenStop();
-    await this.closeServer();
-
-    await this.serverShutdown();
-    this.unsetAllProviders();
-
-    process.exit(1);
-  }
-
   getServer(): http.Server {
     return this.server;
   }
 
-  terminationProcess() {
-    const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
-    terminationSignals.forEach((element) => {
-      process.on(element, async () => {
-        await this.terminator();
-      });
-    });
-  }
-
   async bootstrap(): Promise<void> {
-    // Set terminators.
-    this.terminationProcess();
-
-    // Load injectables and controllers.
-    await this.loadInjectables();
+    // Load controllers.
     await this.loadModules();
 
     // Load existing app or one from scratch.
@@ -188,62 +156,17 @@ export class Server {
     await Controllers.initControllers(this.application);
   }
 
-  private async destroyControllers(): Promise<void> {
-    await Controllers.destroyControllers();
-  }
-
   private async loadModules(): Promise<void> {
     await Modules.initModules();
-  }
-
-  private async destroyModules(): Promise<void> {
-    await Modules.destroyModules();
   }
 
   private async loadWebSockets(): Promise<void> {
     await WebSockets.initWebSockets();
   }
 
-  private async destroyWebSockets(): Promise<void> {
-    await WebSockets.destroyWebSockets();
-  }
-
-  private async loadInjectables(): Promise<void> {
-    await loadInjectables();
-  }
-
-  private async destroyProviders(): Promise<void> {
-    await destroyProviders();
-  }
-
-  private async serverShutdown(): Promise<void> {
-    await LifeCycleManager.triggerServerShutdown();
-  }
-
-  private async serverListenStop(): Promise<void> {
-    await LifeCycleManager.triggerServerListenStop();
-  }
-
-  private unsetAllProviders(): void {
-    Providers.unsetAll();
-  }
-
   private addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
       this.application.use(middleware);
-    });
-  }
-
-  private setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => {
-      await LifeCycleManager.triggerUncaughtException(error);
-      console.error(error);
-      process.exit(0);
-    });
-    process.on('unhandledRejection', async (error: string) => {
-      await LifeCycleManager.triggerUncaughtRejection(new Error(error));
-      console.error(error);
-      process.exit(0);
     });
   }
 }

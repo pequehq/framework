@@ -12,6 +12,7 @@ import {
   Session,
   SwaggerResponse,
   SwaggerTag,
+  TransportQueueService,
   UseMiddleware,
 } from '../../../../dist';
 import { ExternalDto } from '../../../models/dto/external.dto';
@@ -32,6 +33,7 @@ export class TestController implements OnControllerInit {
     private readonly httpService: HttpService,
     private readonly externalService: ExternalTestService,
     private readonly loggerService: LoggerService,
+    private readonly transportQueue: TransportQueueService,
   ) {}
 
   onControllerInit() {
@@ -79,6 +81,20 @@ export class TestController implements OnControllerInit {
   @UseMiddleware(TestMwMiddleware)
   @Get('/external')
   async external() {
+    this.transportQueue.sendItem({
+      event: 'test_event',
+      data: { test: 'data', timestamp: Date.now() },
+      transport: 'mqtt',
+      destination: 'mqtt://localhost:1883',
+      timestamp: Date.now(),
+    });
+    this.transportQueue.sendItem({
+      event: 'test_event',
+      data: { test: 'data redis', timestamp: Date.now() },
+      transport: 'redis',
+      destination: 'redis://localhost:6379',
+      timestamp: Date.now(),
+    });
     return { external: await this.externalService.getExternalCall() };
   }
 

@@ -11,7 +11,7 @@ import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { loadProviders } from '../utils/dependencies.utils';
 import { interceptorErrorHandler, interceptorHandler } from './interceptors.middleware';
 
 const test = suite('Interceptor Middleware');
@@ -57,7 +57,7 @@ test.before.each(async () => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 });
 
 test.after.each(() => {

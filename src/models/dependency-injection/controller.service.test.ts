@@ -5,10 +5,8 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { ExpressMocks } from '../../../test/mocks/express.mocks';
-import { Controller, Guard, Injectable, Intercept, Interceptor, Middleware, UseMiddleware } from '../../decorators';
-import { guardHandler } from '../../middlewares/guard.middleware';
+import { Controller, Guard, Intercept, Interceptor, Middleware, UseMiddleware } from '../../decorators';
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
-import { loadInjectables } from '../../utils/dependencies.utils';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { CanExecute } from '../interfaces/authorization.interface';
 import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';

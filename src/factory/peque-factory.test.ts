@@ -8,7 +8,7 @@ import { Server } from '../server';
 import { Config } from '../services/config/config.service';
 import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 import { clusterUtils } from '../utils/cluster.utils';
-import { ExpressFactory } from './express-factory';
+import { PequeFactory } from './peque-factory';
 
 interface Context {
   sandbox: sinon.SinonSandbox;
@@ -37,7 +37,7 @@ test('should boot the server', async (context) => {
     rootModule: RootModule,
   };
 
-  await ExpressFactory.createServer(options);
+  await PequeFactory.createServer(options);
 
   assert.ok(triggerServerBootstrap.called);
   assert.ok(configSet.calledWith(CONFIG_STORAGES.EXPRESS_SERVER, options));
@@ -47,12 +47,13 @@ test('should boot the server', async (context) => {
 
 test('should call clusterUtils.setupWorkers() when is CPU clustered', async (context) => {
   context.sandbox.stub(clusterUtils, 'isMaster').returns(true);
+  context.sandbox.stub(Server.prototype, 'closeServer');
 
   const setupWorkers = context.sandbox.stub(clusterUtils, 'setupWorkers');
 
   class RootModule {}
 
-  await ExpressFactory.createServer({
+  await PequeFactory.createServer({
     rootModule: RootModule,
     isCpuClustered: true,
   });
