@@ -1,11 +1,13 @@
 import 'reflect-metadata';
 
-import { ExpressFactory } from '../dist';
+import { PequeFactory } from '../dist';
+import { TestMicroservice } from './microservices/test-microservice';
+import { TestRedisMicroservice } from './microservices/test-redis-microservice';
 import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
 
 async function startUp() {
-  await ExpressFactory.createServer({
+  await PequeFactory.createServer({
     rootModule: TestRootModule,
     cors: true,
     swagger: {
@@ -37,6 +39,8 @@ async function startUp() {
     guards: [TestServerGuard],
     showOriginalErrorObject: true,
   });
+
+  await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
 }
 
 startUp();

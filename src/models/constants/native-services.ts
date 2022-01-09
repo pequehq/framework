@@ -10,4 +10,5 @@ export const NATIVE_SERVICES = {
   INTERCEPTOR: 'InterceptorService',
   CONFIG: 'ConfigService',
   HTTP_SERVICE: 'HttpService',
+  TRANSPORT_QUEUE: 'TransportQueueService',
 };

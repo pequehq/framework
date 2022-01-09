@@ -8,7 +8,7 @@ import { Context } from '../models';
 import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { loadProviders } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';
 import { Intercept, Interceptor } from './interceptor';
@@ -38,7 +38,7 @@ test('should set an interceptor provider', async () => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const interceptors = Providers.getProvidersByType('interceptor');
 
@@ -69,7 +69,7 @@ test('should set an interceptor metadata for routes and controllers', async () =
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   @Intercept(TestInterceptor)
   @Controller('/test')

@@ -19,13 +19,11 @@ import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
-import { Providers } from './models/dependency-injection/provider.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Sockets } from './services/socket/socket.service';
-import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export class Server {
@@ -40,27 +38,10 @@ export class Server {
   constructor(options: ServerOptions) {
     this.#options = options;
     Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
-
-    this.#setDefaultUnhandledExceptionsFallback();
   }
 
   logger(): LoggerService {
     return this.logService;
-  }
-
-  async #gracefulShutdown(): Promise<void> {
-    await this.#destroyControllers();
-    await this.#destroyWebSockets();
-    await this.#destroyModules();
-    await this.#destroyProviders();
-
-    await this.#serverListenStop();
-    await this.#closeServer();
-
-    await this.#serverShutdown();
-    this.#unsetAllProviders();
-
-    process.exit(1);
   }
 
   getServer(): http.Server {
@@ -68,13 +49,7 @@ export class Server {
   }
 
   async bootstrap(): Promise<void> {
-    // Set graceful shutdown.
-    for (const terminationSignal of ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP']) {
-      process.on(terminationSignal, this.#gracefulShutdown);
-    }
-
-    // Load injectables and controllers.
-    await this.#loadInjectables();
+    // Load controllers.
     await this.#loadModules();
 
     // Load existing app or one from scratch.
@@ -161,7 +136,7 @@ export class Server {
     });
   }
 
-  async #closeServer(): Promise<boolean> {
+  async closeServer(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // Ending all the open connections first.
       Sockets.closeAllByType('http');
@@ -180,62 +155,17 @@ export class Server {
     await Controllers.initControllers(this.#application);
   }
 
-  async #destroyControllers(): Promise<void> {
-    await Controllers.destroyControllers();
-  }
-
   async #loadModules(): Promise<void> {
     await Modules.initModules();
-  }
-
-  async #destroyModules(): Promise<void> {
-    await Modules.destroyModules();
   }
 
   async #loadWebSockets(): Promise<void> {
     await WebSockets.initWebSockets();
   }
 
-  async #destroyWebSockets(): Promise<void> {
-    await WebSockets.destroyWebSockets();
-  }
-
-  async #loadInjectables(): Promise<void> {
-    await loadInjectables();
-  }
-
-  async #destroyProviders(): Promise<void> {
-    await destroyProviders();
-  }
-
-  async #serverShutdown(): Promise<void> {
-    await LifeCycleManager.triggerServerShutdown();
-  }
-
-  async #serverListenStop(): Promise<void> {
-    await LifeCycleManager.triggerServerListenStop();
-  }
-
-  #unsetAllProviders(): void {
-    Providers.unsetAll();
-  }
-
   #addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
       this.#application.use(middleware);
-    });
-  }
-
-  #setDefaultUnhandledExceptionsFallback(): void {
-    process.on('uncaughtException', async (error) => {
-      await LifeCycleManager.triggerUncaughtException(error);
-      console.error(error);
-      process.exit(0);
-    });
-    process.on('unhandledRejection', async (error: string) => {
-      await LifeCycleManager.triggerUncaughtRejection(new Error(error));
-      console.error(error);
-      process.exit(0);
     });
   }
 }

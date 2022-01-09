@@ -1,4 +1,4 @@
-import { ClassDeclaration, NativeEventsType } from '../../models';
+import { ClassDeclaration } from '../../models';
 import { getAllInstances } from '../../utils/instances.utils';
 import { Subjects } from '../subjects/subjects';
 
@@ -16,8 +16,8 @@ class LifeCycleManagerService {
     }
   }
 
-  #pushEvent(event: NativeEventsType, data = {}): void {
-    Subjects.lifeCycleSubject.next({ event, data });
+  #pushEvent(event: string, data = {}): void {
+    Subjects.lifeCycleSubject.next({ event: { event, transport: 'internal' }, data });
   }
 
   async triggerProviderInit(instance: InstanceType<ClassDeclaration>): Promise<void> {

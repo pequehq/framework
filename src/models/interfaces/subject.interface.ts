@@ -1,6 +1,6 @@
-import { NativeEventsType } from './types';
+import { Event } from './events.interface';
 
 export interface SubjectEvent<TData> {
-  event: string | NativeEventsType;
+  event: Event;
   data: TData;
 }

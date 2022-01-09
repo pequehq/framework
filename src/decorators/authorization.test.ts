@@ -4,7 +4,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { DECORATORS } from '../models/constants/decorators';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { loadProviders } from '../utils/dependencies.utils';
 import { Guard } from './authorization';
 import { Controller } from './controller';
 import { Get } from './express-methods';
@@ -12,7 +12,7 @@ import { Get } from './express-methods';
 const test = suite('Guard');
 
 test.before(async () => {
-  await loadInjectables();
+  await loadProviders();
 });
 
 test('should succeed when applied on controller', () => {

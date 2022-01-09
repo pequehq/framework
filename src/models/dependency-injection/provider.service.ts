@@ -6,23 +6,13 @@ interface ProviderInterface {
   type: ProviderType;
 }
 
-interface InjectableInstance {
+export interface ProviderInstances {
   injectable: ProviderInstance;
-}
-
-interface InterceptorInstance {
   interceptor: ProviderInstance;
-}
-
-interface TransformerInstance {
   transformer: ProviderInstance;
-}
-
-interface MiddlewareInstance {
   middleware: ProviderInstance;
+  microservice: ProviderInstance;
 }
-
-export type ProviderInstances = InjectableInstance & InterceptorInstance & TransformerInstance & MiddlewareInstance;
 
 class ProviderService {
   #providerMaps: Record<ProviderType, Map<string, ProviderInstance>> = {
@@ -30,6 +20,7 @@ class ProviderService {
     interceptor: new Map<string, ProviderInstance>(),
     transformer: new Map<string, ProviderInstance>(),
     middleware: new Map<string, ProviderInstance>(),
+    microservice: new Map<string, ProviderInstance>(),
   };
 
   #providerArray: ProviderInterface[] = [];
@@ -60,11 +51,22 @@ class ProviderService {
       interceptor: this.#providerMaps.interceptor.get(provider),
       transformer: this.#providerMaps.transformer.get(provider),
       middleware: this.#providerMaps.middleware.get(provider),
+      microservice: this.#providerMaps.microservice.get(provider),
     };
   }
 
-  getAllInstances() {
-    return this.#providerMaps;
+  getProviderByType(type: ProviderType, provider: string): ProviderInterface | undefined {
+    return this.#providerArray.find((prov) => prov.type === type && prov.name === provider);
+  }
+
+  getAllProviders(): ProviderInterface[] {
+    return [
+      ...this.getProvidersByType('injectable'),
+      ...this.getProvidersByType('interceptor'),
+      ...this.getProvidersByType('transformer'),
+      ...this.getProvidersByType('middleware'),
+      ...this.getProvidersByType('microservice'),
+    ];
   }
 
   setProviderInstance(type: ProviderType, name: string, provider: ProviderInstance): void {
@@ -73,6 +75,10 @@ class ProviderService {
 
   deleteProviderInstance(type: ProviderType, provider: string): void {
     this.#providerMaps[type].delete(provider);
+  }
+
+  getTypes(provider: string) {
+    return this.#providerArray.filter((prov) => prov.name === provider);
   }
 
   unsetAll(): void {
