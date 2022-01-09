@@ -1,8 +1,8 @@
-import mqtt from 'mqtt';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
+import { mqttConnect } from './mqtt.connect';
 import { MqttBrokerClient, MqttSubscribePayload } from './mqtt-broker.client';
 
 const test = suite('MQTT Broker Client');
@@ -17,7 +17,7 @@ test.after.each((context) => {
 
 test('should call connect', async (context) => {
   const onSpy = context.sandbox.spy((event: string, cb: () => void) => cb());
-  const mqttConnectStub = context.sandbox.stub(mqtt, 'connect').returns({
+  const mqttConnectStub = context.sandbox.stub(mqttConnect, 'connect').returns({
     on: onSpy,
   });
 
@@ -32,7 +32,7 @@ test('should call subscribe', async (context) => {
   const subscribeFunctionSpy = context.sandbox.spy((event: MqttSubscribePayload) => event);
   const onSpy = context.sandbox.spy((event: string, cb: () => void) => cb());
   const subscribeSpy = context.sandbox.spy((topic: string, err: (err: string) => void) => err('err'));
-  context.sandbox.stub(mqtt, 'connect').returns({
+  context.sandbox.stub(mqttConnect, 'connect').returns({
     subscribe: subscribeSpy,
     on: onSpy,
   });
@@ -54,7 +54,7 @@ test('should call publish with resolve', async (context) => {
       cb(undefined, 'packet'),
   );
 
-  context.sandbox.stub(mqtt, 'connect').returns({
+  context.sandbox.stub(mqttConnect, 'connect').returns({
     publish: publishSpy,
     on: onSpy,
   });
@@ -72,7 +72,7 @@ test('should call publish with reject', async (context) => {
     (topic: string, message: string, cb: (error: string | undefined, packet: string) => void) => cb('error', 'packet'),
   );
 
-  context.sandbox.stub(mqtt, 'connect').returns({
+  context.sandbox.stub(mqttConnect, 'connect').returns({
     publish: publishSpy,
     on: onSpy,
   });

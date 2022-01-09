@@ -1,6 +1,7 @@
-import mqtt from 'mqtt';
+import { IClientOptions, MqttClient, Packet } from 'mqtt';
 
 import { BrokerProxy } from '../../models/interfaces/broker-proxy.interface';
+import { mqttConnect } from './mqtt.connect';
 
 export interface MqttSubscribePayload {
   topic: string;
@@ -12,12 +13,12 @@ export interface MqttPublishPayload {
   payload: string;
 }
 
-export class MqttBrokerClient extends BrokerProxy<mqtt.IClientOptions> {
-  private client: mqtt.MqttClient;
+export class MqttBrokerClient extends BrokerProxy<IClientOptions> {
+  private client: MqttClient;
 
   async connect(): Promise<void> {
     return new Promise<void>((resolve) => {
-      this.client = mqtt.connect(this.broker, this.options);
+      this.client = mqttConnect.connect(this.broker, this.options);
       this.client.on('connect', (packet) => {
         resolve();
       });
@@ -36,7 +37,7 @@ export class MqttBrokerClient extends BrokerProxy<mqtt.IClientOptions> {
     });
   }
 
-  async publish(payload: MqttPublishPayload): Promise<mqtt.Packet | undefined> {
+  async publish(payload: MqttPublishPayload): Promise<Packet | undefined> {
     return new Promise((resolve, reject) => {
       this.client.publish(payload.topic, payload.payload, (error, packet) => {
         if (error) {
