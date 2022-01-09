@@ -12,11 +12,10 @@ export const buildEventObject = (options: { event: string; transport?: Transport
   );
 
   let transportType: TransportType = options.transport || 'internal';
-  if (!options.transport) {
-    if (microserviceOptions) {
-      transportType = microserviceOptions.transport;
-    }
+  if (!options.transport && microserviceOptions) {
+    transportType = microserviceOptions.transport;
   }
+
   return {
     event: options.event,
     transport: transportType,
