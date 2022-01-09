@@ -37,7 +37,7 @@ export class RedisBrokerClient extends BrokerProxy<unknown> {
         await this.client.publisher.publish(payload.channel, JSON.stringify(payload.message));
         resolve();
       } catch (error) {
-        reject();
+        reject(error);
       }
     });
   }
