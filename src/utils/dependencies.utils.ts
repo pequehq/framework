@@ -11,7 +11,7 @@ export const getClassDependencies = (clazz: ClassDeclaration): unknown[] => {
   return providers.map((provider) => Injector.resolve('injectable', provider.name));
 };
 
-export const loadInjectables = async (): Promise<void> => {
+export const loadProviders = async (): Promise<void> => {
   const providers = [
     ...Providers.getProvidersByType('injectable'),
     ...Providers.getProvidersByType('interceptor'),

@@ -7,7 +7,7 @@ import { HttpClient } from '../models';
 import { NATIVE_SERVICES } from '../models/constants/native-services';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { getClassDependencies, loadInjectables } from '../utils/dependencies.utils';
+import { getClassDependencies, loadProviders } from '../utils/dependencies.utils';
 import { Inject, Injectable } from './injectable';
 
 const test = suite('Injectable');
@@ -20,7 +20,7 @@ test('@Injectable should make the decorated class available via dependency injec
   @Injectable()
   class TestService {}
 
-  await loadInjectables();
+  await loadProviders();
 
   const instance = Injector.resolve<TestService>('injectable', 'TestService');
   assert.instance(instance, TestService);
@@ -39,7 +39,7 @@ test('@Inject should inject an instance of the decorated class', async () => {
     testService: TestService;
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const subject = new TestClass();
 
@@ -60,7 +60,7 @@ test('@Inject should inject a custom provider', async () => {
     testService: HttpClient;
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const subject = new TestClass();
 
@@ -86,7 +86,7 @@ test('should work when dependencies are injected in the constructor', async () =
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const testClass = Injector.resolve<TestClass>('injectable', 'TestClass');
 

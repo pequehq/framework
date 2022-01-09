@@ -25,7 +25,7 @@ import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Sockets } from './services/socket/socket.service';
-import { destroyProviders, loadInjectables } from './utils/dependencies.utils';
+import { destroyProviders, loadProviders } from './utils/dependencies.utils';
 import { getPath } from './utils/fs.utils';
 
 export class Server {
@@ -209,7 +209,7 @@ export class Server {
   }
 
   private async loadInjectables(): Promise<void> {
-    await loadInjectables();
+    await loadProviders();
   }
 
   private async destroyProviders(): Promise<void> {
