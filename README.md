@@ -22,10 +22,10 @@ The usage of the Node.js LTS version is required.
 ## Server
 ```typescript
 import { TestRootModule } from './modules/root/test-root.module';
-import { ExpressFactory } from 'peque.ts';
+import { PequeFactory } from 'peque.ts';
 
 async function startUp() {
-  await ExpressFactory.createServer({
+  await PequeFactory.createServer({
     cors: true,
     isCpuClustered: false,
     rootModule: TestRootModule,
