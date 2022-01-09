@@ -56,7 +56,7 @@ class ProviderService {
   }
 
   getProviderByType(type: ProviderType, provider: string): ProviderInterface {
-    return this.providerArray.filter((prov) => prov.type === type && prov.name === provider)[0];
+    return this.providerArray.find((prov) => prov.type === type && prov.name === provider);
   }
 
   getAllProviders(): ProviderInterface[] {
