@@ -54,6 +54,71 @@ export class TestMicroservice extends MicroserviceHandler implements OnProviderI
 }
 ```
 
+# Bootstrap
+
+The Microservices will be started by the PequeFactory, like the web-server.
+
+```typescript
+import { TestMicroservice } from './microservices/test-microservice';
+import { PequeFactory } from 'peque.ts';
+
+async function startUp() {
+  await PequeFactory.createMicroservices({ services: [TestMicroservice] });
+}
+
+startUp();
+```
+
+Hybrid web-server/microservices applications are possible as well.
+
+```typescript
+import { PequeFactory } from '../dist';
+import { TestMicroservice } from './microservices/test-microservice';
+import { TestRedisMicroservice } from './microservices/test-redis-microservice';
+import { TestServerGuard } from './modules/guards/test-server.guard';
+import { TestRootModule } from './modules/root/test-root.module';
+
+async function startUp() {
+  await PequeFactory.createServer({
+    rootModule: TestRootModule,
+    cors: true,
+    swagger: {
+      folder: '/doc',
+      info: {
+        title: 'Test API',
+        description: 'Test API description',
+        contacts: {
+          name: 'Simone Di Cicco',
+          email: 'simone.dicicco@gmail.com',
+        },
+        version: '1.0.0',
+      },
+      servers: [{ url: 'https://api.test.com/' }],
+      tags: [
+        {
+          name: 'Tag',
+          description: 'Description',
+        },
+      ],
+    },
+    logger: {
+      consoleOutput: true,
+      level: 'debug',
+      active: true,
+      engine: 'true',
+    },
+    isCpuClustered: false,
+    guards: [TestServerGuard],
+    showOriginalErrorObject: true,
+  });
+
+  await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
+}
+
+startUp();
+```
+
+
 # Events
 
 ## Consume
