@@ -79,7 +79,6 @@ test('should call publish with reject', async (context) => {
     await client.publish({ channel: 'channel', message: 'message' });
     assert.unreachable('should have thrown');
   } catch (error) {
-    console.log('err', error);
     assert.equal(error, { error: 'error' });
   }
 
