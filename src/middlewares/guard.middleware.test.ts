@@ -9,7 +9,7 @@ import { CanExecute, Context } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { loadProviders } from '../utils/dependencies.utils';
 import { guardHandler } from './guard.middleware';
 
 const test = suite('Guard Middleware');
@@ -32,7 +32,7 @@ test('should execute a guard class and allow can execute', async () => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const res = expressMocks.mockResponse();
   const req = expressMocks.mockRequest();
@@ -51,7 +51,7 @@ test('should execute a guard class and deny can execute', async () => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const res = expressMocks.mockResponse();
   const req = expressMocks.mockRequest();
@@ -73,7 +73,7 @@ test('should throw an error from the guard class', async () => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   const res = expressMocks.mockResponse();
   const req = expressMocks.mockRequest();

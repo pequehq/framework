@@ -8,7 +8,7 @@ import { ControllerDefinition, MiddlewareHandler, RouteDefinition } from '../mod
 import { DECORATORS } from '../models/constants/decorators';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
-import { loadInjectables } from '../utils/dependencies.utils';
+import { loadProviders } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';
 import { Middleware, UseMiddleware } from './middleware';
@@ -23,7 +23,7 @@ test.before.each(async (context) => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   context.middleware = TestMiddleware;
 });

@@ -8,7 +8,7 @@ import { Controller, Get, Middleware, UseMiddleware } from '../../decorators';
 import { ControllerDefinition, MiddlewareHandler, RouteDefinition } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Providers } from '../../models/dependency-injection/provider.service';
-import { loadInjectables } from '../../utils/dependencies.utils';
+import { loadProviders } from '../../utils/dependencies.utils';
 import { Middlewares } from './middleware.service';
 
 const test = suite('Middleware service');
@@ -21,7 +21,7 @@ test.before.each(async (context) => {
     }
   }
 
-  await loadInjectables();
+  await loadProviders();
 
   @UseMiddleware(TestMwMiddleware)
   @Controller('/test')

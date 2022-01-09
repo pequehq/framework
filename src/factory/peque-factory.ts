@@ -5,20 +5,22 @@ import { Server } from '../server';
 import { LifeCycleManager } from '../services/life-cycle/life-cycle.service';
 import { clusterUtils } from '../utils/cluster.utils';
 
-export class ExpressFactory {
-  private static expressServer: http.Server;
+export class PequeFactoryService {
+  private expressServer: http.Server;
 
-  static createServer = async (options: ServerOptions): Promise<http.Server> => {
+  async createServer(options: ServerOptions): Promise<http.Server> {
     if (options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
-      return ExpressFactory.expressServer;
+      return this.expressServer;
     }
 
     await LifeCycleManager.triggerServerBootstrap();
     const server = new Server(options);
     await server.bootstrap();
 
-    ExpressFactory.expressServer = server.getServer();
-    return ExpressFactory.expressServer;
-  };
+    this.expressServer = server.getServer();
+    return this.expressServer;
+  }
 }
+
+export const PequeFactory = new PequeFactoryService();
