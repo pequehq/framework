@@ -20,7 +20,7 @@ The roadmap of transports to be supported is the following:
 
 ![Microservices in Peque.ts](images/microservice-internal.png)
 
-Microservices, anyway, are provider classes decorated with the `@Microservice()` decorator.
+Microservices, anyway, are provider classes decorated with the `@Microservice()` decorator that extends the `MicroserviceHandler` class.
 
 ```typescript
 @Microservice({ broker: 'mqtt://localhost:1883', transport: 'mqtt' })
