@@ -8,10 +8,11 @@ import { TransportSubjects } from '../subjects/subjects';
 import { MqttGateway } from './gateway/mqtt-gateway.service';
 import { TransportQueue } from './transport-queue.service';
 
-const test = suite('Transport Queue');
+const test = suite<{ sandbox: sinon.SinonSandbox }>('Transport Queue');
 
 test.before.each((context) => {
   context.sandbox = sinon.createSandbox();
+  context.sandbox.stub(TransportQueue, 'intervalMilliseconds').returns(50);
 });
 
 test.after.each((context) => {
@@ -29,7 +30,7 @@ test('should subscribe to the success and fail subjects', async (context) => {
   assert.is(transportSuccessSubscribeSpy.callCount, 0);
 
   TransportQueue.init();
-  await wait(2100);
+  await wait();
 
   assert.is(transportFailedSubscribeSpy.callCount, 1);
   assert.is(transportSuccessSubscribeSpy.callCount, 1);
@@ -50,7 +51,7 @@ test('should forward an event', async (context) => {
   assert.is(transportSendNextSpy.callCount, 0);
 
   TransportQueue.init();
-  await wait(2100);
+  await wait();
 
   const id = TransportQueue.sendItem(event);
   assert.is(transportSendNextSpy.callCount, 1);
