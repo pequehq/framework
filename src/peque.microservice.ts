@@ -7,6 +7,7 @@ export interface MicroserviceOptions {
 }
 
 export class PequeMicroservice extends PequeBase {
+  #started = false;
   #options: MicroserviceOptions;
 
   constructor(options: MicroserviceOptions) {
@@ -16,8 +17,13 @@ export class PequeMicroservice extends PequeBase {
   }
 
   async start(): Promise<void> {
+    if (this.#started) {
+      return;
+    }
+
     await this.initialize();
     await Microservices.start();
+    this.#started = true;
   }
 
   async stop(): Promise<void> {

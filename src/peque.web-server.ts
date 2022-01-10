@@ -34,6 +34,7 @@ export class PequeWebServer extends PequeBase {
 
   #application: Application;
   #server: http.Server;
+  #started = false;
 
   constructor(options: WebServerOptions) {
     super();
@@ -45,6 +46,10 @@ export class PequeWebServer extends PequeBase {
   async start(): Promise<void> {
     if (this.#options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
+      return;
+    }
+
+    if (this.#started) {
       return;
     }
 
@@ -119,6 +124,8 @@ export class PequeWebServer extends PequeBase {
 
     // Server listener.
     await this.#startListening();
+
+    this.#started = true;
   }
 
   async stop(exit = true): Promise<void> {

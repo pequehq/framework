@@ -11,13 +11,7 @@ export interface UpDown {
 }
 
 export abstract class PequeBase {
-  #initialized = false;
-
   protected async initialize(): Promise<void> {
-    if (this.#initialized) {
-      return;
-    }
-
     processUtils.onTermination(() => this.onTermination());
     processUtils.onUncaughtException((error) => this.onUncaughtException(error));
     processUtils.onUnhandledRejection((error) => this.onUnhandledRejection(error));
@@ -25,8 +19,6 @@ export abstract class PequeBase {
     await this.#transportQueue().up();
     await this.#gateways().up();
     await this.#providers().up();
-
-    this.#initialized = true;
   }
 
   protected async teardown(): Promise<void> {
