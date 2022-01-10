@@ -7,7 +7,9 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { TransportSubjects } from '../subjects/subjects';
 
 export class TransportQueueService {
-  #enqueueInterval: any;
+  readonly intervalMilliseconds = 2000;
+
+  #enqueueInterval: NodeJS.Timer;
   #queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
@@ -36,7 +38,7 @@ export class TransportQueueService {
 
   #startRecycler(): void {
     if (!this.#enqueueInterval) {
-      this.#enqueueInterval = setInterval(() => this.#enqueueItems(), 2000);
+      this.#enqueueInterval = setInterval(() => this.#enqueueItems(), this.intervalMilliseconds);
     }
   }
 
@@ -70,5 +72,7 @@ export class TransportQueueService {
   }
 }
 
+// @TODO remove to avoid side-effects on module import
 Injector.setNative('injectable', NATIVE_SERVICES.TRANSPORT_QUEUE, TransportQueueService);
+
 export const TransportQueue = Injector.resolve<TransportQueueService>('injectable', NATIVE_SERVICES.TRANSPORT_QUEUE);
