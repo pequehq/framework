@@ -21,28 +21,28 @@ import { Injector } from './injector.service';
 type ControllerClass = { new (...args: unknown[]): unknown };
 
 export class ControllerService {
-  private controllers: ControllerClass[] = [];
-  private instances: InstanceType<ControllerClass>[] = [];
+  #controllers: ControllerClass[] = [];
+  #instances: InstanceType<ControllerClass>[] = [];
 
   push(controller: ControllerClass): void {
-    this.controllers.push(controller);
+    this.#controllers.push(controller);
   }
 
   getAll(): ControllerClass[] {
-    return this.controllers;
+    return this.#controllers;
   }
 
   getInstances(): InstanceType<ControllerClass>[] {
-    return this.instances;
+    return this.#instances;
   }
 
   async initControllers(application: Application): Promise<void> {
     const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
 
     // Iterate controllers.
-    for (const controller of this.controllers) {
+    for (const controller of this.#controllers) {
       const instance = new controller(...getClassDependencies(controller));
-      this.instances.push(instance);
+      this.#instances.push(instance);
       await LifeCycleManager.triggerControllerInit(instance);
 
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
@@ -148,7 +148,7 @@ export class ControllerService {
   }
 
   async destroyControllers(): Promise<void> {
-    for (const controller of this.instances) {
+    for (const controller of this.#instances) {
       await LifeCycleManager.triggerControllerDestroy(controller);
     }
   }

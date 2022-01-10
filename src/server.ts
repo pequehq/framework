@@ -27,16 +27,16 @@ import { Sockets } from './services/socket/socket.service';
 import { getPath } from './utils/fs.utils';
 
 export class Server {
-  private readonly options: ServerOptions;
+  readonly #options: ServerOptions;
 
   @Inject('LoggerService')
   private logService: LoggerService;
 
-  private application: Application;
-  private server: http.Server;
+  #application: Application;
+  #server: http.Server;
 
   constructor(options: ServerOptions) {
-    this.options = options;
+    this.#options = options;
     Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
   }
 
@@ -45,94 +45,93 @@ export class Server {
   }
 
   getServer(): http.Server {
-    return this.server;
+    return this.#server;
   }
 
   async bootstrap(): Promise<void> {
     // Load controllers.
-    await this.loadModules();
+    await this.#loadModules();
 
     // Load existing app or one from scratch.
-    this.application = this.options.existingApp ?? express();
+    this.#application = this.#options.existingApp ?? express();
 
     // Session.
-    if (this.options.session) {
-      this.application.use(expressSession(this.options.session));
+    if (this.#options.session) {
+      this.#application.use(expressSession(this.#options.session));
     }
 
     // Body parser.
-    this.application.use(express.json({ limit: '2m' }));
-    this.application.use(express.urlencoded({ extended: true }));
+    this.#application.use(express.json({ limit: '2m' }));
+    this.#application.use(express.urlencoded({ extended: true }));
 
     // Cookie parser.
-    this.application.use(cookieParser());
+    this.#application.use(cookieParser());
 
     // CORS.
-    if (this.options.cors) {
-      if (typeof this.options.cors === 'boolean') {
-        this.application.use(cors());
+    if (this.#options.cors) {
+      if (typeof this.#options.cors === 'boolean') {
+        this.#application.use(cors());
       } else {
-        this.application.use(cors(this.options.cors));
+        this.#application.use(cors(this.#options.cors));
       }
     }
 
     // Global guards.
-    if (this.options.guards?.length) {
-      this.application.use(
-        this.options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
+    if (this.#options.guards?.length) {
+      this.#application.use(
+        this.#options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
       );
     }
 
     // Push HTTP event.
-    this.application.use(pushHttpEvents);
+    this.#application.use(pushHttpEvents);
 
     // Add pre-route Middlewares.
-    const preRoutes = this.options.globalMiddlewares?.preRoutes ?? [];
-    this.addMiddlewares(preRoutes);
+    const preRoutes = this.#options.globalMiddlewares?.preRoutes ?? [];
+    this.#addMiddlewares(preRoutes);
 
-    await this.loadControllers();
-    await this.loadWebSockets();
+    await this.#loadControllers();
+    await this.#loadWebSockets();
 
     // OpenAPI.
-    if (this.options.swagger) {
-      const swaggerFactory = new SwaggerFactory();
-      swaggerFactory.generate();
+    if (this.#options.swagger) {
+      SwaggerFactory.generate();
       const swaggerDocument = await $RefParser.dereference(
         YAML.parse(getPath('../swagger/generated/base-swagger-doc.yaml')),
       );
-      this.application.use(this.options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-      this.logService.log({ level: 'info', data: `[openapi] ${this.options.swagger.folder}` });
+      this.#application.use(this.#options.swagger.folder, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+      this.logService.log({ level: 'info', data: `[openapi] ${this.#options.swagger.folder}` });
     }
 
     // Add fallback for not existing routes.
-    this.application.use(fallback);
+    this.#application.use(fallback);
 
     // Add post-route Middlewares.
-    const postRoutes = this.options.globalMiddlewares?.postRoutes ?? [];
-    this.addMiddlewares([...postRoutes]);
+    const postRoutes = this.#options.globalMiddlewares?.postRoutes ?? [];
+    this.#addMiddlewares([...postRoutes]);
 
     // Add general error handling.
-    this.application.use(errorHandler);
+    this.#application.use(errorHandler);
 
     // Server listener.
-    await this.listen();
+    await this.#listen();
   }
 
-  private async listen(): Promise<void> {
-    const port = this.options.port || 8888;
-    const hostname = this.options.hostname || 'localhost';
+  async #listen(): Promise<void> {
+    const port = this.#options.port || 8888;
+    const hostname = this.#options.hostname || 'localhost';
 
     await LifeCycleManager.triggerServerListen();
 
-    this.server = this.application.listen(port, hostname, async () => {
+    this.#server = this.#application.listen(port, hostname, async () => {
       this.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
-      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.options.isCpuClustered ? 'ON' : 'OFF'}` });
+      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.#options.isCpuClustered ? 'ON' : 'OFF'}` });
       await LifeCycleManager.triggerServerStarted();
     });
 
     // Connections management.
-    this.server.on('connection', (socket) => {
-      this.server.once('close', () => Sockets.delete('http', socket));
+    this.#server.on('connection', (socket) => {
+      this.#server.once('close', () => Sockets.delete('http', socket));
       Sockets.set('http', socket);
     });
   }
@@ -142,7 +141,7 @@ export class Server {
       // Ending all the open connections first.
       Sockets.closeAllByType('http');
 
-      this.server.close((err) => {
+      this.#server.close((err) => {
         if (err) {
           reject(err);
         } else {
@@ -152,21 +151,21 @@ export class Server {
     });
   }
 
-  private async loadControllers(): Promise<void> {
-    await Controllers.initControllers(this.application);
+  async #loadControllers(): Promise<void> {
+    await Controllers.initControllers(this.#application);
   }
 
-  private async loadModules(): Promise<void> {
+  async #loadModules(): Promise<void> {
     await Modules.initModules();
   }
 
-  private async loadWebSockets(): Promise<void> {
+  async #loadWebSockets(): Promise<void> {
     await WebSockets.initWebSockets();
   }
 
-  private addMiddlewares(middlewares: RequestHandlerParams[]): void {
+  #addMiddlewares(middlewares: RequestHandlerParams[]): void {
     middlewares.forEach((middleware) => {
-      this.application.use(middleware);
+      this.#application.use(middleware);
     });
   }
 }

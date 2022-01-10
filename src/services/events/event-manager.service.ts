@@ -13,14 +13,14 @@ import { EventStorage } from './event-storage.service';
 
 @Injectable()
 export class EventManagerService implements OnProviderInit, OnProviderDestroy {
-  private emitter = new EventEmitter();
-  private subscriptions: Subscription[] = [];
+  #emitter = new EventEmitter();
+  #subscriptions: Subscription[] = [];
 
   onProviderInit(): void {
     this.registerListeners();
 
     for (const key of Object.keys(Subjects)) {
-      this.subscriptions.push(
+      this.#subscriptions.push(
         Subjects[key].subscribe((event: SubjectEvent<unknown>) => {
           if (event) {
             this.push(buildEventName(event.event), event.data);
@@ -33,30 +33,30 @@ export class EventManagerService implements OnProviderInit, OnProviderDestroy {
   onProviderDestroy(): void {
     this.unregisterListeners();
 
-    for (const subscription of this.subscriptions) {
+    for (const subscription of this.#subscriptions) {
       subscription.unsubscribe();
     }
   }
 
   registerListeners(): void {
     for (const { event, listener } of EventStorage.getAll()) {
-      this.emitter.addListener(buildEventName(event), listener.bind(this));
+      this.#emitter.addListener(buildEventName(event), listener.bind(this));
     }
   }
 
   unregisterListeners(): void {
     for (const { event, listener } of EventStorage.getAll()) {
-      this.emitter.removeListener(event.event, listener);
+      this.#emitter.removeListener(event.event, listener);
       EventStorage.remove(event);
     }
   }
 
   push<TData>(event: string | NativeEventsType, data: TData): void {
     const payload: EventPayload<TData> = { event, timestamp: Date.now(), data };
-    this.emitter.emit(event, payload);
+    this.#emitter.emit(event, payload);
   }
 
   subscribe<TData>(event: string | NativeEventsType, listener: (data: EventPayload<TData>) => void): void {
-    this.emitter.on(event, listener);
+    this.#emitter.on(event, listener);
   }
 }
