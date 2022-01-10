@@ -42,7 +42,8 @@ async function startUp() {
 
   await webserver.start();
 
-  // await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
+  // const microservice = PequeFactory.createMicroservice({ services: [TestMicroservice, TestRedisMicroservice] });
+  // await microservice.start();
 }
 
 startUp();

@@ -226,6 +226,6 @@ export class PequeWebServer extends PequeBase {
   override async onUnhandledRejection(error: Error): Promise<void> {
     await LifeCycleManager.triggerUncaughtRejection(error);
 
-    await super.onUncaughtException(error);
+    await super.onUnhandledRejection(error);
   }
 }

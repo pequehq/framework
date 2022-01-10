@@ -32,11 +32,13 @@ export abstract class PequeBase {
   }
 
   protected async onUncaughtException(error: Error): Promise<void> {
-    throw error;
+    console.error(error);
+    process.exit(1);
   }
 
   protected async onUnhandledRejection(error: Error): Promise<void> {
-    throw error;
+    console.error(error);
+    process.exit(1);
   }
 
   #transportQueue(): UpDown {
