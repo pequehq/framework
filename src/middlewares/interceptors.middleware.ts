@@ -7,14 +7,14 @@ export const interceptorHandler = (interceptor: InterceptorInstance, stage: Inte
   return async (req: express.Request, res: express.Response, next): Promise<void> => {
     try {
       if (stage === 'before') {
-        res.locals.handlerOptions = await interceptor[stage]({ request: req, response: res });
+        res.locals.handlerOptions = await Promise.resolve(interceptor[stage]({ request: req, response: res }));
       }
 
       if (stage === 'after') {
-        const handlerResult: HandlerAfterOptions<unknown> = await interceptor[stage](
-          { request: req, response: res },
-          res.locals.data,
+        const handlerResult: HandlerAfterOptions<unknown> = await Promise.resolve(
+          interceptor[stage]({ request: req, response: res }, res.locals.data),
         );
+
         if (handlerResult) {
           res.locals.data = handlerResult.handlerResult;
         }
@@ -30,7 +30,7 @@ export const interceptorHandler = (interceptor: InterceptorInstance, stage: Inte
 export const interceptorErrorHandler = (interceptor: InterceptorInstance): ErrorRequestHandler => {
   return async (err, req: express.Request, res: express.Response, next): Promise<void> => {
     try {
-      res.locals.handlerOptions = await interceptor.error({ request: req, response: res }, err);
+      res.locals.handlerOptions = await Promise.resolve(interceptor.error({ request: req, response: res }, err));
       next(err);
     } catch (error) {
       next(error);

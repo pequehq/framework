@@ -59,8 +59,8 @@ test('should execute a guard class and deny can execute', async () => {
 
   const guard = Injector.resolve<CanExecute>('injectable', 'TestGuard');
   await guardHandler(guard)(req, res, next);
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_403));
-  assert.ok(expressMocks.spy('send').calledWith({ message: 'Forbidden resource' }));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_403));
+  assert.ok(expressMocks.spy('res.send').calledWith({ message: 'Forbidden resource' }));
 });
 
 test('should throw an error from the guard class', async () => {

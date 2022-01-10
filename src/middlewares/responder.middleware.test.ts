@@ -20,10 +20,10 @@ test('should respond to the client correctly with set statusCode', () => {
 
   responder(req, res, next);
 
-  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_200));
-  assert.ok(expressMocks.spy('send').calledWith(body));
-  assert.is(expressMocks.spy('end').callCount, 1);
+  assert.ok(expressMocks.spy('res.setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_200));
+  assert.ok(expressMocks.spy('res.send').calledWith(body));
+  assert.is(expressMocks.spy('res.end').callCount, 1);
 });
 
 test('should respond to the client correctly without set statusCode', () => {
@@ -33,10 +33,10 @@ test('should respond to the client correctly without set statusCode', () => {
 
   responder(req, res, next);
 
-  assert.ok(expressMocks.spy('setHeader').calledWith('Content-Type', 'application/json'));
-  assert.ok(expressMocks.spy('status').calledWith(HTTP_STATES.HTTP_200));
-  assert.ok(expressMocks.spy('send').calledWith({}));
-  assert.is(expressMocks.spy('end').callCount, 1);
+  assert.ok(expressMocks.spy('res.setHeader').calledWith('Content-Type', 'application/json'));
+  assert.ok(expressMocks.spy('res.status').calledWith(HTTP_STATES.HTTP_200));
+  assert.ok(expressMocks.spy('res.send').calledWith({}));
+  assert.is(expressMocks.spy('res.end').callCount, 1);
 });
 
 test.run();
