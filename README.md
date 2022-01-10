@@ -24,34 +24,32 @@ The usage of the Node.js LTS version is required.
 import { TestRootModule } from './modules/root/test-root.module';
 import { PequeFactory } from 'peque.ts';
 
-async function startUp() {
-  await PequeFactory.createServer({
-    cors: true,
-    isCpuClustered: false,
-    rootModule: TestRootModule,
-    swagger: {
-      folder: '/doc',
-      info: {
-        title: 'Test API',
-        description: 'Test API description',
-        contacts: {
-          name: 'Simone Di Cicco',
-          email: 'simone.dicicco@gmail.com',
-        },
-        version: '1.0.0',
+const webserver = PequeFactory.createServer({
+  cors: true,
+  isCpuClustered: false,
+  rootModule: TestRootModule,
+  swagger: {
+    folder: '/doc',
+    info: {
+      title: 'Test API',
+      description: 'Test API description',
+      contacts: {
+        name: 'Simone Di Cicco',
+        email: 'simone.dicicco@gmail.com',
       },
-      servers: [{ url: 'https://api.test.com/'}],
-      tags: [
-        {
-          name: 'Tag',
-          description: 'Description',
-        },
-      ],
+      version: '1.0.0',
     },
-  });
-}
+    servers: [{ url: 'https://api.test.com/'}],
+    tags: [
+      {
+        name: 'Tag',
+        description: 'Description',
+      },
+    ],
+  },
+});
 
-startUp();
+webserver.start();
 ```
 
 ## Examples

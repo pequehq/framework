@@ -7,7 +7,7 @@ nav_order: 10
 # Guards
 
 The guards are injectable classes that shall implement the `CanExecute` interface.
-Guards contains the logic and the context which will decide if a request will be handled or not.
+Guards contain the logic and the context which will decide if a request will be handled or not.
 
 Typical use cases can be JWT validation, user roles, permission, and like.
 
@@ -44,11 +44,10 @@ Guards can be also globals via the `Server` configuration.
 
 ```typescript
 async function startUp() {
-  await ExpressFactory.createServer({
-      rootModule: TestRootModule,
-      guards: [TestServerGuard]
-    }
-  );
+  await PequeFactory.createServer({
+    rootModule: TestRootModule,
+    guards: [TestServerGuard]
+  }).start();
 }
 
 startUp();
