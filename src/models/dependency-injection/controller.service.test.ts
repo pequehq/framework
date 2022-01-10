@@ -5,7 +5,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { ExpressMocks } from '../../../test/mocks/express.mocks';
-import { Controller, Guard, Intercept, Interceptor, Middleware, UseMiddleware } from '../../decorators';
+import { Controller, Get, Guard, Intercept, Interceptor, Middleware, Post, UseMiddleware } from '../../decorators';
 import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { NATIVE_SERVICES } from '../constants/native-services';
 import { CanExecute } from '../interfaces/authorization.interface';
@@ -153,8 +153,90 @@ test('should load controller middlewares', async () => {
   assert.ok(expressMocks.spy('app.use').calledWith('/path', [TestMiddleware.prototype.handler]));
 });
 
-test.skip('should not register routes having documentOnly = true', async () => {
-  // @TODO add test
+test('should register routes', async () => {
+  const application = expressMocks.mockApplication();
+  const routeLog = sandbox.fake();
+
+  // stub Injector.resolve().
+  sandbox.stub(Injector, 'resolve').callsFake((type, provider) => {
+    if (type === 'injectable' && provider === NATIVE_SERVICES.LOGGER) {
+      return { log: routeLog };
+    }
+
+    return undefined;
+  });
+
+  @Controller('/path')
+  class TestController {
+    @Get('/pizza')
+    getPizza() {
+      return 'pizza';
+    }
+
+    @Post('/pizza')
+    savePizza() {
+      return;
+    }
+  }
+
+  Controllers.push(TestController);
+  assert.equal(Controllers.getAll(), [TestController]);
+
+  await Controllers.initControllers(application);
+  assert.is(Controllers.getInstances().length, 1);
+  assert.instance(Controllers.getInstances()[0], TestController);
+
+  // Check that logs have been written.
+  assert.is(routeLog.callCount, 2);
+
+  for (const method of ['get', 'post']) {
+    assert.ok(
+      routeLog.calledWith({
+        level: 'debug',
+        data: `[${method}] /path/pizza`,
+      }),
+    );
+
+    // Check that routes have been registered.
+    const spiedMethod = method === 'get' ? expressMocks.spy('app.get') : expressMocks.spy('app.post');
+
+    sandbox.assert.calledWith(
+      spiedMethod,
+      '/path/pizza',
+      [],
+      [],
+      [],
+      [],
+      sandbox.match.func, // handler
+      [],
+      [],
+      sandbox.match.func, // responder
+      [],
+      [],
+    );
+  }
+});
+
+test('should not register routes having documentOnly = true', async () => {
+  const application = expressMocks.mockApplication();
+  sandbox.stub(Injector, 'resolve');
+
+  @Controller('/path')
+  class TestController {
+    @Get('/pizza', true)
+    getPizza() {
+      return 'pizza';
+    }
+  }
+
+  Controllers.push(TestController);
+  assert.equal(Controllers.getAll(), [TestController]);
+
+  await Controllers.initControllers(application);
+  assert.is(Controllers.getInstances().length, 1);
+  assert.instance(Controllers.getInstances()[0], TestController);
+
+  sandbox.assert.notCalled(expressMocks.spy('app.get'));
 });
 
 test.run();
