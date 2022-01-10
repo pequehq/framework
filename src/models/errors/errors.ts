@@ -18,10 +18,10 @@ export interface HttpError<TError> extends HttpPartialError<TError> {
 export class HttpException<TError> extends Error {
   constructor(public httpException: HttpError<TError>) {
     super();
-    this.config();
+    this.#config();
   }
 
-  private config(): void {
+  #config(): void {
     if (this.httpException.message) {
       this.message = this.httpException.message;
     }

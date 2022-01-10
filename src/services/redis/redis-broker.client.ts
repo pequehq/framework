@@ -18,14 +18,14 @@ export interface RedisSubscribePayload {
 }
 
 export class RedisBrokerClient extends BrokerProxy<unknown> {
-  private client: RedisClients;
+  #client: RedisClients;
 
   async connect(): Promise<void> {
     return new Promise(async (resolve) => {
       const subscriber = createClient({ url: this.broker });
       const publisher = createClient({ url: this.broker });
       await Promise.all([subscriber.connect(), publisher.connect()]);
-      this.client = { subscriber, publisher };
+      this.#client = { subscriber, publisher };
       resolve();
     });
   }
@@ -33,7 +33,7 @@ export class RedisBrokerClient extends BrokerProxy<unknown> {
   publish(payload: RedisPublishPayload): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.client.publisher.publish(payload.channel, JSON.stringify(payload.message));
+        await this.#client.publisher.publish(payload.channel, JSON.stringify(payload.message));
         resolve();
       } catch (error) {
         reject(error);
@@ -42,7 +42,7 @@ export class RedisBrokerClient extends BrokerProxy<unknown> {
   }
 
   async subscribe(cb: (event: RedisSubscribePayload) => void): Promise<void> {
-    await this.client.subscriber.pSubscribe('*', (message, channel) => {
+    await this.#client.subscriber.pSubscribe('*', (message, channel) => {
       cb({ channel, message });
     });
   }
