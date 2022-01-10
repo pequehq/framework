@@ -14,18 +14,18 @@ import { clusterUtils } from '../utils/cluster.utils';
 import { destroyProviders, loadProviders } from '../utils/dependencies.utils';
 
 export class PequeFactoryService {
-  private server: Server;
-  private initialized = false;
+  #server: Server;
+  #initialized = false;
 
-  private async init(): Promise<void> {
-    if (this.initialized) {
+  async #init(): Promise<void> {
+    if (this.#initialized) {
       return;
     }
 
     const terminationSignals = ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP'];
     terminationSignals.forEach((element) => {
       process.on(element, async () => {
-        await this.terminator();
+        await this.#terminator();
       });
     });
 
@@ -44,17 +44,17 @@ export class PequeFactoryService {
     TransportQueue.init();
     Gateways.startListening();
     await loadProviders();
-    this.initialized = true;
+    this.#initialized = true;
   }
 
-  private async terminator(): Promise<void> {
+  async #terminator(): Promise<void> {
     await Controllers.destroyControllers();
     await WebSockets.destroyWebSockets();
     await Modules.destroyModules();
     await destroyProviders();
 
     await LifeCycleManager.triggerServerListenStop();
-    await this.server.closeServer();
+    await this.#server.closeServer();
     Gateways.stopListening();
 
     await LifeCycleManager.triggerServerShutdown();
@@ -66,21 +66,21 @@ export class PequeFactoryService {
   async createServer(options: ServerOptions): Promise<http.Server> {
     if (options.isCpuClustered && clusterUtils.isMaster()) {
       clusterUtils.setupWorkers();
-      return this.server.getServer();
+      return this.#server.getServer();
     }
 
-    await this.init();
+    await this.#init();
 
     await LifeCycleManager.triggerServerBootstrap();
     const server = new Server(options);
     await server.bootstrap();
 
-    this.server = server;
+    this.#server = server;
     return server.getServer();
   }
 
   async createMicroservices(services: { services: MicroserviceClass[] }): Promise<void> {
-    await this.init();
+    await this.#init();
     await Microservices.startMicroservices();
   }
 }

@@ -2,36 +2,36 @@ import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { ModuleClass, ModuleInstance } from '../interfaces/types';
 
 class ModuleService {
-  private modules: ModuleClass[] = [];
-  private instances: ModuleInstance[] = [];
+  #modules: ModuleClass[] = [];
+  #instances: ModuleInstance[] = [];
 
   push(module: ModuleClass): void {
-    this.modules.push(module);
+    this.#modules.push(module);
   }
 
   getAll(): ModuleClass[] {
-    return this.modules;
+    return this.#modules;
   }
 
   flush(): void {
-    this.instances = [];
-    this.modules = [];
+    this.#instances = [];
+    this.#modules = [];
   }
 
   getInstances(): ModuleInstance[] {
-    return this.instances;
+    return this.#instances;
   }
 
   async initModules(): Promise<void> {
-    for (const module of this.modules) {
+    for (const module of this.#modules) {
       const instance = new module();
-      this.instances.push(instance);
+      this.#instances.push(instance);
       await LifeCycleManager.triggerModuleInit(instance);
     }
   }
 
   async destroyModules(): Promise<void> {
-    for (const module of this.instances) {
+    for (const module of this.#instances) {
       await LifeCycleManager.triggerModuleDestroy(module);
     }
   }

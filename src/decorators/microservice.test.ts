@@ -3,10 +3,11 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { EventPayload, MicroserviceHandler } from '../models';
+import { EventPayload } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { Injector } from '../models/dependency-injection/injector.service';
 import { Providers } from '../models/dependency-injection/provider.service';
+import { MicroserviceHandler } from '../services';
 import { EventStorage } from '../services/events/event-storage.service';
 import { loadProviders } from '../utils/dependencies.utils';
 import { ConsumeEvent } from './events';
@@ -16,7 +17,7 @@ const test = suite('Microservice');
 
 test.before.each(async (context) => {
   @Microservice({ broker: 'mqtt://localhost:1883', transport: 'mqtt' })
-  class TestMqttMicroservice implements MicroserviceHandler {
+  class TestMqttMicroservice extends MicroserviceHandler {
     start(): void {
       // noop.
     }

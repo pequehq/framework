@@ -2,7 +2,7 @@ import { ConsumeEvent, EventPayload, MicroserviceHandler, OnProviderDestroy, OnP
 import { Microservice } from '../../dist';
 
 @Microservice({ broker: 'redis://localhost:6379', transport: 'redis' })
-export class TestRedisMicroservice implements MicroserviceHandler, OnProviderInit, OnProviderDestroy {
+export class TestRedisMicroservice extends MicroserviceHandler implements OnProviderInit, OnProviderDestroy {
   start(): void {
     // setInterval(() => console.log('Microservice', Date.now()), 3000);
   }

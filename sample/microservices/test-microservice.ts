@@ -1,9 +1,8 @@
 import { ConsumeEvent, EventPayload, MicroserviceHandler, OnProviderDestroy, OnProviderInit } from '../../dist';
 import { Microservice } from '../../dist';
-import { TransportQueue } from '../../src/services/microservice/transport-queue.service';
 
 @Microservice({ broker: 'mqtt://localhost:1883', transport: 'mqtt' })
-export class TestMicroservice implements MicroserviceHandler, OnProviderInit, OnProviderDestroy {
+export class TestMicroservice extends MicroserviceHandler implements OnProviderInit, OnProviderDestroy {
   start(): void {
     // setInterval(() => console.log('Microservice', Date.now()), 3000);
   }
@@ -18,6 +17,16 @@ export class TestMicroservice implements MicroserviceHandler, OnProviderInit, On
 
   @ConsumeEvent('test_event')
   test(data: EventPayload<any>) {
-    console.log('ms on event', JSON.stringify(data));
+    console.log('ms TestMicroservice.test', JSON.stringify(data));
+    this.produce({
+      event: 'test_event_produced',
+      data: { timestamp: Date.now(), name: 'Simone Di Cicco' },
+      timestamp: Date.now(),
+    });
+  }
+
+  @ConsumeEvent('test_event_produced')
+  testConsumeProduced(data: EventPayload<any>) {
+    console.log('ms TestMicroservice.testConsumeProduced', JSON.stringify(data));
   }
 }

@@ -7,50 +7,50 @@ import { Injector } from '../../models/dependency-injection/injector.service';
 import { TransportSubjects } from '../subjects/subjects';
 
 export class TransportQueueService {
-  private enqueueInterval: any;
-  private queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
+  #enqueueInterval: any;
+  #queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
   };
 
-  private enqueueItems(): void {
-    for (const queues of Object.values(this.queues)) {
+  #enqueueItems(): void {
+    for (const queues of Object.values(this.#queues)) {
       queues.forEach((item) => TransportSubjects.sendTransportSubject.next(item));
     }
   }
 
-  private sortQueues(): void {
-    for (const key of Object.keys(this.queues)) {
-      this.queues[key] = new Set([...this.queues[key]].sort((a, b) => a.timestamp - b.timestamp));
+  #sortQueues(): void {
+    for (const key of Object.keys(this.#queues)) {
+      this.#queues[key] = new Set([...this.#queues[key]].sort((a, b) => a.timestamp - b.timestamp));
     }
   }
 
-  private addItem(item: CompleteTransportQueueItem): void {
-    this.queues[item.transport].add(item);
-    this.sortQueues();
+  #addItem(item: CompleteTransportQueueItem): void {
+    this.#queues[item.transport].add(item);
+    this.#sortQueues();
   }
 
-  private deleteItem(item: CompleteTransportQueueItem): void {
-    this.queues[item.transport].delete(item);
+  #deleteItem(item: CompleteTransportQueueItem): void {
+    this.#queues[item.transport].delete(item);
   }
 
-  private startRecycler(): void {
-    if (!this.enqueueInterval) {
-      this.enqueueInterval = setInterval(() => this.enqueueItems(), 2000);
+  #startRecycler(): void {
+    if (!this.#enqueueInterval) {
+      this.#enqueueInterval = setInterval(() => this.#enqueueItems(), 2000);
     }
   }
 
   stopRecycler(): void {
-    clearInterval(this.enqueueInterval);
+    clearInterval(this.#enqueueInterval);
   }
 
   init(): void {
-    this.startRecycler();
+    this.#startRecycler();
     TransportSubjects.failedTransportSubject.subscribe((item) => {
-      this.deleteItem(item);
-      this.addItem(item);
+      this.#deleteItem(item);
+      this.#addItem(item);
     });
-    TransportSubjects.successTransportSubject.subscribe((item) => this.deleteItem(item));
+    TransportSubjects.successTransportSubject.subscribe((item) => this.#deleteItem(item));
   }
 
   sendItem(item: TransportQueueItem): string {
@@ -64,8 +64,8 @@ export class TransportQueueService {
   }
 
   clear(): void {
-    for (const key of Object.keys(this.queues)) {
-      this.queues[key].clear();
+    for (const key of Object.keys(this.#queues)) {
+      this.#queues[key].clear();
     }
   }
 }
