@@ -9,7 +9,7 @@ import { LoggerService } from '../logger/logger.service';
 import { Gateways } from './microservice-gateway.service';
 
 class MicroserviceService {
-  async startMicroservices(): Promise<void> {
+  async start(): Promise<void> {
     const logService = Injector.resolve<LoggerService>('injectable', NATIVE_SERVICES.LOGGER);
 
     const microservices = Providers.getProviderInstancesByType('microservice');

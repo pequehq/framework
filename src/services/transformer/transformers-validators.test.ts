@@ -1,7 +1,7 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { BadRequestException, ServerOptions } from '../../models';
+import { BadRequestException, WebServerOptions } from '../../models';
 import { CONFIG_STORAGES } from '../../models/constants/config';
 import { Config } from '../config/config.service';
 import { ToBoolean, ToNumber, ToString } from './transformers-validators';
@@ -11,7 +11,7 @@ const test = suite('Built-in Transformers/Validators');
 test.before(() => {
   class TestClass {}
 
-  const config: ServerOptions = {
+  const config: WebServerOptions = {
     rootModule: TestClass,
     showOriginalErrorObject: false,
   };

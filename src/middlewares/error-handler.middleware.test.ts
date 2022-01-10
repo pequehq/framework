@@ -2,7 +2,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { ExpressMocks } from '../../test/mocks/express.mocks';
-import { HttpException, ServerOptions } from '../models';
+import { HttpException, WebServerOptions } from '../models';
 import { CONFIG_STORAGES } from '../models/constants/config';
 import { HTTP_STATES } from '../models/constants/http-states';
 import { Config } from '../services/config/config.service';
@@ -17,7 +17,7 @@ test.before.each(() => {
 
   class TestClass {}
 
-  const config: ServerOptions = {
+  const config: WebServerOptions = {
     rootModule: TestClass,
     showOriginalErrorObject: false,
   };

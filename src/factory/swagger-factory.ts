@@ -3,11 +3,12 @@ import 'reflect-metadata';
 import * as mustache from 'mustache';
 
 import { SwaggerComponents, SwaggerParameters, SwaggerResponseBodies, SwaggerSecuritySchemas } from '../decorators';
-import { ControllerDefinition, ExpressMethods, ServerOptions } from '../models';
+import { ControllerDefinition, ExpressMethods, WebServerOptions } from '../models';
 import { CONFIG_STORAGES } from '../models/constants/config';
 import { DECORATORS } from '../models/constants/decorators';
 import { SWAGGER } from '../models/constants/swagger';
 import { Controllers } from '../models/dependency-injection/controller.service';
+import { SwaggerOptionsInterface } from '../models/interfaces/swagger/swagger-options.interface';
 import { SwaggerRouteDefinition } from '../models/interfaces/swagger/swagger-route-definition.interface';
 import { Config } from '../services/config/config.service';
 import { swaggerReplaceQueryParamsWithCurlyBrackets } from '../utils/express/factory';
@@ -47,8 +48,10 @@ const BASE_DOC = {
 };
 
 class SwaggerFactoryImplementation {
-  #getExpressConfig(): ServerOptions {
-    return Config.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
+  #getConfig(): SwaggerOptionsInterface {
+    const { swagger } = Config.get<WebServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
+
+    return swagger!;
   }
 
   #resetBaseDoc(): void {
@@ -85,19 +88,19 @@ class SwaggerFactoryImplementation {
 
   #createInfoFile(): void {
     this.#render(INFO_TEMPLATE_PATH, getPath(INFO_GENERATED_PATH), {
-      info: this.#getExpressConfig().swagger?.info,
+      info: this.#getConfig().info,
     });
   }
 
   #createTagsFile(): void {
     this.#render(TAGS_TEMPLATE_PATH, getPath(TAGS_GENERATED_PATH), {
-      tags: this.#getExpressConfig().swagger?.tags,
+      tags: this.#getConfig().tags,
     });
   }
 
   #createServersFile(): void {
     this.#render(SERVERS_TEMPLATE_PATH, getPath(SERVERS_GENERATED_PATH), {
-      servers: this.#getExpressConfig().swagger?.servers,
+      servers: this.#getConfig().servers,
     });
   }
 

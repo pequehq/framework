@@ -11,7 +11,7 @@ interface GlobalMiddlewares {
   postRoutes?: RequestHandler[];
 }
 
-export interface ServerOptions {
+export interface WebServerOptions {
   rootModule: ModuleClass;
   port?: number;
   hostname?: string;
