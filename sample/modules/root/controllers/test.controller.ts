@@ -85,14 +85,14 @@ export class TestController implements OnControllerInit {
       event: 'test_event',
       data: { test: 'data', timestamp: Date.now() },
       transport: 'mqtt',
-      destination: 'mqtt://localhost:1883',
+      broker: 'mqtt://localhost:1883',
       timestamp: Date.now(),
     });
     this.transportQueue.sendItem({
       event: 'test_event',
       data: { test: 'data redis', timestamp: Date.now() },
       transport: 'redis',
-      destination: 'redis://localhost:6379',
+      broker: 'redis://localhost:6379',
       timestamp: Date.now(),
     });
     return { external: await this.externalService.getExternalCall() };

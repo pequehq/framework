@@ -12,6 +12,7 @@
         "moduleResolution": "node",
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false,
+        "noImplicitThis": false,
         "outDir": "./dist",
         "removeComments": true,
         "resolveJsonModule": true,

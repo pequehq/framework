@@ -33,7 +33,7 @@ test.before.each((context) => {
     event: 'test_event',
     data: { test: 'data', timestamp: Date.now() },
     transport: 'mqtt',
-    destination: 'mqtt://localhost:1883',
+    broker: 'mqtt://localhost:1883',
     timestamp: Date.now(),
     id: 'id',
     retry: 0,

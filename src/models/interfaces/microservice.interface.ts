@@ -5,17 +5,24 @@ export interface MicroserviceOptions {
   broker: string;
 }
 
-export interface MicroserviceHandler {
-  start();
+export interface BrokerQueueItem {
+  transport: ExternalTransportType;
+  broker: string;
 }
 
-export interface TransportQueueItem {
-  transport: ExternalTransportType;
-  destination: string;
+export interface OptionalBrokerQueueItem {
+  transport?: ExternalTransportType;
+  broker?: string;
+}
+
+export interface QueueItem {
   timestamp: number;
   event: string;
   data: unknown;
 }
+
+export interface OptionalTransportQueueItem extends QueueItem, OptionalBrokerQueueItem {}
+export interface TransportQueueItem extends QueueItem, BrokerQueueItem {}
 
 export interface CompleteTransportQueueItem extends TransportQueueItem {
   id: string;

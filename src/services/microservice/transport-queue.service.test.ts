@@ -42,7 +42,7 @@ test('should forward an event', async (context) => {
     event: 'test_event',
     data: { test: 'data', timestamp: Date.now() },
     transport: 'mqtt',
-    destination: 'mqtt://localhost:1883',
+    broker: 'mqtt://localhost:1883',
     timestamp: Date.now(),
   };
 

@@ -40,7 +40,11 @@ export class TestMicroservice extends MicroserviceHandler implements OnProviderI
   @ConsumeEvent('test_event')
   test(data: EventPayload<any>) {
     console.log(JSON.stringify(data));
-    this.produceEvent();
+    this.produce({
+      event: 'test_event_produced',
+      data: { timestamp: Date.now(), name: 'Simone Di Cicco' },
+      timestamp: Date.now(),
+    });
   }
 
   @ProduceEvent('produce_test_event')

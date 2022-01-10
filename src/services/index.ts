@@ -3,6 +3,7 @@ export * from './logger/logger.service';
 export * from './web-sockets/socket-io.service';
 export * from './scheduler/scheduler.service';
 export * from './transformer/transformers-validators';
+export * from './microservice/microservice-handler.abstract';
 export { TransportQueueService } from './microservice/transport-queue.service';
 export { ConfigService } from './config/config.service';
 export { HttpEventService } from './http-event/http-event.service';

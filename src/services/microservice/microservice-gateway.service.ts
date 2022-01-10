@@ -29,10 +29,10 @@ class MicroserviceGatewayService {
 
   #publish: Record<ExternalTransportType, (item: CompleteTransportQueueItem) => void> = {
     mqtt: async (item) => {
-      await MqttGateway.publish(this.#gateways.mqtt.get(item.destination), item);
+      await MqttGateway.publish(this.#gateways.mqtt.get(item.broker), item);
     },
     redis: async (item) => {
-      await RedisGateway.publish(this.#gateways.redis.get(item.destination), item);
+      await RedisGateway.publish(this.#gateways.redis.get(item.broker), item);
     },
   };
 
