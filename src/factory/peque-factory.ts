@@ -7,7 +7,7 @@ export class PequeFactory {
     return new PequeWebServer(options);
   }
 
-  static createMicroservice(options: MicroserviceOptions): PequeMicroservice {
+  static createMicroservices(options: MicroserviceOptions): PequeMicroservice {
     return new PequeMicroservice(options);
   }
 }

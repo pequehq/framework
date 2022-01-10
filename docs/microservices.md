@@ -67,7 +67,7 @@ import { TestMicroservice } from './microservices/test-microservice';
 import { PequeFactory } from 'peque.ts';
 
 async function startUp() {
-  await PequeFactory.createMicroservice({ services: [TestMicroservice] }).start();
+  await PequeFactory.createMicroservices({ services: [TestMicroservice] }).start();
 }
 
 startUp();
@@ -116,7 +116,7 @@ async function startUp() {
     showOriginalErrorObject: true,
   }).start();
 
-  await PequeFactory.createMicroservice({ services: [TestMicroservice, TestRedisMicroservice] }).start();
+  await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] }).start();
 }
 
 startUp();
