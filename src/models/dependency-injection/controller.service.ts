@@ -65,13 +65,17 @@ class ControllerService {
       );
 
       // Controller root guards.
-      application.use(
-        controllerMeta.prefix,
-        controllerMeta.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
-      );
+      if (controllerMeta.guards.length > 0) {
+        application.use(
+          controllerMeta.prefix,
+          controllerMeta.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
+        );
+      }
 
       // Controller root middlewares.
-      application.use(controllerMeta.prefix, Middlewares.returnHandlers(controllerMeta.middlewares));
+      if (controllerMeta.middlewares.length > 0) {
+        application.use(controllerMeta.prefix, Middlewares.returnHandlers(controllerMeta.middlewares));
+      }
 
       // Iterate the routes for express registration.
       for (const route of routes) {

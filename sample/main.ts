@@ -40,7 +40,7 @@ async function startUp() {
     showOriginalErrorObject: true,
   });
 
-  await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
+  // await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
 }
 
 startUp();
