@@ -182,10 +182,10 @@ export class PequeWebServer extends PequeBase {
 
   #controllers(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         await Controllers.initControllers(this.#application);
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         await Controllers.destroyControllers();
       },
     };
@@ -193,10 +193,10 @@ export class PequeWebServer extends PequeBase {
 
   #modules(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         await Modules.initModules();
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         await Modules.destroyModules();
       },
     };
@@ -204,10 +204,10 @@ export class PequeWebServer extends PequeBase {
 
   #websockets(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         await WebSockets.initWebSockets();
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         await WebSockets.destroyWebSockets();
       },
     };

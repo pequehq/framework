@@ -41,10 +41,10 @@ export abstract class PequeBase {
 
   #transportQueue(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         TransportQueue.init();
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         TransportQueue.stopRecycler();
         TransportQueue.clear();
       },
@@ -53,10 +53,10 @@ export abstract class PequeBase {
 
   #gateways(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         Gateways.startListening();
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         Gateways.stopListening();
       },
     };
@@ -64,10 +64,10 @@ export abstract class PequeBase {
 
   #providers(): UpDown {
     return {
-      async up(): Promise<void> {
+      up: async (): Promise<void> => {
         await loadProviders();
       },
-      async down(): Promise<void> {
+      down: async (): Promise<void> => {
         for (const key of Providers.getProviderInstancesByType('injectable').keys()) {
           await LifeCycleManager.triggerProviderDestroy(key);
         }
