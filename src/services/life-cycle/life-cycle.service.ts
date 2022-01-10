@@ -86,7 +86,7 @@ class LifeCycleManagerService {
   }
 
   async triggerUncaughtException(error: Error): Promise<void> {
-    await this.#triggerAllModulesLifeCycleEvent('onServerBootstrap');
+    await this.#triggerAllModulesLifeCycleEvent('onUncaughtException');
     this.#pushEvent('lifecycle.uncaught.exception', { error });
   }
 

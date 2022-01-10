@@ -2,7 +2,6 @@ import $RefParser from '@apidevtools/json-schema-ref-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
-import { RequestHandlerParams } from 'express-serve-static-core';
 import expressSession from 'express-session';
 import http from 'http';
 import swaggerUi from 'swagger-ui-express';
@@ -13,44 +12,52 @@ import { SwaggerFactory } from './factory/swagger-factory';
 import { fallback, pushHttpEvents } from './middlewares';
 import { errorHandler } from './middlewares/error-handler.middleware';
 import { guardHandler } from './middlewares/guard.middleware';
-import { ServerOptions } from './models';
-import { CanExecute } from './models';
+import { GuardClass, WebServerOptions } from './models';
 import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
 import { Injector } from './models/dependency-injection/injector.service';
 import { Modules } from './models/dependency-injection/module.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
+import { PequeBase, UpDown } from './peque.base';
 import { LoggerService } from './services';
 import { Config } from './services/config/config.service';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Sockets } from './services/socket/socket.service';
+import { clusterUtils } from './utils/cluster.utils';
 import { getPath } from './utils/fs.utils';
 
-export class Server {
-  readonly #options: ServerOptions;
+export class PequeWebServer extends PequeBase {
+  readonly #options: WebServerOptions;
 
   @Inject('LoggerService')
   private logService: LoggerService;
 
   #application: Application;
   #server: http.Server;
+  #started = false;
 
-  constructor(options: ServerOptions) {
+  constructor(options: WebServerOptions) {
+    super();
+
     this.#options = options;
     Config.set(CONFIG_STORAGES.EXPRESS_SERVER, options);
   }
 
-  logger(): LoggerService {
-    return this.logService;
-  }
+  async start(): Promise<void> {
+    if (this.#options.isCpuClustered && clusterUtils.isMaster()) {
+      clusterUtils.setupWorkers();
+      return;
+    }
 
-  getServer(): http.Server {
-    return this.#server;
-  }
+    if (this.#started) {
+      return;
+    }
 
-  async bootstrap(): Promise<void> {
-    // Load controllers.
-    await this.#loadModules();
+    await this.initialize();
+
+    await LifeCycleManager.triggerServerBootstrap();
+
+    await this.#modules().up();
 
     // Load existing app or one from scratch.
     this.#application = this.#options.existingApp ?? express();
@@ -79,7 +86,7 @@ export class Server {
     // Global guards.
     if (this.#options.guards?.length) {
       this.#application.use(
-        this.#options.guards.map((guard) => guardHandler(Injector.resolve<CanExecute>('injectable', guard.name))),
+        this.#options.guards.map((guard) => guardHandler(Injector.resolve<GuardClass>('injectable', guard.name))),
       );
     }
 
@@ -87,11 +94,12 @@ export class Server {
     this.#application.use(pushHttpEvents);
 
     // Add pre-route Middlewares.
-    const preRoutes = this.#options.globalMiddlewares?.preRoutes ?? [];
-    this.#addMiddlewares(preRoutes);
+    for (const middleware of this.#options.globalMiddlewares?.preRoutes ?? []) {
+      this.#application.use(middleware);
+    }
 
-    await this.#loadControllers();
-    await this.#loadWebSockets();
+    await this.#controllers().up();
+    await this.#websockets().up();
 
     // OpenAPI.
     if (this.#options.swagger) {
@@ -107,25 +115,48 @@ export class Server {
     this.#application.use(fallback);
 
     // Add post-route Middlewares.
-    const postRoutes = this.#options.globalMiddlewares?.postRoutes ?? [];
-    this.#addMiddlewares([...postRoutes]);
+    for (const middleware of this.#options.globalMiddlewares?.postRoutes ?? []) {
+      this.#application.use(middleware);
+    }
 
     // Add general error handling.
     this.#application.use(errorHandler);
 
     // Server listener.
-    await this.#listen();
+    await this.#startListening();
+
+    this.#started = true;
   }
 
-  async #listen(): Promise<void> {
+  async stop(exit = true): Promise<void> {
+    await this.#controllers().down();
+    await this.#websockets().down();
+    await this.#modules().down();
+
+    await this.#stopListening();
+
+    await LifeCycleManager.triggerServerShutdown();
+    await this.teardown();
+
+    /* c8 ignore next */
+    if (exit) {
+      process.exit(0);
+    }
+  }
+
+  async #startListening(): Promise<void> {
     const port = this.#options.port || 8888;
     const hostname = this.#options.hostname || 'localhost';
 
     await LifeCycleManager.triggerServerListen();
 
     this.#server = this.#application.listen(port, hostname, async () => {
-      this.logger().log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
-      this.logger().log({ level: 'debug', data: `CPU Clustering is ${this.#options.isCpuClustered ? 'ON' : 'OFF'}` });
+      this.logService.log({ level: 'debug', data: `Server is running @${hostname}:${port}` });
+      this.logService.log({
+        level: 'debug',
+        data: `CPU Clustering is ${this.#options.isCpuClustered ? 'ON' : 'OFF'}`,
+      });
+
       await LifeCycleManager.triggerServerStarted();
     });
 
@@ -136,36 +167,65 @@ export class Server {
     });
   }
 
-  async closeServer(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      // Ending all the open connections first.
-      Sockets.closeAllByType('http');
+  async #stopListening(): Promise<void> {
+    // Ending all the open connections first.
+    Sockets.closeAllByType('http');
 
-      this.#server.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(true);
-        }
-      });
+    this.#server.close(async (error) => {
+      if (error) {
+        throw error;
+      }
+
+      await LifeCycleManager.triggerServerListenStop();
     });
   }
 
-  async #loadControllers(): Promise<void> {
-    await Controllers.initControllers(this.#application);
+  #controllers(): UpDown {
+    return {
+      up: async (): Promise<void> => {
+        await Controllers.initControllers(this.#application);
+      },
+      down: async (): Promise<void> => {
+        await Controllers.destroyControllers();
+      },
+    };
   }
 
-  async #loadModules(): Promise<void> {
-    await Modules.initModules();
+  #modules(): UpDown {
+    return {
+      up: async (): Promise<void> => {
+        await Modules.initModules();
+      },
+      down: async (): Promise<void> => {
+        await Modules.destroyModules();
+      },
+    };
   }
 
-  async #loadWebSockets(): Promise<void> {
-    await WebSockets.initWebSockets();
+  #websockets(): UpDown {
+    return {
+      up: async (): Promise<void> => {
+        await WebSockets.initWebSockets();
+      },
+      down: async (): Promise<void> => {
+        await WebSockets.destroyWebSockets();
+      },
+    };
   }
 
-  #addMiddlewares(middlewares: RequestHandlerParams[]): void {
-    middlewares.forEach((middleware) => {
-      this.#application.use(middleware);
-    });
+  override async onTermination(): Promise<void> {
+    await this.stop();
+  }
+
+  override async onUncaughtException(error: Error): Promise<void> {
+    await LifeCycleManager.triggerUncaughtException(error);
+
+    await super.onUncaughtException(error);
+  }
+
+  override async onUnhandledRejection(error: Error): Promise<void> {
+    await LifeCycleManager.triggerUncaughtRejection(error);
+
+    await super.onUnhandledRejection(error);
   }
 }

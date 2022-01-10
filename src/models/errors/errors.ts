@@ -1,7 +1,7 @@
 import { Config } from '../../services/config/config.service';
 import { CONFIG_STORAGES } from '../constants/config';
 import { HTTP_STATES } from '../constants/http-states';
-import { ServerOptions } from '../interfaces/server-options.interface';
+import { WebServerOptions } from '../interfaces/web-server-options.interface';
 
 // @TODO manage to add as much HTTP exceptions as possible.
 
@@ -27,7 +27,7 @@ export class HttpException<TError> extends Error {
     }
 
     this.name = this.constructor.name;
-    if (Config.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER).showOriginalErrorObject) {
+    if (Config.get<WebServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER).showOriginalErrorObject) {
       this.httpException.stack = this.stack;
     }
   }

@@ -7,7 +7,7 @@ import { TestServerGuard } from './modules/guards/test-server.guard';
 import { TestRootModule } from './modules/root/test-root.module';
 
 async function startUp() {
-  await PequeFactory.createServer({
+  const webserver = PequeFactory.createWebServer({
     rootModule: TestRootModule,
     cors: true,
     swagger: {
@@ -40,7 +40,10 @@ async function startUp() {
     showOriginalErrorObject: true,
   });
 
-  // await PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
+  await webserver.start();
+
+  // const microservice = PequeFactory.createMicroservices({ services: [TestMicroservice, TestRedisMicroservice] });
+  // await microservice.start();
 }
 
 startUp();

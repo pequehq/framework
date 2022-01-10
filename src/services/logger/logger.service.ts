@@ -1,5 +1,5 @@
 import { Injectable } from '../../decorators';
-import { EventPayload, LogLevelsType, ServerOptions } from '../../models';
+import { EventPayload, LogLevelsType, WebServerOptions } from '../../models';
 import { CONFIG_STORAGES } from '../../models/constants/config';
 import { ConfigService } from '../config/config.service';
 import { EventManagerService } from '../events/event-manager.service';
@@ -22,7 +22,7 @@ const calculateLogLevel = (level: LogLevelsType): number => LOG_LEVELS_MAPPING[l
 export class LoggerService {
   constructor(public readonly eventManager: EventManagerService, public readonly configService: ConfigService) {
     this.subscribe((value) => {
-      const serverOptions = this.configService.get<ServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
+      const serverOptions = this.configService.get<WebServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
       if (
         serverOptions.logger &&
         calculateLogLevel(value.data.level) >= calculateLogLevel(serverOptions.logger.level)
