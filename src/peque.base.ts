@@ -87,6 +87,8 @@ export abstract class PequeBase {
         for (const key of Providers.getProviderInstancesByType('microservice').keys()) {
           await LifeCycleManager.triggerProviderDestroy(key);
         }
+
+        Providers.unsetAll();
       },
     };
   }

@@ -128,8 +128,8 @@ export class PequeWebServer extends PequeBase {
 
     await this.#stopListening();
 
-    await this.teardown();
     await LifeCycleManager.triggerServerShutdown();
+    await this.teardown();
 
     /* c8 ignore next */
     if (exit) {
