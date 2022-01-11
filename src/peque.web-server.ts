@@ -213,17 +213,17 @@ export class PequeWebServer extends PequeBase {
     };
   }
 
-  override async onTermination(): Promise<void> {
+  protected override async onTermination(): Promise<void> {
     await this.stop();
   }
 
-  override async onUncaughtException(error: Error): Promise<void> {
+  protected override async onUncaughtException(error: Error): Promise<void> {
     await LifeCycleManager.triggerUncaughtException(error);
 
     await super.onUncaughtException(error);
   }
 
-  override async onUnhandledRejection(error: Error): Promise<void> {
+  protected override async onUnhandledRejection(error: Error): Promise<void> {
     await LifeCycleManager.triggerUncaughtRejection(error);
 
     await super.onUnhandledRejection(error);
