@@ -210,9 +210,8 @@ test('should read single path param via the @Param() decorator', async (context)
   assert.ok(context.paramDecorator.calledWith('123456'));
 });
 
-// @TODO investigate why [multipleParams] handler returns error 404.
-test.skip('should read multiple path params via the @Param() decorator', async (context) => {
-  assert.ok(await http.req('GET /multiple-params/hello/segment/pizza'));
+test('should read multiple path params via the @Param() decorator', async (context) => {
+  assert.ok(await http.req('GET /test/multiple-params/hello/segment/pizza'));
   assert.ok(context.paramDecorator.calledWith('hello', 'pizza'));
 });
 
