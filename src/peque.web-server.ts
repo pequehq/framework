@@ -68,7 +68,7 @@ export class PequeWebServer extends PequeBase {
     }
 
     // Body parser.
-    this.#application.use(express.json({ limit: '2m' }));
+    this.#application.use(express.json());
     this.#application.use(express.urlencoded({ extended: true }));
 
     // Cookie parser.

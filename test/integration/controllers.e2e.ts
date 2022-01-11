@@ -216,8 +216,7 @@ test.skip('should read multiple path params via the @Param() decorator', async (
   assert.ok(context.paramDecorator.calledWith('hello', 'pizza'));
 });
 
-// @TODO investigate why [methodPost] handler returns error 500.
-test.skip('should handle POST requests and retrieve the body via the @Body() decorator', async (context) => {
+test('should handle POST requests and retrieve the body via the @Body() decorator', async (context) => {
   const data = { test: 'example payload' };
   assert.is(await http.req('POST /test/method-post', data), 'hello post');
   assert.ok(context.bodyDecorator.calledWith(data));
