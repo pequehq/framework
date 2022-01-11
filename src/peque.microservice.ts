@@ -30,7 +30,7 @@ export class PequeMicroservice extends PequeBase {
     await this.teardown();
   }
 
-  override async onTermination(): Promise<void> {
+  protected override async onTermination(): Promise<void> {
     await this.stop();
   }
 }
