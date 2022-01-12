@@ -14,9 +14,9 @@ export class SchedulerService {
     const scheduleMap: Map<string, SchedulerConfig> =
       Reflect.getMetadata(DECORATORS.metadata.SCHEDULER, SchedulerService) ?? new Map<string, SchedulerConfig>();
 
-    scheduleMap.forEach((value) => {
+    for (const value of scheduleMap.values()) {
       this.#tasks.set(value.name, cron.schedule(value.cron, value.listener));
-    });
+    }
   }
 
   getScheduler(name: string): ScheduledTask | undefined {

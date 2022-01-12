@@ -17,18 +17,20 @@ class EventStorageService {
   get(event: Event): OnEventInterface[] {
     const events: OnEventInterface[] = [];
     const listeners = this.#listeners.get(buildEventName(event)) || [];
-    listeners.forEach((listener) => events.push({ event, listener }));
+    for (const listener of listeners) {
+      events.push({ event, listener });
+    }
     return events;
   }
 
   getAll(): OnEventInterface[] {
     const events: OnEventInterface[] = [];
-    this.#listeners.forEach((listeners, event) => {
+    for (const [event, listeners] of this.#listeners) {
       const eventSplit = event.split('.');
-      listeners.forEach((listener) =>
-        events.push({ event: { event: eventSplit[1], transport: eventSplit[0] as TransportType }, listener }),
-      );
-    });
+      for (const listener of listeners) {
+        events.push({ event: { event: eventSplit[1], transport: eventSplit[0] as TransportType }, listener });
+      }
+    }
     return events;
   }
 

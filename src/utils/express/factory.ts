@@ -38,11 +38,15 @@ export const buildParameters = async (req: Request, res: Response, route: RouteD
   }
 
   if (method.cookies?.length) {
-    method.cookies.forEach((param) => (args[param.index] = req.cookies[param.param]));
+    for (const param of method.cookies) {
+      args[param.index] = req.cookies[param.param];
+    }
   }
 
   if (method.session?.length) {
-    method.session.forEach((param) => (args[param.index] = req['session']));
+    for (const param of method.session) {
+      args[param.index] = req['session'];
+    }
   }
 
   return args;
@@ -51,13 +55,13 @@ export const buildParameters = async (req: Request, res: Response, route: RouteD
 export const swaggerReplaceQueryParamsWithCurlyBrackets = (path: string): string => {
   const finalArray: string[] = [];
 
-  path.split('/').forEach((parameter) => {
+  for (const parameter of path.split('/')) {
     if (parameter.startsWith(':')) {
       finalArray.push(`{${parameter.replace(':', '')}}`);
     } else {
       finalArray.push(parameter);
     }
-  });
+  }
 
   const result = finalArray.join('/');
   return result.endsWith('/') ? result.slice(0, Math.max(0, result.length - 1)) : result;

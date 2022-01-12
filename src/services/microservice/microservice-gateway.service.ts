@@ -49,7 +49,9 @@ class MicroserviceGatewayService {
   }
 
   stopListening(): void {
-    this.#subscriptions.forEach((subscription) => subscription.unsubscribe());
+    for (const subscription of this.#subscriptions) {
+      subscription.unsubscribe();
+    }
     for (const key of Object.keys(this.#gateways)) {
       this.#gateways[key].clear();
     }

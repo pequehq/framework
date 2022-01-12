@@ -21,6 +21,7 @@ import { Controllers } from '../../models/dependency-injection/controller.servic
 import { Injector } from '../../models/dependency-injection/injector.service';
 import { Modules } from '../../models/dependency-injection/module.service';
 import { Providers } from '../../models/dependency-injection/provider.service';
+import { ProviderDefinition } from '../../models/interfaces/provider-definition.interface';
 import { CustomProvider } from '../injectable';
 
 interface InjectableInterface {
@@ -119,18 +120,24 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
   return (target): void => {
     Modules.push(target as unknown as ModuleClass);
 
-    module.controllers.forEach((controller) => Controllers.push(controller));
+    for (const controller of module.controllers) {
+      Controllers.push(controller);
+    }
 
     // Setting custom providers.
-    (module.providers ?? []).forEach((provider) => {
-      if (provider.useClass) {
+    for (const provider of module.providers ?? []) {
+      const providerDefinition = provider as ProviderDefinition;
+      if (providerDefinition.useClass) {
         Providers.addProvider({
-          name: typeof provider.provider === 'string' ? provider.provider : provider.provider.name,
-          clazz: provider.useClass as ClassDeclaration,
+          name:
+            typeof providerDefinition.provider === 'string'
+              ? providerDefinition.provider
+              : providerDefinition.provider.name,
+          clazz: providerDefinition.useClass as ClassDeclaration,
           type: 'injectable',
         });
       }
-    });
+    }
   };
 };
 
@@ -138,7 +145,9 @@ export const microserviceBuilder = (options: MicroserviceOptions): ClassDecorato
   return (target): void => {
     Reflect.defineMetadata(DECORATORS.metadata.microservice.OPTIONS, options, target);
     const callbacks: any[] = Reflect.getMetadata(DECORATORS.metadata.events.METHODS_CB, target) || [];
-    callbacks.forEach((fn) => fn(options.transport));
+    for (const fn of callbacks) {
+      fn(options.transport);
+    }
     Providers.addProvider({ name: target.name, clazz: target as unknown as MicroserviceClass, type: 'microservice' });
   };
 };
