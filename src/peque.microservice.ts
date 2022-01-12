@@ -23,11 +23,18 @@ export class PequeMicroservice extends PequeBase {
 
     await this.initialize();
     await Microservices.start();
+
     this.#started = true;
   }
 
   async stop(): Promise<void> {
+    if (!this.#started) {
+      return;
+    }
+
     await this.teardown();
+
+    this.#started = false;
   }
 
   protected override async onTermination(): Promise<void> {

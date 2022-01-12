@@ -8,8 +8,10 @@ import {
   Body,
   Controller,
   ControllerClass,
+  Cookie,
   Delete,
   Get,
+  Header,
   Module,
   OnControllerDestroy,
   OnControllerInit,
@@ -18,6 +20,9 @@ import {
   PequeFactory,
   Post,
   Put,
+  Query,
+  Request,
+  Response,
 } from '../../src';
 import { PequeWebServer } from '../../src/peque.web-server';
 import { http, wait } from '../test.utils';
@@ -31,8 +36,13 @@ interface Context {
   onInit: sinon.SinonSpy;
   onDestroy: sinon.SinonSpy;
   noReturn: sinon.SinonSpy;
-  paramDecorator: sinon.SinonSpy;
-  bodyDecorator: sinon.SinonSpy;
+  param: sinon.SinonSpy;
+  body: sinon.SinonSpy;
+  query: sinon.SinonSpy;
+  request: sinon.SinonSpy;
+  response: sinon.SinonSpy;
+  header: sinon.SinonSpy;
+  cookie: sinon.SinonSpy;
 }
 
 const test = suite<Context>('Controllers');
@@ -43,8 +53,13 @@ test.before(async (context) => {
   context.onInit = context.sandbox.fake();
   context.onDestroy = context.sandbox.fake();
   context.noReturn = context.sandbox.fake();
-  context.paramDecorator = context.sandbox.fake();
-  context.bodyDecorator = context.sandbox.fake();
+  context.param = context.sandbox.fake();
+  context.body = context.sandbox.fake();
+  context.query = context.sandbox.fake();
+  context.request = context.sandbox.fake();
+  context.response = context.sandbox.fake();
+  context.header = context.sandbox.fake();
+  context.cookie = context.sandbox.fake();
 
   @Controller('/test')
   class TestController implements OnControllerInit, OnControllerDestroy {
@@ -103,19 +118,19 @@ test.before(async (context) => {
 
     @Get('/single-param/:id')
     singleParam(@Param('id') id: string): boolean {
-      context.paramDecorator(id);
+      context.param(id);
       return true;
     }
 
     @Get('/multiple-params/:param1/segment/:param2')
     multipleParams(@Param('param1') param1: string, @Param('param2') param2: string): boolean {
-      context.paramDecorator(param1, param2);
+      context.param(param1, param2);
       return true;
     }
 
     @Post('/method-post')
     methodPost(@Body() body: any): string {
-      context.bodyDecorator(body);
+      context.body(body);
       return 'hello post';
     }
 
@@ -132,6 +147,46 @@ test.before(async (context) => {
     @Patch('/method-patch')
     methodPatch(): string {
       return 'hello patch';
+    }
+
+    @Get('/throw-string')
+    throwString(): string {
+      throw 'error';
+    }
+
+    @Get('/throw-error')
+    throwError(): string {
+      throw new Error('error');
+    }
+
+    @Get('/query-param')
+    queryParam(@Query('x') x: string, @Query('y') y: string): boolean {
+      context.query(x, y);
+      return true;
+    }
+
+    @Get('/request')
+    request(@Request() request): boolean {
+      context.request(request);
+      return true;
+    }
+
+    @Get('/response')
+    response(@Response() response): boolean {
+      context.response(response);
+      return true;
+    }
+
+    @Get('/headers')
+    headers(@Header('authorization') authorization, @Header('other-item') otherItem): boolean {
+      context.header(authorization, otherItem);
+      return true;
+    }
+
+    @Get('/cookies')
+    cookies(@Cookie('cookie1') cookie1, @Cookie('cookie2') cookie2): boolean {
+      context.cookie(cookie1, cookie2);
+      return true;
     }
   }
 
@@ -160,6 +215,10 @@ test.before.each((context) => {
 test('should run onControllerInit hook', async (context) => {
   assert.is(context.onInit.callCount, 1);
   assert.ok(context.onInit.calledWith(context.sandbox.match.instanceOf(context.controllerClass)));
+});
+
+test.skip('should run onControllerDestroy hook', async (context) => {
+  // @TODO implement after start/stop refactoring of components
 });
 
 test('should return error 500 if handler does not return', async (context) => {
@@ -207,18 +266,18 @@ test('should return array of objects', async () => {
 
 test('should read single path param via the @Param() decorator', async (context) => {
   assert.ok(await http.req('GET /test/single-param/123456'));
-  assert.ok(context.paramDecorator.calledWith('123456'));
+  assert.ok(context.param.calledWith('123456'));
 });
 
 test('should read multiple path params via the @Param() decorator', async (context) => {
   assert.ok(await http.req('GET /test/multiple-params/hello/segment/pizza'));
-  assert.ok(context.paramDecorator.calledWith('hello', 'pizza'));
+  assert.ok(context.param.calledWith('hello', 'pizza'));
 });
 
 test('should handle POST requests and retrieve the body via the @Body() decorator', async (context) => {
   const data = { test: 'example payload' };
   assert.is(await http.req('POST /test/method-post', data), 'hello post');
-  assert.ok(context.bodyDecorator.calledWith(data));
+  assert.ok(context.body.calledWith(data));
 });
 
 test('should handle DELETE requests', async () => {
@@ -231,6 +290,77 @@ test('should handle PUT requests', async () => {
 
 test('should handle PATCH requests', async () => {
   assert.is(await http.req('PATCH /test/method-patch'), 'hello patch');
+});
+
+test('should throw error when is string', async () => {
+  try {
+    await http.req('GET /test/throw-string');
+    assert.unreachable();
+  } catch (error) {
+    assert.match(error, /Request failed with status code 500/);
+  }
+});
+
+test('should throw error when is Error', async () => {
+  try {
+    await http.req('GET /test/throw-error');
+    assert.unreachable();
+  } catch (error) {
+    assert.match(error, /Request failed with status code 500/);
+  }
+});
+
+test('should return 404 if route does not exist', async () => {
+  try {
+    await http.req('GET /not-existing-route');
+    assert.unreachable();
+  } catch (error) {
+    assert.match(error, /Request failed with status code 404/);
+  }
+});
+
+test('should retrieve query params via the @Query() decorator', async (context) => {
+  assert.ok(await http.req('GET /test/query-param?x=value1&y=value2'));
+  assert.ok(context.query.calledWith('value1', 'value2'));
+});
+
+test('should retrieve the request object via the @Request() decorator', async (context) => {
+  await http.req('GET /test/request', undefined, {
+    'some-header-key': 'some-header-value',
+  });
+
+  assert.ok(context.request.called);
+
+  const request = context.request.getCalls()[0].args[0];
+  assert.type(request.hostname, 'string');
+  assert.type(request.path, 'string');
+  assert.type(request.headers, 'object');
+  assert.is(request.headers['some-header-key'], 'some-header-value');
+});
+
+test('should retrieve the response object via the @Response() decorator', async (context) => {
+  await http.req('GET /test/response');
+
+  assert.ok(context.response.called);
+  const response = context.response.getCalls()[0].args[0];
+  assert.type(response.send, 'function');
+});
+
+test('should retrieve the request headers via the @Header() decorator', async (context) => {
+  await http.req('GET /test/headers', undefined, {
+    authorization: 'Bearer abc.xyx.token',
+    'other-item': 'hello world',
+  });
+
+  assert.ok(context.header.calledWith('Bearer abc.xyx.token', 'hello world'));
+});
+
+test('should retrieve cookies via the @Cookie() decorator', async (context) => {
+  await http.req('GET /test/cookies', undefined, {
+    Cookie: 'cookie1=hello; cookie2=pizza;',
+  });
+
+  assert.ok(context.cookie.calledWith('hello', 'pizza'));
 });
 
 test.run();
