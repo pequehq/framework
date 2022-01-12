@@ -17,7 +17,9 @@ export class TransportQueueService {
 
   #enqueueItems(): void {
     for (const queues of Object.values(this.#queues)) {
-      queues.forEach((item) => TransportSubjects.sendTransportSubject.next(item));
+      for (const item of queues) {
+        TransportSubjects.sendTransportSubject.next(item);
+      }
     }
   }
 

@@ -82,7 +82,7 @@ export const swaggerResponseBuilder = (
     );
 
     const responses: SwaggerResponseDefinition[] = [];
-    responseTypes.forEach((responseType) => {
+    for (const responseType of responseTypes) {
       responses.push({
         content: responseType.content,
         description: responseType.description,
@@ -91,12 +91,13 @@ export const swaggerResponseBuilder = (
         refPath: responseType.object ? SWAGGER.refs.PATHS_SCHEMA.replace('{{DTO}}', responseType.object.name) : '',
         example: responseType.example,
       });
-    });
+    }
 
     // Adjust Route options.
-    options.parameters?.forEach((parameter, index, array) => {
-      array[index] = `${SWAGGER.refs.PATHS_PARAMETERS}${parameter}`;
-    });
+    for (let i = 0; i > options.parameters.length; i++) {
+      options.parameters[i] = `${SWAGGER.refs.PATHS_PARAMETERS}${options.parameters[i]}`;
+    }
+
     options.requestBody = options.requestBody
       ? `${SWAGGER.refs.PATHS_SCHEMA.replace('{{DTO}}', options.requestBody.name)}`
       : undefined;

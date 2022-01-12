@@ -48,6 +48,20 @@ const BASE_DOC = {
 };
 
 class SwaggerFactoryImplementation {
+  generate(): void {
+    removeFolder(GENERATED_FOLDER);
+    this.#resetBaseDoc();
+    this.#createInfoFile();
+    this.#createTagsFile();
+    this.#createServersFile();
+    this.#createComponentsFile();
+    this.#createRequestBodiesFile();
+    this.#createParametersFile();
+    this.#createSecuritySchemas();
+    this.#createControllers();
+    this.#createBaseDoc();
+  }
+
   #getConfig(): SwaggerOptionsInterface {
     const { swagger } = Config.get<WebServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
 
@@ -109,7 +123,7 @@ class SwaggerFactoryImplementation {
     const componentGeneratedFolder = getPath(COMPONENTS_GENERATED_PATH);
     BASE_DOC.schemas = components.length > 0;
 
-    components.forEach((component) => {
+    for (const component of components) {
       // Looks for any parent DTO.
       const parentTarget = Object.getPrototypeOf(component.prototype).constructor;
       const parentProperties =
@@ -125,7 +139,7 @@ class SwaggerFactoryImplementation {
       const componentObject = { name: component.name, properties, requiredFields };
       this.#render(COMPONENTS_TEMPLATE_PATH, `${componentGeneratedFolder}/${fileName}`, componentObject);
       this.#appendSchemaObject(component, './generated/');
-    });
+    }
   }
 
   #createRequestBodiesFile(): void {
@@ -133,7 +147,7 @@ class SwaggerFactoryImplementation {
     const requestBodiesGeneratedFolder = getPath(REQUEST_BODIES_GENERATED_PATH);
     BASE_DOC.requestBodies = requestBodies.length > 0;
 
-    requestBodies.forEach((requestBody) => {
+    for (const requestBody of requestBodies) {
       const properties = Reflect.getMetadata(
         `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${requestBody.name}`,
         requestBody,
@@ -143,7 +157,7 @@ class SwaggerFactoryImplementation {
       const object = { name: requestBody.name, properties };
       this.#render(REQUEST_BODIES_TEMPLATE_PATH, `${requestBodiesGeneratedFolder}/${fileName}`, object);
       this.#appendSchemaObject(requestBody, '../request-bodies/generated/');
-    });
+    }
   }
 
   #createParametersFile(): void {
@@ -151,7 +165,7 @@ class SwaggerFactoryImplementation {
     const parametersGeneratedFolder = getPath(PARAMETERS_GENERATED_PATH);
     BASE_DOC.parameters = parameters.length > 0;
 
-    parameters.forEach((parameter) => {
+    for (const parameter of parameters) {
       const properties = Reflect.getMetadata(
         `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${parameter.name}`,
         parameter,
@@ -160,7 +174,7 @@ class SwaggerFactoryImplementation {
       const fileName = `${parameter.name}.yaml`;
       const object = { name: parameter.name, properties };
       this.#render(PARAMETERS_TEMPLATE_PATH, `${parametersGeneratedFolder}/${fileName}`, object);
-    });
+    }
   }
 
   #createSecuritySchemas(): void {
@@ -168,7 +182,7 @@ class SwaggerFactoryImplementation {
     const securitySchemesGeneratedFolder = getPath(SEC_SCHEMAS_GENERATED_PATH);
     BASE_DOC.securitySchemes = securitySchemes.length > 0;
 
-    securitySchemes.forEach((securitySchema) => {
+    for (const securitySchema of securitySchemes) {
       const properties = Reflect.getMetadata(
         `${DECORATORS.metadata.swagger.DTO_PROPERTY}_${securitySchema.name}`,
         securitySchema,
@@ -177,14 +191,14 @@ class SwaggerFactoryImplementation {
       const fileName = `${securitySchema.name}.yaml`;
       const object = { name: securitySchema.name, properties };
       this.#render(SEC_SCHEMAS_TEMPLATE_PATH, `${securitySchemesGeneratedFolder}/${fileName}`, object);
-    });
+    }
   }
 
   #createControllers(): void {
     const controllers = Controllers.getAll();
 
     // Iterate controllers.
-    controllers.forEach((controller) => {
+    for (const controller of controllers) {
       const tags = Reflect.getMetadata(DECORATORS.metadata.swagger.TAGS, controller);
       const controllerMeta: ControllerDefinition = Reflect.getMetadata(DECORATORS.metadata.CONTROLLER, controller);
       const routes: SwaggerRouteDefinition[] =
@@ -197,12 +211,12 @@ class SwaggerFactoryImplementation {
         return acc;
       }, {});
 
-      Object.entries(routesByPath).forEach(([actualPath, actualRoutes]: [string, SwaggerRouteDefinition[]]) => {
+      for (const [actualPath, actualRoutes] of Object.entries(routesByPath)) {
         // Replace parameters colon with curly brackets.
         const path = swaggerReplaceQueryParamsWithCurlyBrackets(`${controllerMeta.prefix}${actualPath}`);
         const routes: { ref: string; method: ExpressMethods }[] = [];
 
-        actualRoutes.forEach((route) => {
+        for (const route of actualRoutes as SwaggerRouteDefinition[]) {
           const fileName = `${controllerName}-${route.options.operationId}.yaml`;
           const methodObject = {
             route,
@@ -223,29 +237,15 @@ class SwaggerFactoryImplementation {
             getPath(`${PATHS_GENERATED_FOLDER_PATH}/${controllerName}/${fileName}`),
             methodObject,
           );
-        });
+        }
 
         this.#render(PATHS_PATH_TEMPLATE_PATH, getPath(PATHS_GENERATED_PATH), { path, routes }, true);
-      });
-    });
+      }
+    }
   }
 
   #createBaseDoc(): void {
     this.#render(BASE_DOC_TEMPLATE_PATH, getPath(BASE_DOC_GENERATED_PATH), BASE_DOC);
-  }
-
-  generate(): void {
-    removeFolder(GENERATED_FOLDER);
-    this.#resetBaseDoc();
-    this.#createInfoFile();
-    this.#createTagsFile();
-    this.#createServersFile();
-    this.#createComponentsFile();
-    this.#createRequestBodiesFile();
-    this.#createParametersFile();
-    this.#createSecuritySchemas();
-    this.#createControllers();
-    this.#createBaseDoc();
   }
 }
 
