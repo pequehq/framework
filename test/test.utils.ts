@@ -18,7 +18,11 @@ async function wait(interval: 'short' | 'medium' | 'long' | number = 'short'): P
 
 const httpClient = new HttpService();
 
-async function httpRequest<TRes = any, TData = any>(methodAndPath: string, data?: TData): Promise<TRes> {
+async function httpRequest<TRes = any, TData = any>(
+  methodAndPath: string,
+  data?: TData,
+  headers?: Record<string, string>,
+): Promise<TRes> {
   const [method, path] = methodAndPath.trim().split(' ');
 
   return (
@@ -26,6 +30,7 @@ async function httpRequest<TRes = any, TData = any>(methodAndPath: string, data?
       url: 'http://localhost:8888' + path,
       method: method as any,
       data,
+      headers,
     })
   ).data;
 }

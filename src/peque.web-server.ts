@@ -129,6 +129,10 @@ export class PequeWebServer extends PequeBase {
   }
 
   async stop(exit = true): Promise<void> {
+    if (!this.#started) {
+      return;
+    }
+
     await this.#controllers().down();
     await this.#websockets().down();
     await this.#modules().down();
@@ -137,6 +141,8 @@ export class PequeWebServer extends PequeBase {
 
     await LifeCycleManager.triggerServerShutdown();
     await this.teardown();
+
+    this.#started = false;
 
     /* c8 ignore next */
     if (exit) {
