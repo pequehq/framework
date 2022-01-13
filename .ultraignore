@@ -1,0 +1,7 @@
+.DS_Store
+*.build.log
+dist
+LICENSE
+node_modules
+README.md
+tsconfig.json

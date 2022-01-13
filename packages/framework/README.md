@@ -1,7 +1,5 @@
 # Peque.ts
 
-![coverage](https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/.badge-coverage.svg)
-
 <center>
     <img src="https://raw.githubusercontent.com/ukaoskid/peque-fwork/main/docs/images/logo_blue.png" width="150" />
 </center>
