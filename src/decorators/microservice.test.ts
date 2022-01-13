@@ -33,12 +33,7 @@ test.before.each(async (context) => {
 });
 
 test.after.each(async () => {
-  try {
-    await Injector.unsetAll();
-  } catch (error) {
-    console.error(error);
-  }
-
+  await Injector.unsetAll();
   EventStorage.removeAll();
 });
 
