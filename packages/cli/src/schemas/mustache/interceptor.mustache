@@ -1,0 +1,22 @@
+import { Interceptor, InterceptorHandler } from 'peque.ts';
+
+@Interceptor()
+export class {{{className}}} implements InterceptorHandler {
+  after<TResult>(
+    context: Context,
+    handlerResult: TResult,
+  ): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void> {
+    // Put your logic here.
+    throw new Error('Method not implemented.');
+  }
+
+  before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
+    // Put your logic here.
+    throw new Error('Method not implemented.');
+  }
+
+  error<TError>(context: Context, error: HttpException<TError>) {
+    // Put your logic here.
+    throw new Error('Method not implemented.');
+  }
+}
