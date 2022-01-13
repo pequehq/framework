@@ -1,5 +1,5 @@
 import { TransformerClass, TransformerHandler } from '../../models';
-import { Injector } from '../../models/dependency-injection/injector.service';
+import { Injector } from '../../models/dependency-injection/dependency-injection.service';
 
 class TransformerService {
   async transform(value: unknown, transformer: TransformerClass): Promise<unknown> {

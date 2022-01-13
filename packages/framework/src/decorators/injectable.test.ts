@@ -5,15 +5,14 @@ import * as assert from 'uvu/assert';
 
 import { HttpClient } from '../models';
 import { NATIVE_SERVICES } from '../models/constants/native-services';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { getClassDependencies, loadProviders } from '../utils/dependencies.utils';
 import { Inject, Injectable } from './injectable';
 
 const test = suite('Injectable');
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('@Injectable should make the decorated class available via dependency injection', async () => {

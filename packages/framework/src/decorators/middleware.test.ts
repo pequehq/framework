@@ -6,8 +6,7 @@ import * as assert from 'uvu/assert';
 
 import { ControllerDefinition, MiddlewareHandler, RouteDefinition } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';
@@ -28,12 +27,12 @@ test.before.each(async (context) => {
   context.middleware = TestMiddleware;
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should load the correct middlewares', async (context) => {
-  const middlewares = Providers.getProvidersByType('middleware');
+  const middlewares = Injector.getProvidersByType('middleware');
   assert.is(middlewares.length, 1);
   assert.equal(middlewares[0], {
     name: 'TestMiddleware',

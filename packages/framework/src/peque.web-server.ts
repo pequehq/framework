@@ -15,7 +15,7 @@ import { guardHandler } from './middlewares/guard.middleware';
 import { GuardClass, WebServerOptions } from './models';
 import { CONFIG_STORAGES } from './models/constants/config';
 import { Controllers } from './models/dependency-injection/controller.service';
-import { Injector } from './models/dependency-injection/injector.service';
+import { Injector } from './models/dependency-injection/dependency-injection.service';
 import { Modules } from './models/dependency-injection/module.service';
 import { WebSockets } from './models/dependency-injection/websockets.service';
 import { PequeBase, UpDown } from './peque.base';

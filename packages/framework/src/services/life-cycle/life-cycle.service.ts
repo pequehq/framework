@@ -21,12 +21,10 @@ class LifeCycleManagerService {
   }
 
   async triggerProviderInit(instance: InstanceType<ClassDeclaration>): Promise<void> {
-    await this.#triggerLifeCycleEvent(instance, 'onProviderInit');
     this.#pushEvent('lifecycle.init.provider');
   }
 
   async triggerProviderDestroy(instance: InstanceType<ClassDeclaration>): Promise<void> {
-    await this.#triggerLifeCycleEvent(instance, 'onProviderDestroy');
     this.#pushEvent('lifecycle.destroy.provider');
   }
 

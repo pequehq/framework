@@ -1,4 +1,4 @@
-import { Providers } from './models/dependency-injection/provider.service';
+import { Injector } from './models/dependency-injection/dependency-injection.service';
 import { TransportQueue } from './services';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
 import { Gateways } from './services/microservice/microservice-gateway.service';
@@ -70,19 +70,19 @@ export abstract class PequeBase {
         await loadProviders();
       },
       down: async (): Promise<void> => {
-        for (const key of Providers.getProviderInstancesByType('injectable').keys()) {
+        for (const key of Injector.getProviderInstancesByType('injectable').keys()) {
           await LifeCycleManager.triggerProviderDestroy(key);
         }
 
-        for (const key of Providers.getProviderInstancesByType('interceptor').keys()) {
+        for (const key of Injector.getProviderInstancesByType('interceptor').keys()) {
           await LifeCycleManager.triggerProviderDestroy(key);
         }
 
-        for (const key of Providers.getProviderInstancesByType('microservice').keys()) {
+        for (const key of Injector.getProviderInstancesByType('microservice').keys()) {
           await LifeCycleManager.triggerProviderDestroy(key);
         }
 
-        Providers.unsetAll();
+        await Injector.unsetAll();
       },
     };
   }

@@ -7,8 +7,7 @@ import { ExpressMocks } from '../../test/mocks/express.mocks';
 import { Injectable } from '../decorators';
 import { CanExecute, Context } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../utils/dependencies.utils';
 import { guardHandler } from './guard.middleware';
 
@@ -20,8 +19,8 @@ test.before.each(() => {
   expressMocks.restore();
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should execute a guard class and allow can execute', async () => {

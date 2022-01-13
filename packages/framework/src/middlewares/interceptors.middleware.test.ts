@@ -9,8 +9,7 @@ import { HttpException, InterceptorHandler } from '../models';
 import { Context } from '../models';
 import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { HTTP_STATES } from '../models/constants/http-states';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../utils/dependencies.utils';
 import { interceptorErrorHandler, interceptorHandler } from './interceptors.middleware';
 
@@ -60,8 +59,8 @@ test.before.each(async () => {
   await loadProviders();
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should execute an interceptor class before method', async () => {
