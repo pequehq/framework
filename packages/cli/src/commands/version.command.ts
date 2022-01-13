@@ -1,6 +1,6 @@
 import { Option } from 'commander';
-import * as path from 'path';
 
+import pkg from '../../package.json';
 import { CommandInterface, ExecuteOptions } from '../models/command.interface';
 
 export class VersionCommand implements CommandInterface {
@@ -9,7 +9,6 @@ export class VersionCommand implements CommandInterface {
   }
 
   execute(options: ExecuteOptions): void {
-    const version = require(path.join(__dirname, '../../package.json')).version;
-    console.log('Peque.ts CLI version', version);
+    console.log('Peque.ts CLI version', pkg.version);
   }
 }
