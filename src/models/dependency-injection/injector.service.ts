@@ -2,9 +2,9 @@ import { LifeCycleManager } from '../../services/life-cycle/life-cycle.service';
 import { ProviderClass, ProviderInstance, ProviderType } from '../interfaces/types';
 import { Providers } from './provider.service';
 
-class InjectorService {
-  resolve<TClass extends ProviderInstance>(type: ProviderType, provider: string): TClass {
-    const matchedProvider = Providers.getProviderInstanceByType(type, provider) as TClass;
+class InjectorService<TProviderType extends string> {
+  resolve<TClass extends ProviderInstance>(type: TProviderType, provider: string): TClass {
+    const matchedProvider = Providers.getProviderInstanceByType<TProviderType>(type, provider) as TClass;
     if (!matchedProvider) {
       throw new Error(`No provider found for ${provider}!`);
     }
@@ -13,20 +13,20 @@ class InjectorService {
   }
 
   async set(
-    type: ProviderType,
+    type: TProviderType,
     provider: string,
     target: ProviderClass,
     dependencies: ProviderInstance[] = [],
   ): Promise<void> {
-    if (!Providers.hasProviderInstance(type, provider)) {
+    if (!Providers.hasProviderInstance<TProviderType>(type, provider)) {
       const instance = new target(...dependencies);
-      Providers.setProviderInstance(type, provider, instance);
+      Providers.setProviderInstance<TProviderType>(type, provider, instance);
       await LifeCycleManager.triggerProviderInit(instance);
     }
   }
 
-  async unset(type: ProviderType, provider: string): Promise<void> {
-    Providers.deleteProviderInstance(type, provider);
+  async unset(type: TProviderType, provider: string): Promise<void> {
+    Providers.deleteProviderInstance<TProviderType>(type, provider);
   }
 
   setNative(
@@ -43,4 +43,4 @@ class InjectorService {
   }
 }
 
-export const Injector = new InjectorService();
+export const Injector = new InjectorService<ProviderType>();
