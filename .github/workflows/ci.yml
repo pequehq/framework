@@ -8,29 +8,11 @@ on:
 
 jobs:
 
-  build:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.x
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
-
-
-  lint:
-    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.head_ref }}-test
+      cancel-in-progress: true
     strategy:
       matrix:
         node-version:
@@ -40,66 +22,29 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.PAT }}
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.26.0
+          run_install: true
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
+      - name: Build
+        run: pnpm build
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "resolve style guide violations"
-
-  test-unit:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.x
-    concurrency:
-      group: ${{ github.head_ref }}-test-unit
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.PAT }}
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Unit test
-        run: npm run test:coverage
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "update coverage badge"
-
-  test-integration:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16.x
-    concurrency:
-      group: ${{ github.head_ref }}-test-unit
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.PAT }}
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Integration test
-        run: npm run test:integration
+      - name: Unit test Framework
+        run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test
+      - name: Integration test Framework
+        run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:integration

@@ -1,9 +1,11 @@
-import { OnProviderDestroy } from '../../../dist';
-import { HttpEventService } from '../../../dist';
-import { HttpEvent } from '../../../dist';
-import { OnServerShutdown } from '../../../dist';
-import { OnProviderInit } from '../../../dist';
-import { Injectable } from '../../../dist';
+import {
+  HttpEvent,
+  HttpEventService,
+  Injectable,
+  OnProviderDestroy,
+  OnProviderInit,
+  OnServerShutdown,
+} from '../../../dist';
 
 @Injectable()
 export class TestRootService implements OnProviderInit, OnProviderDestroy, OnServerShutdown {

@@ -1,4 +1,4 @@
-import { ConsumeEvent, EventPayload, MicroserviceHandler, OnProviderDestroy, OnProviderInit } from '../../dist';
+import { ConsumeEvent, EventPayload, MicroserviceHandler, OnProviderDestroy, OnProviderInit } from '../../../../dist';
 import { Microservice } from '../../dist';
 
 @Microservice({ broker: 'mqtt://localhost:1883', transport: 'mqtt' })
