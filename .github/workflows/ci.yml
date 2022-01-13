@@ -8,8 +8,11 @@ on:
 
 jobs:
 
-  setup:
+  ci:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.head_ref }}-ci
+      cancel-in-progress: true
     strategy:
       matrix:
         node-version:
@@ -24,52 +27,24 @@ jobs:
         with:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-
+          restore-keys: ${{ runner.os }}-
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
           version: 6.0.2
-          run_install: |
-            - args: [--global]
+          run_install: true
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: Build
         run: pnpm build
-
-  lint:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: Lint
         run: pnpm lint
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "resolve style guide violations"
-
-  test-unit:
-    needs: build
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.head_ref }}-test-unit
-      cancel-in-progress: true
-    steps:
-      - name: Unit test framework
+      - name: Unit test Framework
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test
-
-  test-integration:
-    needs: build
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.head_ref }}-test-integration
-      cancel-in-progress: true
-    steps:
-      - name: Integration test framework
+      - name: Integration test Framework
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:integration
