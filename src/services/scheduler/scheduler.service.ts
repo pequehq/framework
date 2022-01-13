@@ -5,7 +5,7 @@ import cron, { ScheduledTask } from 'node-cron';
 import { SchedulerConfig } from '../../decorators';
 import { DECORATORS } from '../../models/constants/decorators';
 import { NATIVE_SERVICES } from '../../models/constants/native-services';
-import { Injector } from '../../models/dependency-injection/injector.service';
+import { Injector } from '../../models/dependency-injection/dependency-injection.service';
 
 export class SchedulerService {
   #tasks: Map<string, ScheduledTask> = new Map<string, ScheduledTask>();

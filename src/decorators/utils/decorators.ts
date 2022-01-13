@@ -18,9 +18,8 @@ import {
 } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
 import { Controllers } from '../../models/dependency-injection/controller.service';
-import { Injector } from '../../models/dependency-injection/injector.service';
+import { Injector } from '../../models/dependency-injection/dependency-injection.service';
 import { Modules } from '../../models/dependency-injection/module.service';
-import { Providers } from '../../models/dependency-injection/provider.service';
 import { ProviderDefinition } from '../../models/interfaces/provider-definition.interface';
 import { CustomProvider } from '../injectable';
 
@@ -128,7 +127,7 @@ export const moduleBuilder = (module: ModuleDefinition): ClassDecorator => {
     for (const provider of module.providers ?? []) {
       const providerDefinition = provider as ProviderDefinition;
       if (providerDefinition.useClass) {
-        Providers.addProvider({
+        Injector.add({
           name:
             typeof providerDefinition.provider === 'string'
               ? providerDefinition.provider
@@ -148,25 +147,25 @@ export const microserviceBuilder = (options: MicroserviceOptions): ClassDecorato
     for (const fn of callbacks) {
       fn(options.transport);
     }
-    Providers.addProvider({ name: target.name, clazz: target as unknown as MicroserviceClass, type: 'microservice' });
+    Injector.add({ name: target.name, clazz: target as unknown as MicroserviceClass, type: 'microservice' });
   };
 };
 
 export const transformerBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider({ name: target.name, clazz: target as unknown as TransformerClass, type: 'transformer' });
+    Injector.add({ name: target.name, clazz: target as unknown as TransformerClass, type: 'transformer' });
   };
 };
 
 export const middlewareBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider({ name: target.name, clazz: target as unknown as MiddlewareClass, type: 'middleware' });
+    Injector.add({ name: target.name, clazz: target as unknown as MiddlewareClass, type: 'middleware' });
   };
 };
 
 export const interceptorBuilder = (): ClassDecorator => {
   return (target): void => {
-    Providers.addProvider({ name: target.name, clazz: target as unknown as InterceptorClass, type: 'interceptor' });
+    Injector.add({ name: target.name, clazz: target as unknown as InterceptorClass, type: 'interceptor' });
   };
 };
 
@@ -178,7 +177,7 @@ export const injectableBuilder = (options: InjectableInterface): ClassDecorator 
       name = options.customProvider.interface;
     }
 
-    Providers.addProvider({ name, clazz: target as unknown as ProviderClass, type: 'injectable' });
+    Injector.add({ name, clazz: target as unknown as ProviderClass, type: 'injectable' });
   };
 };
 

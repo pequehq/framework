@@ -12,7 +12,7 @@ import { CanExecute } from '../interfaces/authorization.interface';
 import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';
 import { MiddlewareHandler } from '../interfaces/middleware.interface';
 import { Controllers } from './controller.service';
-import { Injector } from './injector.service';
+import { Injector } from './dependency-injection.service';
 
 const test = suite('Controller service');
 

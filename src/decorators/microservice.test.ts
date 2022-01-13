@@ -5,8 +5,7 @@ import * as assert from 'uvu/assert';
 
 import { EventPayload } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { Injector } from '../models/dependency-injection/injector.service';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { MicroserviceHandler } from '../services';
 import { EventStorage } from '../services/events/event-storage.service';
 import { loadProviders } from '../utils/dependencies.utils';
@@ -33,13 +32,13 @@ test.before.each(async (context) => {
   context.microservice = TestMqttMicroservice;
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
   EventStorage.removeAll();
 });
 
 test('should load the correct microservice metadata', (context) => {
-  assert.is(Providers.getProviderByType('microservice', context.microservice.name)?.clazz, context.microservice);
+  assert.is(Injector.getProviderByType('microservice', context.microservice.name)?.clazz, context.microservice);
   assert.instance(Injector.resolve('microservice', context.microservice.name), context.microservice);
   assert.equal(Reflect.getMetadata(DECORATORS.metadata.microservice.OPTIONS, context.microservice), {
     broker: 'mqtt://localhost:1883',

@@ -3,14 +3,13 @@ import * as assert from 'uvu/assert';
 
 import { Transformer } from '../../decorators';
 import { TransformerHandler } from '../../models';
-import { Injector } from '../../models/dependency-injection/injector.service';
-import { Providers } from '../../models/dependency-injection/provider.service';
+import { Injector } from '../../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../../utils/dependencies.utils';
 
 const test = suite('Transformer Service');
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should execute correctly a transformer', async () => {

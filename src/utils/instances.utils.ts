@@ -1,15 +1,15 @@
 import { Controllers } from '../models/dependency-injection/controller.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { Modules } from '../models/dependency-injection/module.service';
-import { Providers } from '../models/dependency-injection/provider.service';
 
 export const getAllInstances = (): unknown[] => {
   return [
     ...Controllers.getInstances(),
     ...Modules.getInstances(),
-    ...Providers.getProviderInstancesByType('injectable').values(),
-    ...Providers.getProviderInstancesByType('interceptor').values(),
-    ...Providers.getProviderInstancesByType('transformer').values(),
-    ...Providers.getProviderInstancesByType('middleware').values(),
-    ...Providers.getProviderInstancesByType('microservice').values(),
+    ...Injector.getProviderInstancesByType('injectable').values(),
+    ...Injector.getProviderInstancesByType('interceptor').values(),
+    ...Injector.getProviderInstancesByType('transformer').values(),
+    ...Injector.getProviderInstancesByType('middleware').values(),
+    ...Injector.getProviderInstancesByType('microservice').values(),
   ];
 };
