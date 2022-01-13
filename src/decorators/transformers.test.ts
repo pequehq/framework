@@ -4,13 +4,13 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { TransformerHandler } from '../models';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { Transformer } from './transformer';
 
 const test = suite('Transformers');
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should set a transformer provider', () => {
@@ -21,7 +21,7 @@ test('should set a transformer provider', () => {
     }
   }
 
-  const transformers = Providers.getProvidersByType('transformer');
+  const transformers = Injector.getProvidersByType('transformer');
 
   assert.is(transformers.length, 1);
   assert.equal(transformers[0], {

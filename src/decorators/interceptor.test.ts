@@ -7,7 +7,7 @@ import { ControllerDefinition, HttpException, InterceptorHandler, RouteDefinitio
 import { Context } from '../models';
 import { HandlerAfterOptions, HandlerBeforeOptions } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
-import { Providers } from '../models/dependency-injection/provider.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../utils/dependencies.utils';
 import { Controller } from './controller';
 import { Get } from './express-methods';
@@ -15,8 +15,8 @@ import { Intercept, Interceptor } from './interceptor';
 
 const test = suite('Interceptors');
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should set an interceptor provider', async () => {
@@ -40,7 +40,7 @@ test('should set an interceptor provider', async () => {
 
   await loadProviders();
 
-  const interceptors = Providers.getProvidersByType('interceptor');
+  const interceptors = Injector.getProvidersByType('interceptor');
 
   assert.is(interceptors.length, 1);
   assert.equal(interceptors[0], {

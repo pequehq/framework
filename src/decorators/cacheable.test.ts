@@ -4,7 +4,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { CacheManager } from '../models';
-import { Injector } from '../models/dependency-injection/injector.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { Cacheable } from './cacheable';
 
 const test = suite('Cacheable');

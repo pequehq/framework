@@ -5,8 +5,8 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { Controllers } from '../models/dependency-injection/controller.service';
+import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { Modules } from '../models/dependency-injection/module.service';
-import { Providers } from '../models/dependency-injection/provider.service';
 import { Module } from './module';
 
 const test = suite('Module');
@@ -43,7 +43,7 @@ test('should add controllers to the framework controllers', async () => {
 });
 
 test('should add custom providers to the framework providers when specified as { provider (string), useClass }', async () => {
-  const providersAdd = sinon.stub(Providers, 'addProvider');
+  const providersAdd = sinon.stub(Injector, 'add');
 
   class NativeProvider {}
 
@@ -71,7 +71,7 @@ test('should add custom providers to the framework providers when specified as {
 });
 
 test('should add custom providers to the framework providers when specified as { provider (class), useClass }', async () => {
-  const providersAdd = sinon.stub(Providers, 'addProvider');
+  const providersAdd = sinon.stub(Injector, 'add');
 
   class TestProvider {}
   class NativeProvider {}
@@ -100,7 +100,7 @@ test('should add custom providers to the framework providers when specified as {
 });
 
 test('should not add non-custom providers to the framework providers', async () => {
-  const providersAdd = sinon.stub(Providers, 'addProvider');
+  const providersAdd = sinon.stub(Injector, 'add');
 
   class TestProvider {}
 

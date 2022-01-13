@@ -7,7 +7,7 @@ import * as assert from 'uvu/assert';
 import { Controller, Get, Middleware, UseMiddleware } from '../../decorators';
 import { ControllerDefinition, MiddlewareHandler, RouteDefinition } from '../../models';
 import { DECORATORS } from '../../models/constants/decorators';
-import { Providers } from '../../models/dependency-injection/provider.service';
+import { Injector } from '../../models/dependency-injection/dependency-injection.service';
 import { loadProviders } from '../../utils/dependencies.utils';
 import { Middlewares } from './middleware.service';
 
@@ -36,8 +36,8 @@ test.before.each(async (context) => {
   context.controller = TestMiddlewareController;
 });
 
-test.after.each(() => {
-  Providers.unsetAll();
+test.after.each(async () => {
+  await Injector.unsetAll();
 });
 
 test('should return an array of middleware handlers', (context) => {

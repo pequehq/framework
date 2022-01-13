@@ -7,7 +7,7 @@ import { NATIVE_SERVICES } from '../constants/native-services';
 import { WebSocketClass, WebSocketInstance } from '../interfaces/types';
 import { WebSocketAdapter } from '../interfaces/web-sockets/websocket-adapter.interface';
 import { WebSocketDefinition } from '../interfaces/websocket-definition.interface';
-import { Injector } from './injector.service';
+import { Injector } from './dependency-injection.service';
 
 export class WebSocketsService<TServer = any> {
   #websockets: WebSocketClass[] = [];

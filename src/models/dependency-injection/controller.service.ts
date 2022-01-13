@@ -16,7 +16,7 @@ import { CanExecute } from '../interfaces/authorization.interface';
 import { ControllerDefinition } from '../interfaces/controller-definition.interface';
 import { InterceptorHandler } from '../interfaces/interceptor/interceptor.interface';
 import { RouteDefinition } from '../interfaces/route-definition.interface';
-import { Injector } from './injector.service';
+import { Injector } from './dependency-injection.service';
 
 type ControllerClass = { new (...args: unknown[]): unknown };
 
