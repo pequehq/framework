@@ -1,0 +1,12 @@
+import { Module } from 'peque.ts';
+{{#data.imports}}
+{{{.}}}
+{{/data.imports}}
+
+@Module({
+{{#data.decorators}}
+  {{{name}}}: {{{value}}},
+{{/data.decorators}}
+})
+export class {{{className}}} {
+}

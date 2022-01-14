@@ -1,0 +1,28 @@
+{
+  "name": "peque-cli",
+  "version": "1.0.0",
+  "description": "Peque.ts CLI",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf .coverage dist",
+    "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
+    "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
+  },
+  "author": "Simone Di Cicco",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "mustache": "^4.2.0",
+    "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.1.2",
+    "@types/shelljs": "^0.8.10",
+    "peque.ts": "workspace:*"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

@@ -1,0 +1,28 @@
+import bodyParser from 'body-parser';
+import cors from 'cors';
+
+import { RootModule } from './modules/root/root-module';
+import { ExpressFactory } from 'peque.ts';
+
+async function startUp() {
+  await ExpressFactory.createServer({
+      rootModule: RootModule,
+      globalMiddlewares: {
+      preRoutes: [
+        bodyParser.urlencoded({ extended: true }),
+        bodyParser.json({ limit: '2m' })
+      ],
+        postRoutes: [cors]
+      },
+      logger: {
+        consoleOutput: true,
+        level: 'debug',
+        active: true,
+        engine: 'true',
+      },
+      isCpuClustered: false
+    }
+  );
+}
+
+startUp();
