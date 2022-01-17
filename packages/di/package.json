@@ -15,5 +15,8 @@
   "license": "ISC",
   "engines": {
     "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
   }
 }

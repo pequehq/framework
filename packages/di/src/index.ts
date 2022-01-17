@@ -1,5 +1,3 @@
-export class DI {
-  hello() {
-    console.log('hello');
-  }
-}
+export * from './decorators';
+export * from './models';
+export * from './services';

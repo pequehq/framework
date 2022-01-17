@@ -56,7 +56,10 @@ importers:
       peque.ts: link:../framework
 
   packages/di:
-    specifiers: {}
+    specifiers:
+      reflect-metadata: ^0.1.13
+    dependencies:
+      reflect-metadata: 0.1.13
 
   packages/framework:
     specifiers:
