@@ -18,7 +18,7 @@ export class DependencyScanner {
       const injectConstructorParam = injectConstructorParams.find((param) => param.propertyKey === index.toString());
       return {
         provider: dependency,
-        identifier: injectConstructorParam ? injectConstructorParam.identifier : dependency.name,
+        identifier: injectConstructorParam?.identifier ?? dependency.name,
       };
     });
 
