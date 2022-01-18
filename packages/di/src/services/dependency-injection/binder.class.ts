@@ -1,7 +1,7 @@
 import { IDependencyMap, ProviderClass } from '../../models';
-import { DependencyScanner } from './dependency-scanner.scanner';
+import { DependencyScanner } from './dependency-scanner.class';
 
-interface IProviderBinding {
+export interface IProviderBinding {
   provider: ProviderClass;
   to: ProviderClass;
   dependencies: IDependencyMap;
@@ -13,6 +13,10 @@ export class Binder {
 
   constructor(private provider: ProviderClass) {
     this.to(this.provider);
+  }
+
+  getBinding(): IProviderBinding {
+    return this.#providerBinding;
   }
 
   getProvider(): ProviderClass {

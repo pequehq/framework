@@ -1,19 +1,17 @@
 import 'reflect-metadata';
 
-import { IProviderInject } from '../models';
-import { CONTAINER_INJECTABLE } from '../models/constants/containers.constants';
+import { IInjectOptions } from '../models';
 import { META_INJECT } from '../models/constants/metadata.constants';
+import { getMetadataInject } from '../services/reflection/reflection';
 
-export function Inject(options: IProviderInject): PropertyDecorator & ParameterDecorator {
-  return (target, propertyKey, parameterIndex?) => {
-    const metadata = new Set<IProviderInject>(Reflect.getMetadata(META_INJECT, target.constructor));
-    metadata.add({
-      clazz: target,
+export function Inject(options: IInjectOptions): PropertyDecorator & ParameterDecorator {
+  return (target, propertyKey?, parameterIndex?) => {
+    const metadata = getMetadataInject(target);
+    metadata.push({
       identifier: options.identifier,
       propertyKey,
       parameterIndex,
-      store: options.store || CONTAINER_INJECTABLE,
     });
-    Reflect.defineMetadata(META_INJECT, [...metadata], target.constructor);
+    Reflect.defineMetadata(META_INJECT, metadata, target.constructor);
   };
 }

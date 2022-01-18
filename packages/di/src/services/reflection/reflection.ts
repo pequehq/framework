@@ -10,9 +10,9 @@ export function getMetadataInjectable(provider: ProviderClass): IInjectableOptio
 }
 
 export function getMetadataInject(provider: ProviderClass): IProviderInject[] {
-  return getReflectionMetadata<IProviderInject[]>(META_INJECT, provider);
+  return getReflectionMetadata<IProviderInject[]>(META_INJECT, provider) ?? [];
 }
 
 export function getMetadataDesignParamTypes(provider: ProviderClass): ProviderClass[] {
-  return getReflectionMetadata<ProviderClass[]>(META_DESIGN_PARAMTYPES, provider) || [];
+  return getReflectionMetadata<ProviderClass[]>(META_DESIGN_PARAMTYPES, provider) ?? [];
 }

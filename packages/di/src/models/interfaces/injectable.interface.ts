@@ -1,14 +1,13 @@
-import { ProviderClass } from './types.interface';
-
 export interface IInjectableOptions {
-  store: string;
-  to?: string;
+  to: string;
+}
+
+export interface IInjectOptions {
+  identifier: string;
 }
 
 export interface IProviderInject {
-  clazz: ProviderClass;
   identifier: string;
-  propertyKey: string;
+  propertyKey?: string;
   parameterIndex?: number;
-  store?: string;
 }

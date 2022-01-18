@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { Injectable } from '../../decorators';
+import { Inject, Injectable } from '../../decorators';
 import { ProviderNotFoundException } from '../../models';
 import { DiContainer } from './di-container.class';
 
@@ -12,7 +12,11 @@ const test = suite('Dependency Injection Container');
 
 test.before.each((context) => {
   @Injectable()
-  class ProviderOne {}
+  class ProviderOne {
+    testMethod() {
+      return 'ProviderOne.testMethod';
+    }
+  }
 
   @Injectable()
   class ProviderTwo {
@@ -29,9 +33,23 @@ test.before.each((context) => {
 
   @Injectable()
   class ProviderFour {
-    constructor(private providerTwo: ProviderTwo, private providerThree: ProviderThree) {}
+    @Inject({ identifier: 'ProviderOne' })
+    injectPropertyOne: ProviderOne;
+
+    constructor(
+      private providerTwo: ProviderTwo,
+      private providerThree: ProviderThree,
+      @Inject({ identifier: 'ProviderFive' }) private injectParamProvider: ProviderOne,
+    ) {}
     testMethod() {
-      return `ProviderFour.testMethod ${this.providerTwo.testMethod()}`;
+      return `ProviderFour.testMethod ${this.providerTwo.testMethod()} ${this.injectParamProvider.testMethod()}`;
+    }
+  }
+
+  @Injectable()
+  class ProviderFive {
+    testMethod() {
+      return 'ProviderFive.testMethod';
     }
   }
 
@@ -42,6 +60,7 @@ test.before.each((context) => {
     providerTwo: ProviderTwo,
     providerThree: ProviderThree,
     providerFour: ProviderFour,
+    providerFive: ProviderFive,
   };
 
   const onInit = context.sandbox.spy((name, instance) => ({ name, instance }));
@@ -55,6 +74,7 @@ test.before.each((context) => {
   context.container.set(context.providers.providerTwo, context.providers.providerTwo.name);
   context.container.set(context.providers.providerThree, context.providers.providerThree.name);
   context.container.set(context.providers.providerFour, context.providers.providerFour.name);
+  context.container.set(context.providers.providerFive, context.providers.providerFive.name);
 });
 
 test.after.each((context) => {
@@ -68,8 +88,9 @@ test('should set providers', (context) => {
   assert.instance(context.container.get(context.providers.providerTwo.name), context.providers.providerTwo);
   assert.instance(context.container.get(context.providers.providerThree.name), context.providers.providerThree);
   assert.instance(providerFour, context.providers.providerFour);
-  assert.is(providerFour.testMethod(), 'ProviderFour.testMethod ProviderTwo.testMethod');
-  assert.is(context.sandbox.stubs.onInit.callCount, 4);
+  assert.is(providerFour.testMethod(), 'ProviderFour.testMethod ProviderTwo.testMethod ProviderFive.testMethod');
+  assert.is(providerFour.injectPropertyOne.testMethod(), 'ProviderOne.testMethod');
+  assert.is(context.sandbox.stubs.onInit.callCount, 5);
 });
 
 test('should unset providers', (context) => {
@@ -91,7 +112,7 @@ test('should unset providers', (context) => {
     () => context.container.get(context.providers.providerFour.name),
     (err) => err instanceof ProviderNotFoundException,
   );
-  assert.is(context.sandbox.stubs.onDestroy.callCount, 4);
+  assert.is(context.sandbox.stubs.onDestroy.callCount, 5);
 });
 
 test.run();

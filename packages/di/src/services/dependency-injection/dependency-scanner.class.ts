@@ -2,7 +2,6 @@ import 'reflect-metadata';
 
 import { IDependency, IDependencyMap, ProviderClass } from '../../models';
 import { IProviderInject } from '../../models';
-import { CONTAINER_INJECTABLE } from '../../models/constants/containers.constants';
 import { getMetadataDesignParamTypes, getMetadataInject } from '../reflection/reflection';
 
 export class DependencyScanner {
@@ -14,14 +13,12 @@ export class DependencyScanner {
     const dependenciesMap = new Map<ProviderClass, IDependency[]>();
     const constructorDependency = [...new Set<ProviderClass>(getMetadataDesignParamTypes(provider))];
 
-    const dependencies: IDependency[] = constructorDependency.map((dependency) => {
-      const injectDecoratedDep = this.#getInjectDecorated(provider).find(
-        (injectDependency) => injectDependency.clazz === dependency,
-      );
+    const injectConstructorParams = this.#getInjectDecorated(provider);
+    const dependencies: IDependency[] = constructorDependency.map((dependency, index) => {
+      const injectConstructorParam = injectConstructorParams.find((param) => param.propertyKey === index.toString());
       return {
         provider: dependency,
-        container: injectDecoratedDep ? injectDecoratedDep.store : CONTAINER_INJECTABLE,
-        identifier: injectDecoratedDep ? injectDecoratedDep.identifier : dependency.name,
+        identifier: injectConstructorParam ? injectConstructorParam.identifier : dependency.name,
       };
     });
 
