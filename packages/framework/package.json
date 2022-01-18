@@ -25,6 +25,7 @@
     "mqtt": "^4.3.3",
     "mustache": "^4.2.0",
     "node-cron": "^3.0.0",
+    "peque-di": "workspace:*",
     "redis": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.1",

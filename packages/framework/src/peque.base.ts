@@ -1,3 +1,5 @@
+import { DiContainer } from 'peque-di';
+
 import { Injector } from './models/dependency-injection/dependency-injection.service';
 import { TransportQueue } from './services';
 import { LifeCycleManager } from './services/life-cycle/life-cycle.service';
@@ -12,6 +14,12 @@ export interface UpDown {
 
 export abstract class PequeBase {
   protected async initialize(): Promise<void> {
+    // example usage
+    const di = new DiContainer({
+      onInit: (name, instance) => ({ name, instance }),
+      onDestroy: (name, instance) => ({ name, instance }),
+    });
+
     processUtils.onTermination(() => this.onTermination());
     processUtils.onUncaughtException((error) => this.onUncaughtException(error));
     processUtils.onUnhandledRejection((error) => this.onUnhandledRejection(error));
