@@ -63,8 +63,8 @@ test.before.each((context) => {
     providerFive: ProviderFive,
   };
 
-  const onInit = context.sandbox.spy((name, instance) => ({ name, instance }));
-  const onDestroy = context.sandbox.spy((name, instance) => ({ name, instance }));
+  const onInit = context.sandbox.fake();
+  const onDestroy = context.sandbox.fake();
 
   context.sandbox.stubs = { onInit, onDestroy };
 
