@@ -2,8 +2,9 @@ import 'reflect-metadata';
 
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { Binder, IProviderBinding } from './binder.class';
+
 import { IDependency, ProviderClass } from '../../models';
+import { Binder, IProviderBinding } from './binder.class';
 
 const test = suite('Binder');
 
