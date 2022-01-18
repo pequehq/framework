@@ -11,7 +11,6 @@ export type ClassDeclaration = Type;
 export type ProviderClass = ClassDeclaration;
 export type ProviderInstance = InstanceType<ProviderClass>;
 
-export type ProviderInitHandler = (name: string, instance: ProviderInstance) => void;
-export type ProviderDestroyHandler = (name: string, instance: ProviderInstance) => void;
+export type ProviderHookHandler = (name: string, instance: ProviderInstance) => void;
 
 export type IDependencyMap = Map<ProviderClass, IDependency[]>;

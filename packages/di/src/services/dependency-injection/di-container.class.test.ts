@@ -106,8 +106,19 @@ test('should unset providers', (context) => {
     () => context.container.get(context.providers.providerOne.name),
     (err) => err instanceof ProviderNotFoundException,
   );
+  assert.instance(context.container.get(context.providers.providerTwo.name), context.providers.providerTwo);
+  assert.instance(context.container.get(context.providers.providerThree.name), context.providers.providerThree);
+  assert.instance(context.container.get(context.providers.providerFour.name), context.providers.providerFour);
 
   context.container.unsetAll();
+  assert.throws(
+    () => context.container.get(context.providers.providerTwo.name),
+    (err) => err instanceof ProviderNotFoundException,
+  );
+  assert.throws(
+    () => context.container.get(context.providers.providerThree.name),
+    (err) => err instanceof ProviderNotFoundException,
+  );
   assert.throws(
     () => context.container.get(context.providers.providerFour.name),
     (err) => err instanceof ProviderNotFoundException,

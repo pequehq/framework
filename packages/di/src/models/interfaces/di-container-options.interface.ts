@@ -1,6 +1,6 @@
-import { ProviderInitHandler } from './types.interface';
+import { ProviderHookHandler } from './types.interface';
 
 export interface IDiContainerOptions {
-  onInit: ProviderInitHandler;
-  onDestroy: ProviderInitHandler;
+  onInit?: ProviderHookHandler;
+  onDestroy?: ProviderHookHandler;
 }

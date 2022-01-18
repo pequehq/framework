@@ -3,16 +3,16 @@ import { extractInjectParamsMetadata, extractInjectPropertiesMetadata } from '..
 import { getMetadataDesignParamTypes, getMetadataInject } from '../reflection/reflection';
 import { Binder } from './binder.class';
 
-type IInitDestroyMethods = 'onInit' | 'onDestroy';
+type IHookMethods = 'onInit' | 'onDestroy';
 
 export class DiContainer {
   #containers = new Map<string, ProviderInstance>();
   #bindings = new Map<string, Binder>();
 
-  constructor(private options: IDiContainerOptions) {}
+  constructor(private options?: IDiContainerOptions) {}
 
-  #triggerInitDestroy(instance: ProviderInstance, method: IInitDestroyMethods): void {
-    this.options[method](instance.constructor.name, instance);
+  #triggerHook(instance: ProviderInstance, method: IHookMethods): void {
+    this.options?.[method]?.(instance.constructor.name, instance);
   }
 
   #resolve<T>(provider: ProviderClass): T {
@@ -28,16 +28,16 @@ export class DiContainer {
     const injections = dependenciesConstructors.map((dependency: ProviderClass) => this.#resolve<unknown>(dependency));
     const instance = new provider(...injections) as T;
 
-    // Defines the @Inject decorated class properties get.
+    // Define the @Inject decorated class properties get.
     this.#setInjectProviderProperties(instance);
 
     this.#containers.set(provider.name, instance);
 
-    this.#triggerInitDestroy(instance, 'onInit');
+    this.#triggerHook(instance, 'onInit');
     return instance;
   }
 
-  #injectConstructorParams(provider: ProviderClass, dependencies: ProviderClass[]) {
+  #injectConstructorParams(provider: ProviderClass, dependencies: ProviderClass[]): void {
     const injectConstructorParams = extractInjectParamsMetadata(getMetadataInject(provider));
     for (let i = 0; i < injectConstructorParams.length; i++) {
       const binding = this.#getBinding(injectConstructorParams[i].identifier);
@@ -76,7 +76,7 @@ export class DiContainer {
   }
 
   unset(identifier: string): void {
-    this.#triggerInitDestroy(this.get(identifier), 'onDestroy');
+    this.#triggerHook(this.get(identifier), 'onDestroy');
     this.#bindings.delete(identifier);
     this.#containers.delete(identifier);
   }
