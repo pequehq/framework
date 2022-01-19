@@ -97,8 +97,20 @@ test('should set providers with TO syntax', (context) => {
     }
   }
 
+  @Injectable()
+  class TestProviderToBind {
+    constructor(providerToBind: ProviderBind) {}
+    testMethod() {
+      return 'ProviderToBind.testMethod';
+    }
+  }
+
   context.container.set(ProviderBind, ProviderBind.name).to(ProviderToBind);
+  context.container.set(TestProviderToBind, TestProviderToBind.name);
+
   assert.instance(context.container.get(ProviderBind.name), ProviderToBind);
+  assert.instance(context.container.get(TestProviderToBind.name), TestProviderToBind);
+  assert.instance(context.container.get(TestProviderToBind.name).providerToBind, ProviderToBind);
 });
 
 test('should set providers', (context) => {
