@@ -84,24 +84,15 @@ test.after.each((context) => {
 
 test('should set providers with TO syntax', (context) => {
   @Injectable()
-  class ProviderBind {
-    testMethod() {
-      return 'ProviderBind.testMethod';
-    }
-  }
+  class ProviderBind {}
 
   @Injectable()
-  class ProviderToBind {
-    testMethod() {
-      return 'ProviderToBind.testMethod';
-    }
-  }
+  class ProviderToBind {}
 
   @Injectable()
   class TestProviderToBind {
-    constructor(providerToBind: ProviderBind) {}
-    testMethod() {
-      return 'ProviderToBind.testMethod';
+    constructor(providerToBind: ProviderBind) {
+      // noop.
     }
   }
 
