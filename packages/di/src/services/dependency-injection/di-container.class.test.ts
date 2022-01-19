@@ -82,6 +82,25 @@ test.after.each((context) => {
   context.container.unsetAll();
 });
 
+test('should set providers with TO syntax', (context) => {
+  @Injectable()
+  class ProviderBind {
+    testMethod() {
+      return 'ProviderBind.testMethod';
+    }
+  }
+
+  @Injectable()
+  class ProviderToBind {
+    testMethod() {
+      return 'ProviderToBind.testMethod';
+    }
+  }
+
+  context.container.set(ProviderBind, ProviderBind.name).to(ProviderToBind);
+  assert.instance(context.container.get(ProviderBind.name), ProviderToBind);
+});
+
 test('should set providers', (context) => {
   const providerFour = context.container.get(context.providers.providerFour.name);
   assert.instance(context.container.get(context.providers.providerOne.name), context.providers.providerOne);
