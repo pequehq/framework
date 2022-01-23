@@ -2,7 +2,7 @@ import { Injectable } from 'peque-di';
 import { ACommandService, IWelcomeCommand } from 'peque-smb-commons/src';
 
 @Injectable()
-export class WelcomeCommand extends ACommandService<IWelcomeCommand> {
+export class WelcomeCommand extends ACommandService {
   constructor() {
     super();
     this.init();

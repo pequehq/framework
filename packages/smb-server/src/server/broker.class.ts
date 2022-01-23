@@ -3,7 +3,7 @@ import { createServer, Server } from 'net';
 import { Injectable } from 'peque-di';
 import { Command, EventService, IBrokerSocket, SocketService } from 'peque-smb-commons/src';
 
-import { MessageCommand, PublishCommand, SubscribeCommand, WelcomeCommand } from '../commands';
+import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from '../commands';
 
 @Injectable()
 export class Broker {
@@ -17,10 +17,17 @@ export class Broker {
     private command: Command,
     private welcomeCommand: WelcomeCommand,
     private subscribeCommand: SubscribeCommand,
+    private unsubscribeCommand: UnsubscribeCommand,
     private messageCommand: MessageCommand,
     private publishCommand: PublishCommand,
   ) {
-    this.command.init([this.welcomeCommand, this.subscribeCommand, this.messageCommand, this.publishCommand]);
+    this.command.init([
+      this.welcomeCommand,
+      this.unsubscribeCommand,
+      this.subscribeCommand,
+      this.messageCommand,
+      this.publishCommand,
+    ]);
   }
 
   create(): Promise<void> {

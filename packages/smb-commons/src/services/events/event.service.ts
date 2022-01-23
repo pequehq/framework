@@ -7,11 +7,11 @@ import { ISubjectTypes, Listener } from '../../models';
 export class EventService {
   #emitter = new EventEmitter();
 
-  next(event: ISubjectTypes, data: unknown) {
+  next(event: ISubjectTypes, data: unknown): void {
     this.#emitter.emit(event, data);
   }
 
-  on(event: ISubjectTypes, listener: Listener) {
+  on(event: ISubjectTypes, listener: Listener): void {
     this.#emitter.addListener(event, listener);
   }
 }

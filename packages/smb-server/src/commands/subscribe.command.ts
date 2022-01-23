@@ -4,7 +4,7 @@ import { ACommandService, ISubscribeCommand } from 'peque-smb-commons/src';
 import { SubscribeService } from '../services';
 
 @Injectable()
-export class SubscribeCommand extends ACommandService<ISubscribeCommand> {
+export class SubscribeCommand extends ACommandService {
   constructor(private subscriptions: SubscribeService) {
     super();
     this.init();
