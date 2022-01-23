@@ -120,6 +120,20 @@ importers:
       '@types/swagger-ui-express': 4.1.3
       '@types/yamljs': 0.2.31
 
+  packages/smb-commons:
+    specifiers:
+      peque-di: workspace:*
+    devDependencies:
+      peque-di: link:../di
+
+  packages/smb-server:
+    specifiers:
+      peque-di: workspace:*
+      peque-smb-commons: workspace:*
+    dependencies:
+      peque-di: link:../di
+      peque-smb-commons: link:../smb-commons
+
 packages:
 
   /@apidevtools/json-schema-ref-parser/9.0.9:

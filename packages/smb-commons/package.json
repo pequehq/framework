@@ -1,0 +1,20 @@
+{
+  "name": "peque-smb-commons",
+  "version": "1.0.0",
+  "description": "Peque.ts SMB Commons",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf .coverage dist",
+    "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
+  },
+  "author": "Simone Di Cicco",
+  "license": "ISC",
+  "devDependencies": {
+    "peque-di": "workspace:*"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

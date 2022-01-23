@@ -1,0 +1,22 @@
+{
+  "name": "peque-smb-server",
+  "version": "1.0.0",
+  "description": "Peque.ts SMB Server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf .coverage dist",
+    "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
+  },
+  "author": "Simone Di Cicco",
+  "license": "ISC",
+  "dependencies": {
+    "peque-di": "workspace:*",
+    "peque-smb-commons": "workspace:*"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
