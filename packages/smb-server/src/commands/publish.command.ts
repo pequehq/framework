@@ -8,7 +8,7 @@ export class PublishCommand extends ACommandService {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.events.on('publish', (command: IPublishCommand) => this.events.next('outgoingCommand', command));
   }
 }

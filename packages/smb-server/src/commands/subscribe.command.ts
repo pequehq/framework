@@ -10,7 +10,7 @@ export class SubscribeCommand extends ACommandService {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.events.on('subscribe', (command: ISubscribeCommand) =>
       this.subscriptions.set(command.action.topic, command.socketId),
     );

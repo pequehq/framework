@@ -10,7 +10,7 @@ export class UnsubscribeCommand extends ACommandService {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.events.on('unsubscribe', (command: IUnsubscribeCommand) =>
       this.subscriptions.unset(command.action.topic, command.socketId),
     );

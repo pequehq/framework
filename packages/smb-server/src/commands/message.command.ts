@@ -10,7 +10,7 @@ export class MessageCommand extends ACommandService {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.events.on('message', (command: IMessageCommand) => {
       const subscribers = this.subscriptions.find(command.action.topic);
       for (const sub of subscribers) {

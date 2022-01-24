@@ -8,7 +8,7 @@ export class WelcomeCommand extends ACommandService {
     this.init();
   }
 
-  init() {
+  init(): void {
     this.events.on('welcome', (command: IWelcomeCommand) => this.events.next('outgoingCommand', command));
   }
 }
