@@ -24,7 +24,8 @@ test.after.each((context) => {
 });
 
 test('should set sockets', (context) => {
-  const socketOne = (new BrokerSocket().id = 'id_1');
+  const socketOne = new BrokerSocket();
+  socketOne.id = 'id_1';
 
   context.sockets.set('id_1', socketOne);
 
