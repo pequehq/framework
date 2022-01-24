@@ -2,7 +2,7 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders } from '../../../test/utils';
+import { DI, loadProviders } from '../../../test/test.utils';
 import { BrokerSocket } from '../../models';
 import { SocketService } from './socket.service';
 

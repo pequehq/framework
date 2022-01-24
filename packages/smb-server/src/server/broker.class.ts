@@ -36,7 +36,7 @@ export class Broker {
     this.#server.on('connection', (socket: BrokerSocket) => {
       socket.id = randomUUID();
       socket.on('data', (data) => this.events.next('incomingCommand', data));
-      this.sockets.set(socket.id, socket);
+      this.sockets.set(socket);
       this.events.next('welcome', {
         command: 'welcome',
         socketId: socket.id,

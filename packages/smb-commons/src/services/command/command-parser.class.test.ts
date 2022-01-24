@@ -1,7 +1,7 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders } from '../../../test/utils';
+import { DI, loadProviders } from '../../../test/test.utils';
 import { CommandInvalidException, CommandParsingException } from '../../models';
 import { CommandParser } from './command-parser.class';
 

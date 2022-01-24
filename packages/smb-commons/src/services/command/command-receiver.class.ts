@@ -7,10 +7,14 @@ import { CommandParser } from './command-parser.class';
 export class CommandReceiver {
   constructor(private events: EventService, private commandParser: CommandParser) {}
 
-  init() {
+  init(): void {
     this.events.on('incomingCommand', (data) => {
-      const command = this.commandParser.parseCommand(data);
-      this.events.next(command.command, command);
+      try {
+        const command = this.commandParser.parseCommand(data);
+        this.events.next(command.command, command);
+      } catch (error) {
+        this.events.next('error', error);
+      }
     });
   }
 }

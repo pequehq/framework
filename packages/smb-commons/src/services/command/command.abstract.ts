@@ -6,5 +6,5 @@ export abstract class ACommandService {
   @Inject({ identifier: 'EventService' })
   events: EventService;
 
-  abstract init();
+  abstract init(): void;
 }

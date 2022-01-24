@@ -8,7 +8,7 @@ import { CommandReceiver } from './command-receiver.class';
 export class Command {
   constructor(private commandReceiver: CommandReceiver, private commandEmitter: CommandEmitter) {}
 
-  init(commands: ACommandService[]) {
+  init(commands: ACommandService[]): void {
     this.commandReceiver.init();
     this.commandEmitter.init();
     for (const command of commands) {

@@ -8,10 +8,14 @@ import { CommandParser } from './command-parser.class';
 export class CommandEmitter {
   constructor(private events: EventService, private commandParser: CommandParser, private sockets: SocketService) {}
 
-  init() {
+  init(): void {
     this.events.on('outgoingCommand', (data) => {
-      const command = this.commandParser.cast(data);
-      this.sockets.get(command.socketId)?.write(this.commandParser.stringify(data));
+      try {
+        const command = this.commandParser.cast(data);
+        this.sockets.get(command.socketId)?.write(this.commandParser.stringify(data));
+      } catch (error) {
+        this.events.next('error', error);
+      }
     });
   }
 }

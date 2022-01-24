@@ -1,12 +1,6 @@
 import { Injectable } from 'peque-di';
 
-import {
-  CommandInvalidException,
-  CommandNotMatchingException,
-  CommandParsingException,
-  ICommand,
-  ICommandTypes,
-} from '../../models';
+import { CommandInvalidException, CommandParsingException, ICommand, ICommandTypes } from '../../models';
 
 @Injectable()
 export class CommandParser {
