@@ -1,5 +1,5 @@
 {
-  "name": "peque-di",
+  "name": "@peque/di",
   "version": "1.0.0",
   "description": "Peque.ts Dependency Injection",
   "main": "dist/index.js",

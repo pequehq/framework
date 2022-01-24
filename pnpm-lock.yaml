@@ -40,20 +40,37 @@ importers:
 
   packages/cli:
     specifiers:
+      '@peque/framework': workspace:*
       '@types/mustache': ^4.1.2
       '@types/shelljs': ^0.8.10
       commander: ^8.3.0
       mustache: ^4.2.0
-      peque.ts: workspace:*
       shelljs: ^0.8.4
     dependencies:
       commander: 8.3.0
       mustache: 4.2.0
       shelljs: 0.8.5
     devDependencies:
+      '@peque/framework': link:../framework
       '@types/mustache': 4.1.2
       '@types/shelljs': 0.8.11
-      peque.ts: link:../framework
+
+  packages/cli/dist:
+    specifiers:
+      '@peque/framework': workspace:*
+      '@types/mustache': ^4.1.2
+      '@types/shelljs': ^0.8.10
+      commander: ^8.3.0
+      mustache: ^4.2.0
+      shelljs: ^0.8.4
+    dependencies:
+      commander: 8.3.0
+      mustache: 4.2.0
+      shelljs: 0.8.5
+    devDependencies:
+      '@peque/framework': link:../../framework
+      '@types/mustache': 4.1.2
+      '@types/shelljs': 0.8.11
 
   packages/di:
     specifiers:
@@ -64,6 +81,7 @@ importers:
   packages/framework:
     specifiers:
       '@apidevtools/json-schema-ref-parser': ^9.0.9
+      '@peque/di': workspace:*
       '@types/cookie-parser': ^1.4.2
       '@types/express': ^4.17.13
       '@types/express-session': ^1.17.4
@@ -82,7 +100,6 @@ importers:
       mqtt: ^4.3.3
       mustache: ^4.2.0
       node-cron: ^3.0.0
-      peque-di: workspace:*
       redis: ^4.0.1
       reflect-metadata: ^0.1.13
       rxjs: ^7.5.1
@@ -92,6 +109,7 @@ importers:
       yamljs: ^0.3.0
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
+      '@peque/di': link:../di
       axios: 0.24.0
       cluster: 0.7.7
       cookie-parser: 1.4.6
@@ -101,7 +119,6 @@ importers:
       mqtt: 4.3.4
       mustache: 4.2.0
       node-cron: 3.0.0
-      peque-di: link:../di
       redis: 4.0.1
       reflect-metadata: 0.1.13
       rxjs: 7.5.2

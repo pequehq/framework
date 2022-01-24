@@ -19,8 +19,8 @@ The usage of the Node.js LTS version is required.
 
 ## Server
 ```typescript
+import { PequeFactory } from '@peque/framework';
 import { TestRootModule } from './modules/root/test-root.module';
-import { PequeFactory } from 'peque.ts';
 
 const webserver = PequeFactory.createServer({
   cors: true,

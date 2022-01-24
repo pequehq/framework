@@ -1,7 +1,7 @@
+import { ModuleDefinition } from '@peque/framework';
 import { Option } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { ModuleDefinition } from 'peque.ts';
 import * as shelljs from 'shelljs';
 
 import { CommandInterface, ExecuteOptions } from '../models/command.interface';

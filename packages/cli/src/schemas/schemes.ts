@@ -1,5 +1,5 @@
+import { ControllerDefinition, ModuleDefinition } from '@peque/framework';
 import * as path from 'path';
-import { ControllerDefinition, ModuleDefinition } from 'peque.ts';
 
 export interface GeneralMetadata<TData> {
   data: TData;
