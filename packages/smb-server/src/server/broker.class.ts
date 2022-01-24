@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createServer, Server } from 'net';
 import { Injectable } from 'peque-di';
-import { Command, EventService, BrokerSocket, SocketService } from 'peque-smb-commons/src';
+import { BrokerSocket, Command, EventService, SocketService } from 'peque-smb-commons/src';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from '../commands';
 
