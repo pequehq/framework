@@ -1,16 +1,16 @@
 import { Injectable } from 'peque-di';
 
-import { IBrokerSocket } from '../../models';
+import { BrokerSocket } from '../../models';
 
 @Injectable()
 export class SocketService {
-  private sockets = new Map<string, IBrokerSocket>();
+  private sockets = new Map<string, BrokerSocket>();
 
-  get(id: string): IBrokerSocket | undefined {
+  get(id: string): BrokerSocket | undefined {
     return this.sockets.get(id);
   }
 
-  set(id: string, socket: IBrokerSocket): void {
+  set(id: string, socket: BrokerSocket): void {
     this.sockets.set(id, socket);
   }
 

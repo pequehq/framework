@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createServer, Server } from 'net';
 import { Injectable } from 'peque-di';
-import { Command, EventService, IBrokerSocket, SocketService } from 'peque-smb-commons/src';
+import { Command, EventService, BrokerSocket, SocketService } from 'peque-smb-commons/src';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from '../commands';
 
@@ -33,7 +33,7 @@ export class Broker {
   create(): Promise<void> {
     this.#server = createServer();
 
-    this.#server.on('connection', (socket: IBrokerSocket) => {
+    this.#server.on('connection', (socket: BrokerSocket) => {
       socket.id = randomUUID();
       socket.on('data', (data) => this.events.next('incomingCommand', data));
       this.sockets.set(socket.id, socket);

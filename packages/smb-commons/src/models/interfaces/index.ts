@@ -1,3 +1,3 @@
-export * from './broker-socket.interface';
+export * from './broker-socket.class';
 export * from './commands.interface';
 export * from './types';

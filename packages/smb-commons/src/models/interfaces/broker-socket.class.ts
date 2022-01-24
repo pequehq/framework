@@ -1,5 +1,5 @@
 import { Socket } from 'net';
 
-export class IBrokerSocket extends Socket {
+export class BrokerSocket extends Socket {
   id: string;
 }
