@@ -8,16 +8,21 @@ import { SubscribeService } from './services';
 
 export const DI = new DiContainer();
 
+const providers = [
+  EventService,
+  SubscribeService,
+  CommandParser,
+  CommandReceiver,
+  CommandEmitter,
+  Command,
+  WelcomeCommand,
+  SubscribeCommand,
+  MessageCommand,
+  PublishCommand,
+  Broker,
+];
 export const loadProviders = (): void => {
-  DI.set(EventService, EventService.name);
-  DI.set(SubscribeService, SubscribeService.name);
-  DI.set(CommandParser, CommandParser.name);
-  DI.set(CommandReceiver, CommandReceiver.name);
-  DI.set(CommandEmitter, CommandEmitter.name);
-  DI.set(Command, Command.name);
-  DI.set(WelcomeCommand, WelcomeCommand.name);
-  DI.set(SubscribeCommand, SubscribeCommand.name);
-  DI.set(MessageCommand, MessageCommand.name);
-  DI.set(PublishCommand, PublishCommand.name);
-  DI.set(Broker, Broker.name);
+  for (const provider of providers) {
+    DI.set(provider, provider.name);
+  }
 };

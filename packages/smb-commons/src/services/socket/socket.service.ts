@@ -4,29 +4,29 @@ import { BrokerSocket } from '../../models';
 
 @Injectable()
 export class SocketService {
-  private sockets = new Map<string, BrokerSocket>();
+  #sockets = new Map<string, BrokerSocket>();
 
   get(id: string): BrokerSocket | undefined {
-    return this.sockets.get(id);
+    return this.#sockets.get(id);
   }
 
-  set(id: string, socket: BrokerSocket): void {
-    this.sockets.set(id, socket);
+  set(socket: BrokerSocket): void {
+    this.#sockets.set(socket.id, socket);
   }
 
   has(id: string): boolean {
-    return this.sockets.has(id);
+    return this.#sockets.has(id);
   }
 
   close(id: string): void {
-    this.sockets.get(id)?.destroy();
-    this.sockets.delete(id);
+    this.#sockets.get(id)?.destroy();
+    this.#sockets.delete(id);
   }
 
   closeAll(): void {
-    for (const socket of this.sockets.values()) {
+    for (const socket of this.#sockets.values()) {
       socket.destroy();
     }
-    this.sockets.clear();
+    this.#sockets.clear();
   }
 }

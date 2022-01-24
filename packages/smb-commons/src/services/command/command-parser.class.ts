@@ -10,31 +10,30 @@ import {
 
 @Injectable()
 export class CommandParser {
-  // @TODO do validate before casting.
+  #validate(data: unknown): boolean {
+    const validate = data as ICommand<ICommandTypes, unknown>;
+    return !!validate.command && !!validate.socketId && !!validate.issueTimestamp && !!validate.action;
+  }
+
   cast(data: unknown): ICommand<ICommandTypes, unknown> {
-    return data as ICommand<ICommandTypes, unknown>;
+    if (this.#validate(data)) {
+      return data as ICommand<ICommandTypes, unknown>;
+    } else {
+      throw new CommandInvalidException(JSON.stringify(data));
+    }
   }
 
   stringify(data: ICommand<ICommandTypes, unknown>): string {
     return JSON.stringify(data);
   }
 
-  parseCommand<T = ICommand<ICommandTypes, unknown>>(data: string): T {
+  parseCommand<T extends ICommand<ICommandTypes, unknown>>(data: string): T {
+    let command;
     try {
-      return JSON.parse(data) as T;
+      command = JSON.parse(data);
     } catch (error) {
       throw new CommandParsingException(data);
     }
-  }
-
-  parseAndValidateCommand<T extends ICommand<ICommandTypes, unknown> = any>(command: ICommandTypes, data: string): T {
-    const parsedCommand = this.parseCommand<T>(data);
-    if (!parsedCommand) {
-      throw new CommandInvalidException(data);
-    }
-    if (parsedCommand.command === command) {
-      return parsedCommand;
-    }
-    throw new CommandNotMatchingException(data);
+    return this.cast(command) as T;
   }
 }

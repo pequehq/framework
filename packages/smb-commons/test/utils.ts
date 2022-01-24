@@ -1,9 +1,12 @@
 import { DiContainer } from 'peque-di';
 
-import { SocketService } from '../src';
+import { CommandParser, SocketService } from '../src';
 
 export const DI = new DiContainer();
 
+const providers = [CommandParser, SocketService];
 export const loadProviders = (): void => {
-  DI.set(SocketService, SocketService.name);
+  for (const provider of providers) {
+    DI.set(provider, provider.name);
+  }
 };

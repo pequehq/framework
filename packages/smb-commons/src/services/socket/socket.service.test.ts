@@ -27,10 +27,32 @@ test('should set sockets', (context) => {
   const socketOne = new BrokerSocket();
   socketOne.id = 'id_1';
 
-  context.sockets.set('id_1', socketOne);
+  context.sockets.set(socketOne);
 
-  assert.is(context.sockets.has('id_1'), true);
-  assert.is(context.sockets.get('id_1'), socketOne);
+  assert.is(context.sockets.has(socketOne.id), true);
+  assert.is(context.sockets.get(socketOne.id), socketOne);
+});
+
+test('should close sockets', (context) => {
+  const socketOne = new BrokerSocket();
+  socketOne.id = 'id_1';
+
+  const socketTwo = new BrokerSocket();
+  socketOne.id = 'id_2';
+
+  context.sockets.set(socketOne);
+  context.sockets.set(socketTwo);
+
+  assert.is(context.sockets.has(socketOne.id), true);
+  assert.is(context.sockets.has(socketTwo.id), true);
+  assert.is(context.sockets.get(socketOne.id), socketOne);
+  assert.is(context.sockets.get(socketTwo.id), socketTwo);
+
+  context.sockets.close(socketOne.id);
+  assert.is(context.sockets.has(socketOne.id), false);
+
+  context.sockets.closeAll();
+  assert.is(context.sockets.has(socketTwo.id), false);
 });
 
 test.run();
