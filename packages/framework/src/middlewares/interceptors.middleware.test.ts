@@ -21,37 +21,33 @@ test.before.each(async () => {
   expressMocks.restore();
 
   @Interceptor()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class TestInterceptor implements InterceptorHandler {
-    after<TResult>(
-      context: Context,
-      handlerResult: TResult,
-    ): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void> {
+    after(): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void> {
       return { handlerResult: { test: 'value' } };
     }
 
-    before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
+    before(): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
       return { override: false };
     }
 
-    error<TError>(context: Context, error: HttpException<TError>) {
+    error(): void {
       return;
     }
   }
 
   @Interceptor()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class TestInterceptorCatch implements InterceptorHandler {
-    after<TResult>(
-      context: Context,
-      handlerResult: TResult,
-    ): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void> {
+    after(): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void> {
       return { handlerResult: { test: 'value' } };
     }
 
-    before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
+    before(): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
       throw new Error('Interceptor before catch');
     }
 
-    error<TError>(context: Context, error: HttpException<TError>) {
+    error(): void {
       throw new Error('Interceptor error catch');
     }
   }

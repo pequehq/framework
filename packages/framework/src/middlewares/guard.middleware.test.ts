@@ -25,8 +25,9 @@ test.after.each(async () => {
 
 test('should execute a guard class and allow can execute', async () => {
   @Injectable()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class TestGuard implements CanExecute {
-    async canExecute(context: Context): Promise<boolean> {
+    async canExecute(): Promise<boolean> {
       return true;
     }
   }
@@ -44,8 +45,9 @@ test('should execute a guard class and allow can execute', async () => {
 
 test('should execute a guard class and deny can execute', async () => {
   @Injectable()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class TestGuard implements CanExecute {
-    async canExecute(context: Context): Promise<boolean> {
+    async canExecute(): Promise<boolean> {
       return false;
     }
   }
@@ -66,8 +68,9 @@ test('should throw an error from the guard class', async () => {
   const error = new Error('guard error');
 
   @Injectable()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class TestGuard implements CanExecute {
-    async canExecute(context: Context): Promise<boolean> {
+    async canExecute(): Promise<boolean> {
       throw error;
     }
   }

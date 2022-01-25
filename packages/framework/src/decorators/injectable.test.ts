@@ -49,7 +49,7 @@ test('@Inject should inject an instance of the decorated class', async () => {
 test('@Inject should inject a custom provider', async () => {
   @Injectable({ interface: NATIVE_SERVICES.HTTP_SERVICE })
   class TestService implements HttpClient<unknown> {
-    request(options: unknown): string {
+    request(): string {
       return 'custom service';
     }
   }
@@ -71,7 +71,7 @@ test('@Inject should inject a custom provider', async () => {
 test('should work when dependencies are injected in the constructor', async () => {
   @Injectable()
   class TestDependency {
-    run() {
+    run(): boolean {
       return true;
     }
   }
@@ -80,7 +80,7 @@ test('should work when dependencies are injected in the constructor', async () =
   class TestClass {
     constructor(public testDependency: TestDependency) {}
 
-    run() {
+    run(): boolean {
       return this.testDependency.run();
     }
   }
