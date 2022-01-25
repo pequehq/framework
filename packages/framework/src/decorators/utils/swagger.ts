@@ -31,7 +31,7 @@ export const swaggerTagBuilder = (tag: string[]): ClassDecorator => {
   };
 };
 
-export const swaggerDtoPropertyBuilder = (options: SwaggerPropertyOptions, object?: unknown): PropertyDecorator => {
+export const swaggerDtoPropertyBuilder = (options: SwaggerPropertyOptions, object?: any): PropertyDecorator => {
   return (target, propertyKey): void => {
     let ref,
       multipleRefs = false;
@@ -52,7 +52,7 @@ export const swaggerDtoPropertyBuilder = (options: SwaggerPropertyOptions, objec
       example: options.example !== undefined ? JSON.stringify(options.example) : undefined,
       description: options.description ? options.description : undefined,
       multipleRefs,
-      ref: ref || (object ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', (object as any).name)}` : undefined),
+      ref: ref ?? (object ? `${SWAGGER.refs.COMPONENTS_SCHEMA.replace('{{DTO}}', object.name)}` : undefined),
       isRef: object !== undefined, // Inverted logic for Mustache template.
       isArray: options.type === 'array',
       required: options.required,

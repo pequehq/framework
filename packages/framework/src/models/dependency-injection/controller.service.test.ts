@@ -64,15 +64,15 @@ test('should load controller interceptors', async () => {
 
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
-    after(context, handlerResult): void {
+    after(): void {
       // noop.
     }
 
-    before(context): void {
+    before(): void {
       // noop.
     }
 
-    error(context, error): void {
+    error(): void {
       // noop.
     }
   }
@@ -98,7 +98,7 @@ test('should load controller guards', async () => {
   const injectorResolve = sandbox.stub(Injector, 'resolve');
 
   class TestGuard implements CanExecute {
-    canExecute(context) {
+    canExecute(): Promise<boolean> {
       return Promise.resolve(false);
     }
   }
@@ -124,7 +124,7 @@ test('should load controller middlewares', async () => {
 
   @Middleware()
   class TestMiddleware implements MiddlewareHandler {
-    handler(req, res, next): void {
+    handler(): void {
       // noop.
     }
   }
@@ -169,12 +169,12 @@ test('should register routes', async () => {
   @Controller('/path')
   class TestController {
     @Get('/pizza')
-    getPizza() {
+    getPizza(): string {
       return 'pizza';
     }
 
     @Post('/pizza')
-    savePizza() {
+    savePizza(): void {
       return;
     }
   }
@@ -224,7 +224,7 @@ test('should not register routes having documentOnly = true', async () => {
   @Controller('/path')
   class TestController {
     @Get('/pizza', true)
-    getPizza() {
+    getPizza(): string {
       return 'pizza';
     }
   }

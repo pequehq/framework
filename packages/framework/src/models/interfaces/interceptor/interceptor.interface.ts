@@ -8,5 +8,5 @@ export interface InterceptorHandler {
     context: Context,
     handlerResult: unknown,
   ): HandlerAfterOptions<unknown> | Promise<HandlerAfterOptions<unknown>> | void | Promise<void>;
-  error(context: Context, error: HttpException<unknown>);
+  error(context: Context, error: HttpException<unknown>): void;
 }

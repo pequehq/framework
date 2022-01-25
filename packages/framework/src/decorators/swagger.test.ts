@@ -24,7 +24,7 @@ test.before(async (context) => {
   @SwaggerComponent()
   class TestComponent {
     @SwaggerDtoProperty({ type: 'object' })
-    objectProperty: any;
+    objectProperty: unknown;
 
     @SwaggerDtoProperty({ type: 'string' })
     stringProperty: string;
@@ -33,7 +33,7 @@ test.before(async (context) => {
   @SwaggerResponseBody()
   class TestComponentResponseBody {
     @SwaggerDtoProperty({ type: 'object' })
-    objectProperty: any;
+    objectProperty: unknown;
 
     @SwaggerDtoProperty({ type: 'string' })
     stringProperty: string;
@@ -64,7 +64,7 @@ test.before(async (context) => {
       ],
     )
     @Get('/hello-world')
-    async helloWorld() {
+    async helloWorld(): Promise<unknown> {
       return { test: 'hello world' };
     }
   }

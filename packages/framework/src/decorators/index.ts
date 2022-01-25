@@ -10,7 +10,7 @@ export * from './module';
 export * from './events';
 export * from './interceptor';
 export * from './transformer';
-export * from './authorization';
+export * from './guard';
 export * from './websockets';
 export * from './scheduler';
 export * from './middleware';
