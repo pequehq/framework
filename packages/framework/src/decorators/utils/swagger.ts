@@ -31,10 +31,7 @@ export const swaggerTagBuilder = (tag: string[]): ClassDecorator => {
   };
 };
 
-export const swaggerDtoPropertyBuilder = (
-  options: SwaggerPropertyOptions,
-  object?: Record<string, any>,
-): PropertyDecorator => {
+export const swaggerDtoPropertyBuilder = (options: SwaggerPropertyOptions, object?: any): PropertyDecorator => {
   return (target, propertyKey): void => {
     let ref,
       multipleRefs = false;
