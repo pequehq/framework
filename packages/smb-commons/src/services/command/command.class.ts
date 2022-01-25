@@ -1,8 +1,8 @@
 import { Injectable } from 'peque-di';
 
+import { ICommandService } from '../../models';
 import { CommandEmitter } from './command-emitter.class';
 import { CommandReceiver } from './command-receiver.class';
-import { ICommandService } from '../../models';
 
 @Injectable()
 export class Command {
