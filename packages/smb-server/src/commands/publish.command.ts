@@ -1,10 +1,9 @@
 import { Injectable } from 'peque-di';
-import { ACommandService, IPublishCommand } from 'peque-smb-commons/src';
+import { EventService, ICommandService, IPublishCommand } from 'peque-smb-commons/src';
 
 @Injectable()
-export class PublishCommand extends ACommandService {
-  constructor() {
-    super();
+export class PublishCommand implements ICommandService {
+  constructor(private events: EventService) {
     this.init();
   }
 

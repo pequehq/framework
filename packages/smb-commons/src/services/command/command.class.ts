@@ -1,14 +1,14 @@
 import { Injectable } from 'peque-di';
 
-import { ACommandService } from './command.abstract';
 import { CommandEmitter } from './command-emitter.class';
 import { CommandReceiver } from './command-receiver.class';
+import { ICommandService } from '../../models';
 
 @Injectable()
 export class Command {
   constructor(private commandReceiver: CommandReceiver, private commandEmitter: CommandEmitter) {}
 
-  init(commands: ACommandService[]): void {
+  init(commands: ICommandService[]): void {
     this.commandReceiver.init();
     this.commandEmitter.init();
     for (const command of commands) {

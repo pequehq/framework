@@ -1,12 +1,11 @@
 import { Injectable } from 'peque-di';
-import { ACommandService, IUnsubscribeCommand } from 'peque-smb-commons/src';
+import { EventService, ICommandService, IUnsubscribeCommand } from 'peque-smb-commons/src';
 
 import { SubscribeService } from '../services';
 
 @Injectable()
-export class UnsubscribeCommand extends ACommandService {
-  constructor(private subscriptions: SubscribeService) {
-    super();
+export class UnsubscribeCommand implements ICommandService {
+  constructor(private subscriptions: SubscribeService, private events: EventService) {
     this.init();
   }
 
