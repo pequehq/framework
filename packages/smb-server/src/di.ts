@@ -1,6 +1,5 @@
 import { DiContainer } from 'peque-di';
-import { CommandEmitter, CommandReceiver, EventService } from 'peque-smb-commons/src';
-import { Command, CommandParser } from 'ultra-runner/lib/parser';
+import { Command, CommandEmitter, CommandParser, CommandReceiver, EventService } from 'peque-smb-commons/src';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, WelcomeCommand } from './commands';
 import { Broker } from './server/broker.class';
