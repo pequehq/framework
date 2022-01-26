@@ -15,12 +15,12 @@ test.after.each(() => {
   DI.unsetAll();
 });
 
-test('should publish and consume events', (context) => {
+test('should publish and consume events', async (context) => {
   let message;
   context.events.on('message', (args) => (message = args));
   context.events.next('message', 'test message');
 
-  wait();
+  await wait();
 
   assert.is(message, 'test message');
 });

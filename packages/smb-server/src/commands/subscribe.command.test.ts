@@ -1,56 +1,50 @@
-import { EventService, IMessageCommand } from 'peque-smb-commons/src';
+import { EventService, ISubscribeCommand } from 'peque-smb-commons/src';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { DI, loadProviders, wait } from '../../test/test.utils';
 import { SubscribeService } from '../services';
-import { MessageCommand } from './message.command';
+import { SubscribeCommand } from './subscribe.command';
 
-const test = suite('Message Command');
+const test = suite('Subscribe Command');
 
 test.before.each((context) => {
   context.sandbox = sinon.createSandbox();
   context.spies = {
     eventOn: context.sandbox.spy(EventService.prototype, 'on'),
-    eventNext: context.sandbox.spy(EventService.prototype, 'next'),
-    subsFind: context.sandbox.spy(SubscribeService.prototype, 'find'),
   };
   context.commands = {
-    message: {
-      command: 'message',
+    subscribe: {
+      command: 'subscribe',
       socketId: 'id_1',
       action: {
         topic: 'topic',
-        message: 'test message',
       },
       issueTimestamp: 1234567890,
-    } as IMessageCommand,
+    } as ISubscribeCommand,
   };
 
   loadProviders();
-  context.message = DI.get<MessageCommand>('MessageCommand');
+  DI.get<SubscribeCommand>('SubscribeCommand');
   context.subs = DI.get<SubscribeService>('SubscribeService');
   context.events = DI.get<EventService>('EventService');
 });
 
 test.after.each((context) => {
   context.sandbox.restore();
+  context.subs.clear();
   DI.unsetAll();
 });
 
-test('should process a message command', (context) => {
-  context.subs.set('topic', 'id_1');
-  context.subs.set('topic', 'id_2');
-
+test('should subscribe a client to a topic', async (context) => {
   assert.is(context.spies.eventOn.calledOnce, true);
 
-  context.events.next('message', context.commands.message);
+  context.events.next('subscribe', context.commands.subscribe);
 
-  wait();
+  await wait();
 
-  assert.ok(context.spies.subsFind.calledWith(context.commands.message.action.topic));
-  assert.is(context.spies.eventNext.callCount, 3);
+  assert.equal(context.subs.find('topic'), ['id_1']);
 });
 
 test.run();

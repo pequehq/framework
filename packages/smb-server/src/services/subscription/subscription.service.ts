@@ -29,4 +29,8 @@ export class SubscribeService {
 
     return [...new Set(sockets)];
   }
+
+  clear(): void {
+    this.#subscriptions.clear();
+  }
 }

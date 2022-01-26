@@ -1,12 +1,20 @@
 import { DiContainer } from 'peque-di';
 import { EventService } from 'peque-smb-commons';
 
-import { MessageCommand } from '../src/commands';
+import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from '../src/commands';
 import { SubscribeService } from '../src/services';
 
 export const DI = new DiContainer();
 
-const providers = [SubscribeService, EventService, MessageCommand];
+const providers = [
+  SubscribeService,
+  EventService,
+  MessageCommand,
+  PublishCommand,
+  SubscribeCommand,
+  UnsubscribeCommand,
+  WelcomeCommand,
+];
 export const loadProviders = (): void => {
   for (const provider of providers) {
     DI.set(provider, provider.name);
