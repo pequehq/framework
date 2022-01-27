@@ -48,6 +48,8 @@ jobs:
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:coverage
       - name: Integration test Framework
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:integration
+      - name: Unit test DI
+        run: cd "$GITHUB_WORKSPACE/packages/di/" && pnpm test:coverage
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "update coverage badge"
