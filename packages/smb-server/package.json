@@ -9,6 +9,7 @@
     "build": "pnpm clean && tsc",
     "clean": "rimraf .coverage dist",
     "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
+    "test:coverage": "c8 pnpm test && make-coverage-badge --output-path ./coverage-badge.svg",
     "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
   },
   "author": "Simone Di Cicco",
