@@ -45,6 +45,9 @@ jobs:
         with:
           commit_message: "resolve style guide violations"
       - name: Unit test Framework
-        run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test
+        run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:coverage
       - name: Integration test Framework
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:integration
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "update coverage badge"
