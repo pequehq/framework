@@ -1,4 +1,4 @@
-import { DiContainer } from '@peque/di';
+import { DiContainer } from 'peque-di';
 
 import { Injector } from './models/dependency-injection/dependency-injection.service';
 import { TransportQueue } from './services';
