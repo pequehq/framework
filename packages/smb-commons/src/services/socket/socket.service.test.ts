@@ -52,7 +52,7 @@ test('should close sockets', (context) => {
   assert.is(context.sockets.has(socketOne.id), false);
 
   context.sockets.closeAll();
-  assert.is(context.sockets.has(socketTwo.id), false);
+  assert.is(context.sockets.has(socketOne.id), false);
   assert.is(context.sockets.has(socketTwo.id), false);
 });
 

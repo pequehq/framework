@@ -1,7 +1,8 @@
+import { wait } from 'peque-test';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders, wait } from '../../../test/test.utils';
+import { DI, loadProviders } from '../../../test/test.utils';
 import { EventService } from './event.service';
 
 const test = suite('Event Service');

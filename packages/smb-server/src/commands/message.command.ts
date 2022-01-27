@@ -1,5 +1,5 @@
 import { Injectable } from 'peque-di';
-import { EventService, ICommandService, IMessageCommand, IPublishCommand } from 'peque-smb-commons/src';
+import { EventService, ICommandService, IMessageCommand, IPublishCommand } from 'peque-smb-commons';
 
 import { SubscribeService } from '../services';
 

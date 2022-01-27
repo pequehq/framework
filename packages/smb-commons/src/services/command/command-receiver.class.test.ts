@@ -1,8 +1,9 @@
+import { wait } from 'peque-test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders, wait } from '../../../test/test.utils';
+import { DI, loadProviders } from '../../../test/test.utils';
 import { CommandInvalidException, CommandParsingException } from '../../models';
 import { EventService } from '../events/event.service';
 import { CommandReceiver } from './command-receiver.class';
@@ -32,13 +33,13 @@ test.after.each((context) => {
   DI.unsetAll();
 });
 
-test('should receive a command', (context) => {
+test('should receive a command', async (context) => {
   context.receiver.init();
   assert.is(context.spies.eventOn.calledOnce, true);
 
   context.events.next('incomingCommand', JSON.stringify(context.command));
 
-  wait();
+  await wait();
 
   assert.ok(context.spies.eventNext.calledWith(context.command.command, context.command));
 });

@@ -1,9 +1,10 @@
-import { EventService, ISubscribeCommand } from 'peque-smb-commons/src';
+import { EventService, ISubscribeCommand } from 'peque-smb-commons';
+import { wait } from 'peque-test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders, wait } from '../../test/test.utils';
+import { DI, loadProviders } from '../../test/test.utils';
 import { SubscribeService } from '../services';
 import { SubscribeCommand } from './subscribe.command';
 

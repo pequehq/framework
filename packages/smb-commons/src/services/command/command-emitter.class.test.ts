@@ -1,8 +1,9 @@
+import { wait } from 'peque-test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders, wait } from '../../../test/test.utils';
+import { DI, loadProviders } from '../../../test/test.utils';
 import { BrokerSocket, CommandInvalidException } from '../../models';
 import { EventService } from '../events/event.service';
 import { SocketService } from '../socket/socket.service';
@@ -38,7 +39,7 @@ test.after.each((context) => {
   DI.unsetAll();
 });
 
-test('should emit a command', (context) => {
+test('should emit a command', async (context) => {
   const socket = new BrokerSocket();
   socket.id = 'id_1';
   context.sockets.set(socket);
@@ -48,7 +49,7 @@ test('should emit a command', (context) => {
 
   context.events.next('outgoingCommand', context.command);
 
-  wait();
+  await wait();
 
   assert.ok(context.spies.socketsGet.calledWith(socket.id));
 });

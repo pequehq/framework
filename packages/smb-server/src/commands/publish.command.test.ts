@@ -1,9 +1,10 @@
-import { EventService, IPublishCommand } from 'peque-smb-commons/src';
+import { EventService, IPublishCommand } from 'peque-smb-commons';
+import { wait } from 'peque-test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { DI, loadProviders, wait } from '../../test/test.utils';
+import { DI, loadProviders } from '../../test/test.utils';
 import { PublishCommand } from './publish.command';
 
 const test = suite('Publish Command');

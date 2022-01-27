@@ -123,16 +123,26 @@ importers:
   packages/smb-commons:
     specifiers:
       peque-di: workspace:*
+      peque-test: workspace:*
     devDependencies:
       peque-di: link:../di
+      peque-test: link:../test
 
   packages/smb-server:
     specifiers:
       peque-di: workspace:*
       peque-smb-commons: workspace:*
+      peque-test: workspace:*
     dependencies:
       peque-di: link:../di
       peque-smb-commons: link:../smb-commons
+      peque-test: link:../test
+
+  packages/test:
+    specifiers:
+      peque-di: workspace:*
+    dependencies:
+      peque-di: link:../di
 
 packages:
 

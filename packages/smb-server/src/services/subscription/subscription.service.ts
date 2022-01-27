@@ -2,27 +2,24 @@ import { Injectable } from 'peque-di';
 
 @Injectable()
 export class SubscribeService {
-  #subscriptions = new Map<string, string[]>();
+  #subscriptions = new Map<string, Set<string>>();
 
   set(pattern: string, socketId: string): void {
-    const subscriptions = this.#subscriptions.get(pattern) ?? [];
-    subscriptions.push(socketId);
+    const subscriptions = this.#subscriptions.get(pattern) ?? new Set<string>();
+    subscriptions.add(socketId);
     this.#subscriptions.set(pattern, subscriptions);
   }
 
   unset(pattern: string, socketId: string): void {
-    const subscriptions = this.#subscriptions.get(pattern) ?? [];
-    this.#subscriptions.set(
-      pattern,
-      subscriptions.filter((subs) => subs !== socketId),
-    );
+    const subscriptions = this.#subscriptions.get(pattern) ?? new Set<string>();
+    this.#subscriptions.set(pattern, new Set([...subscriptions].filter((subs) => subs !== socketId)));
   }
 
   find(pattern: string): string[] {
     const sockets: string[] = [];
     for (const key of this.#subscriptions.keys()) {
       if (new RegExp(key).test(pattern)) {
-        const values = [...new Set(this.#subscriptions.get(key))];
+        const values = [...(this.#subscriptions.get(key) ?? new Set<string>())];
         sockets.push(...values);
       }
     }
