@@ -8,7 +8,7 @@ import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, W
 @Injectable()
 export class Broker {
   #server: Server;
-  #port = Number(process.env.PORT) || 8888;
+  #port = Number(process.env.PORT) || 8021;
   #hostname: string = process.env.HOSTNAME || '127.0.0.1';
 
   constructor(

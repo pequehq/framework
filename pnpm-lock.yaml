@@ -122,6 +122,16 @@ importers:
       '@types/swagger-ui-express': 4.1.3
       '@types/yamljs': 0.2.31
 
+  packages/smb-client:
+    specifiers:
+      peque-di: workspace:*
+      peque-smb-commons: workspace:*
+      peque-test: workspace:*
+    dependencies:
+      peque-di: link:../di
+      peque-smb-commons: link:../smb-commons
+      peque-test: link:../test
+
   packages/smb-commons:
     specifiers:
       '@peque/di': workspace:*

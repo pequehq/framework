@@ -1,5 +1,5 @@
 import { DiContainer } from '@peque/di';
-import { Command, CommandEmitter, CommandParser, CommandReceiver, EventService } from '@peque/smb-commons';
+import { Command, CommandEmitter, CommandError, CommandParser, CommandReceiver, EventService } from '@peque/smb-commons';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, WelcomeCommand } from './commands';
 import { Broker } from './server/broker.class';
@@ -10,6 +10,7 @@ export const DI = new DiContainer();
 const providers = [
   EventService,
   SubscribeService,
+  CommandError,
   CommandParser,
   CommandReceiver,
   CommandEmitter,
