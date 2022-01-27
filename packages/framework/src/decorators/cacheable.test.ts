@@ -36,7 +36,7 @@ test('should set and read from cache', async () => {
     testMethodCalls = 0;
 
     @Cacheable({ key: 'key' })
-    async testMethod() {
+    async testMethod(): Promise<string> {
       this.testMethodCalls++;
       return 'value';
     }
@@ -67,7 +67,7 @@ test('should allow to pass a function to calculate the cache key', async () => {
     testMethodCalls = 0;
 
     @Cacheable({ key: getCacheKey })
-    async testMethod() {
+    async testMethod(): Promise<string> {
       this.testMethodCalls++;
       return 'value';
     }

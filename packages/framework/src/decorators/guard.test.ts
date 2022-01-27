@@ -5,9 +5,9 @@ import * as assert from 'uvu/assert';
 
 import { DECORATORS } from '../models/constants/decorators';
 import { loadProviders } from '../utils/dependencies.utils';
-import { Guard } from './authorization';
 import { Controller } from './controller';
 import { Get } from './express-methods';
+import { Guard } from './guard';
 
 const test = suite('Guard');
 
@@ -35,7 +35,7 @@ test('should succeed when applied on route', () => {
   class TestController {
     @Guard(TestGuard)
     @Get('/')
-    testRoute() {
+    testRoute(): void {
       // noop
     }
   }

@@ -70,9 +70,10 @@ export class DiContainer {
     return this.#resolve(this.#getBinding(identifier).getProvider()) as T;
   }
 
-  set(provider: ProviderClass, identifier: string): void {
+  set(provider: ProviderClass, identifier: string): Binder {
     const binding = new Binder(provider);
     this.#bindings.set(identifier, binding);
+    return binding;
   }
 
   unset(identifier: string): void {

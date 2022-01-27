@@ -65,7 +65,11 @@ class SwaggerFactoryImplementation {
   #getConfig(): SwaggerOptionsInterface {
     const { swagger } = Config.get<WebServerOptions>(CONFIG_STORAGES.EXPRESS_SERVER);
 
-    return swagger!;
+    if (!swagger) {
+      throw new Error('Swagger config not available. This looks like a bug.');
+    }
+
+    return swagger;
   }
 
   #resetBaseDoc(): void {

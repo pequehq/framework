@@ -23,10 +23,6 @@ export class WebSocketsService<TServer = any> {
     return this.#websockets;
   }
 
-  getInstances(): WebSocketInstance[] {
-    return this.#instances;
-  }
-
   async initWebSockets(): Promise<void> {
     for (const webSocket of this.#websockets) {
       const instance = new webSocket(...getClassDependencies(webSocket));

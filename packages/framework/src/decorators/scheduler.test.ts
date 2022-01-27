@@ -12,7 +12,7 @@ const test = suite('Scheduler');
 test('should contain the right Scheduler metadata', async () => {
   class TestClass {
     @Scheduler('testEvent', '*/5 * * * * *')
-    testMethod() {
+    testMethod(): void {
       // empty
     }
   }

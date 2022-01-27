@@ -1,5 +1,11 @@
-import { ConsumeEvent, EventPayload, MicroserviceHandler, OnProviderDestroy, OnProviderInit } from '../../../../dist';
-import { Microservice } from '../../dist';
+import {
+  ConsumeEvent,
+  EventPayload,
+  Microservice,
+  MicroserviceHandler,
+  OnProviderDestroy,
+  OnProviderInit,
+} from '../../dist';
 
 @Microservice({ broker: 'redis://localhost:6379', transport: 'redis' })
 export class TestRedisMicroservice extends MicroserviceHandler implements OnProviderInit, OnProviderDestroy {

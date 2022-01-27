@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { EventPayload } from '../models';
 import { DECORATORS } from '../models/constants/decorators';
 import { Injector } from '../models/dependency-injection/dependency-injection.service';
 import { MicroserviceHandler } from '../services';
@@ -22,7 +21,7 @@ test.before.each(async (context) => {
     }
 
     @ConsumeEvent('test_event')
-    test(data: EventPayload<any>) {
+    test(): void {
       // noop.
     }
   }

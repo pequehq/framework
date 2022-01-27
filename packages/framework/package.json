@@ -1,5 +1,5 @@
 {
-  "name": "peque.ts",
+  "name": "@peque/framework",
   "version": "1.0.19",
   "description": "Peque.ts Framework",
   "main": "dist/index.js",
@@ -7,8 +7,9 @@
   "scripts": {
     "start:sample": "pnpm build && ts-node sample/main.ts",
     "build": "pnpm clean && tsc && node ./post-build-actions.js",
-    "clean": "rimraf .coverage dist",
+    "clean": "rimraf coverage dist",
     "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
+    "test:coverage": "c8 pnpm test && make-coverage-badge --output-path ./coverage-badge.svg",
     "test:integration": "node --loader ts-node/esm ../../node_modules/uvu/bin.js test/integration .e2e.ts",
     "lint": "eslint \"./{src,sample,test}/**/*.ts\" --fix"
   },
@@ -25,7 +26,7 @@
     "mqtt": "^4.3.3",
     "mustache": "^4.2.0",
     "node-cron": "^3.0.0",
-    "peque-di": "workspace:*",
+    "@peque/di": "workspace:*",
     "redis": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.1",

@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { RootModule } from './modules/root/root-module';
-import { ExpressFactory } from 'peque.ts';
+import { ExpressFactory } from '@peque/framework';
 
 async function startUp() {
   await ExpressFactory.createServer({

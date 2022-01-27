@@ -8,11 +8,13 @@ export interface IProviderBinding {
 }
 
 export class Binder {
+  #provider: ProviderClass;
   #dependencyScanner = new DependencyScanner();
   #providerBinding: IProviderBinding;
 
-  constructor(private provider: ProviderClass) {
-    this.to(this.provider);
+  constructor(provider: ProviderClass) {
+    this.#provider = provider;
+    this.to(this.#provider);
   }
 
   getBinding(): IProviderBinding {
@@ -20,15 +22,12 @@ export class Binder {
   }
 
   getProvider(): ProviderClass {
-    return this.provider;
+    return this.#provider;
   }
 
   to(provider: ProviderClass): void {
     const dependencies = this.#dependencyScanner.scan(provider);
-    this.#providerBinding = { provider: this.provider, to: provider, dependencies };
-  }
-
-  toSelf(): void {
-    this.to(this.provider);
+    this.#provider = provider;
+    this.#providerBinding = { provider: this.#provider, to: provider, dependencies };
   }
 }

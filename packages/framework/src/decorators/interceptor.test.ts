@@ -22,18 +22,15 @@ test.after.each(async () => {
 test('should set an interceptor provider', async () => {
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
-    after<TResult>(
-      context: Context,
-      handlerResult: TResult,
-    ): HandlerAfterOptions<TResult> | Promise<HandlerAfterOptions<TResult>> | void | Promise<void> {
+    after<TResult>(): HandlerAfterOptions<TResult> | Promise<HandlerAfterOptions<TResult>> | void | Promise<void> {
       return;
     }
 
-    before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
+    before(): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
       return;
     }
 
-    error<TError>(context: Context, error: HttpException<TError>) {
+    error(): void {
       return;
     }
   }
@@ -53,18 +50,15 @@ test('should set an interceptor provider', async () => {
 test('should set an interceptor metadata for routes and controllers', async () => {
   @Interceptor()
   class TestInterceptor implements InterceptorHandler {
-    after<TResult>(
-      context: Context,
-      handlerResult: TResult,
-    ): HandlerAfterOptions<TResult> | Promise<HandlerAfterOptions<TResult>> | void | Promise<void> {
+    after<TResult>(): HandlerAfterOptions<TResult> | Promise<HandlerAfterOptions<TResult>> | void | Promise<void> {
       return;
     }
 
-    before(context: Context): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
+    before(): HandlerBeforeOptions | Promise<HandlerBeforeOptions> | void | Promise<void> {
       return;
     }
 
-    error<TError>(context: Context, error: HttpException<TError>) {
+    error(): void {
       return;
     }
   }
@@ -76,7 +70,7 @@ test('should set an interceptor metadata for routes and controllers', async () =
   class TestInterceptorController {
     @Intercept(TestInterceptor)
     @Get('/path')
-    testRoute() {
+    testRoute(): string {
       return 'testRoute';
     }
   }
