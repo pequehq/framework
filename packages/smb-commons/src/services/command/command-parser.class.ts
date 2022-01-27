@@ -1,6 +1,12 @@
 import { Injectable } from 'peque-di';
 
-import { CommandInvalidException, CommandParsingException, ICommand, ICommandTypes } from '../../models';
+import {
+  CommandInvalidException,
+  CommandNotMatchingException,
+  CommandParsingException,
+  ICommand,
+  ICommandTypes,
+} from '../../models';
 
 @Injectable()
 export class CommandParser {
@@ -29,5 +35,13 @@ export class CommandParser {
       throw new CommandParsingException(data);
     }
     return this.cast(command) as T;
+  }
+
+  parseAndMatchCommand<T extends ICommand<ICommandTypes, unknown> = never>(command: ICommandTypes, data: string): T {
+    const parsedCommand = this.parseCommand<T>(data);
+    if (parsedCommand.command === command) {
+      return parsedCommand;
+    }
+    throw new CommandNotMatchingException(data);
   }
 }
