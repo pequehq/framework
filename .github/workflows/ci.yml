@@ -52,4 +52,4 @@ jobs:
         run: cd "$GITHUB_WORKSPACE/packages/di/" && pnpm test:coverage
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "update coverage badge"
+          commit_message: "update coverage badges"
