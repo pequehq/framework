@@ -6,8 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "pnpm clean && tsc",
-    "clean": "rimraf .coverage dist",
+    "clean": "rimraf coverage dist",
     "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
+    "test:coverage": "c8 pnpm test && make-coverage-badge --output-path ./coverage-badge.svg",
     "test:integration": "node --loader ts-node/esm ../../node_modules/uvu/bin.js test/integration .e2e.ts",
     "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
   },

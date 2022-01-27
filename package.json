@@ -17,6 +17,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "make-coverage-badge": "^1.2.0",
     "ncp": "^2.0.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
