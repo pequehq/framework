@@ -5,9 +5,9 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { DI, loadProviders } from '../../test/test.utils';
-import { PublishCommand } from './publish.command';
-import { SubscribeListenerService } from '../services';
 import { Listener } from '../models';
+import { SubscribeListenerService } from '../services';
+import { PublishCommand } from './publish.command';
 
 const test = suite('Message Command');
 
