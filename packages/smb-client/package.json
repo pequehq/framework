@@ -1,7 +1,7 @@
 {
-  "name": "peque-smb-client",
+  "name": "@peque/smb-client",
   "version": "1.0.0",
-  "description": "Peque.ts SMB Client",
+  "description": "Peque SMB Client",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,9 +13,9 @@
   "author": "Simone Di Cicco",
   "license": "ISC",
   "dependencies": {
-    "peque-di": "workspace:*",
-    "peque-smb-commons": "workspace:*",
-    "peque-test": "workspace:*"
+    "@peque/di": "workspace:*",
+    "@peque/smb-commons": "workspace:*",
+    "@peque/test": "workspace:*"
   },
   "engines": {
     "node": ">=16.0.0"
