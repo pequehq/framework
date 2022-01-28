@@ -1,3 +1,4 @@
+import { DiContainer } from '@peque/di';
 import sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -8,7 +9,7 @@ const test = suite('loadDI');
 
 test('should do call .set for each provider', () => {
   const diSet = sinon.fake();
-  const diContainer = sinon.fake.returns({ set: diSet });
+  const diContainer = { set: diSet } as unknown as DiContainer;
 
   class ProviderOne {}
   class ProviderTwo {}
