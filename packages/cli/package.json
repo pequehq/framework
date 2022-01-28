@@ -5,8 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm clean && tsc",
-    "clean": "rimraf dist",
     "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
   },
   "author": "Simone Di Cicco",

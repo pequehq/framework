@@ -1,5 +1,5 @@
-import { EventService, IMessageCommand } from 'peque-smb-commons';
-import { wait } from 'peque-test';
+import { EventService, IMessageCommand } from '@peque/smb-commons';
+import { wait } from '@peque/test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';

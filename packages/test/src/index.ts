@@ -1,1 +1,2 @@
-export * from './utils/test.utils';
+export { wait } from './wait';
+export { loadDI } from './di';

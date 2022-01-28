@@ -1,11 +1,12 @@
 {
-  "name": "peque-smb-commons",
+  "name": "@peque/smb-commons",
   "version": "1.0.0",
-  "description": "Peque.ts SMB Commons",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "Peque SMB Commons",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "clean": "rimraf .coverage dist",
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf coverage dist",
     "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
     "test:coverage": "c8 pnpm test && make-coverage-badge --output-path ./coverage-badge.svg",
     "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
@@ -13,8 +14,8 @@
   "author": "Simone Di Cicco",
   "license": "ISC",
   "devDependencies": {
-    "peque-di": "workspace:*",
-    "peque-test": "workspace:*"
+    "@peque/di": "workspace:*",
+    "@peque/test": "workspace:*"
   },
   "engines": {
     "node": ">=16.0.0"
