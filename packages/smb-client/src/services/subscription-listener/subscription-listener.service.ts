@@ -27,4 +27,8 @@ export class SubscribeListenerService {
 
     return listeners;
   }
+
+  clear() {
+    this.#subscriptions.clear();
+  }
 }

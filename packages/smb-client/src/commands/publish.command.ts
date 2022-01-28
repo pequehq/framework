@@ -12,7 +12,8 @@ export class PublishCommand implements ICommandService {
   init(): void {
     this.events.on('publish', async (command: IPublishCommand) => {
       const listeners = this.subscriptions.find(command.action.topic);
-      await Promise.all(listeners);
+      const promises = listeners.map((listener) => Promise.resolve(listener(command)));
+      await Promise.all(promises);
     });
   }
 }
