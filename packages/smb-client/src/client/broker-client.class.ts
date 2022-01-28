@@ -1,4 +1,4 @@
-import { Injectable } from 'peque-di';
+import { Injectable } from '@peque/di';
 import {
   BrokerSocket,
   Command,
@@ -9,7 +9,7 @@ import {
   IUnsubscribeCommand,
   IWelcomeCommand,
   SocketService,
-} from 'peque-smb-commons';
+} from '@peque/smb-commons';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand } from '../commands';
 import { IBrokerClientOptions, Listener } from '../models';

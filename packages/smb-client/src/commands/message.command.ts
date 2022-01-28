@@ -1,5 +1,5 @@
-import { Injectable } from 'peque-di';
-import { EventService, ICommandService, IMessageCommand } from 'peque-smb-commons';
+import { Injectable } from '@peque/di';
+import { EventService, ICommandService, IMessageCommand } from '@peque/smb-commons';
 
 @Injectable()
 export class MessageCommand implements ICommandService {

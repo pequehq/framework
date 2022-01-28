@@ -124,13 +124,13 @@ importers:
 
   packages/smb-client:
     specifiers:
-      peque-di: workspace:*
-      peque-smb-commons: workspace:*
-      peque-test: workspace:*
+      '@peque/di': workspace:*
+      '@peque/smb-commons': workspace:*
+      '@peque/test': workspace:*
     dependencies:
-      peque-di: link:../di
-      peque-smb-commons: link:../smb-commons
-      peque-test: link:../test
+      '@peque/di': link:../di
+      '@peque/smb-commons': link:../smb-commons
+      '@peque/test': link:../test
 
   packages/smb-commons:
     specifiers:

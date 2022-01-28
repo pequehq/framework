@@ -1,4 +1,4 @@
-import { DiContainer } from 'peque-di';
+import { DiContainer } from '@peque/di';
 import {
   Command,
   CommandEmitter,
@@ -7,7 +7,7 @@ import {
   CommandReceiver,
   EventService,
   SocketService,
-} from 'peque-smb-commons';
+} from '@peque/smb-commons';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand } from '../commands';
 import { BrokerClient } from './broker-client.class';
