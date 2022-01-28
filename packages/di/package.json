@@ -1,7 +1,7 @@
 {
-  "name": "peque-di",
+  "name": "@peque/di",
   "version": "1.0.0",
-  "description": "Peque.ts Dependency Injection",
+  "description": "Peque Dependency Injection",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

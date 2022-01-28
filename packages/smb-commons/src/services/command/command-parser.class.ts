@@ -1,4 +1,4 @@
-import { Injectable } from 'peque-di';
+import { Injectable } from '@peque/di';
 
 import { CommandInvalidException, CommandParsingException, ICommand, ICommandTypes } from '../../models';
 
