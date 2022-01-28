@@ -1,5 +1,5 @@
+import { Injectable } from '@peque/di';
 import EventEmitter from 'events';
-import { Injectable } from 'peque-di';
 
 import { ISubjectTypes, Listener } from '../../models';
 

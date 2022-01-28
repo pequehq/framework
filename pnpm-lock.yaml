@@ -57,23 +57,6 @@ importers:
       '@types/mustache': 4.1.2
       '@types/shelljs': 0.8.11
 
-  packages/cli/dist:
-    specifiers:
-      '@peque/framework': workspace:*
-      '@types/mustache': ^4.1.2
-      '@types/shelljs': ^0.8.10
-      commander: ^8.3.0
-      mustache: ^4.2.0
-      shelljs: ^0.8.4
-    dependencies:
-      commander: 8.3.0
-      mustache: 4.2.0
-      shelljs: 0.8.5
-    devDependencies:
-      '@peque/framework': link:../../framework
-      '@types/mustache': 4.1.2
-      '@types/shelljs': 0.8.11
-
   packages/di:
     specifiers:
       reflect-metadata: ^0.1.13
@@ -83,6 +66,7 @@ importers:
   packages/framework:
     specifiers:
       '@apidevtools/json-schema-ref-parser': ^9.0.9
+      '@peque/di': workspace:*
       '@types/cookie-parser': ^1.4.2
       '@types/express': ^4.17.13
       '@types/express-session': ^1.17.4
@@ -101,7 +85,6 @@ importers:
       mqtt: ^4.3.3
       mustache: ^4.2.0
       node-cron: ^3.0.0
-      peque-di: workspace:*
       redis: ^4.0.1
       reflect-metadata: ^0.1.13
       rxjs: ^7.5.1
@@ -111,6 +94,7 @@ importers:
       yamljs: ^0.3.0
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
+      '@peque/di': link:../di
       axios: 0.24.0
       cluster: 0.7.7
       cookie-parser: 1.4.6
@@ -120,7 +104,6 @@ importers:
       mqtt: 4.3.4
       mustache: 4.2.0
       node-cron: 3.0.0
-      peque-di: link:../di
       redis: 4.0.1
       reflect-metadata: 0.1.13
       rxjs: 7.5.2
@@ -141,27 +124,27 @@ importers:
 
   packages/smb-commons:
     specifiers:
-      peque-di: workspace:*
-      peque-test: workspace:*
+      '@peque/di': workspace:*
+      '@peque/test': workspace:*
     devDependencies:
-      peque-di: link:../di
-      peque-test: link:../test
+      '@peque/di': link:../di
+      '@peque/test': link:../test
 
   packages/smb-server:
     specifiers:
-      peque-di: workspace:*
-      peque-smb-commons: workspace:*
-      peque-test: workspace:*
+      '@peque/di': workspace:*
+      '@peque/smb-commons': workspace:*
+      '@peque/test': workspace:*
     dependencies:
-      peque-di: link:../di
-      peque-smb-commons: link:../smb-commons
-      peque-test: link:../test
+      '@peque/di': link:../di
+      '@peque/smb-commons': link:../smb-commons
+      '@peque/test': link:../test
 
   packages/test:
     specifiers:
-      peque-di: workspace:*
+      '@peque/di': workspace:*
     dependencies:
-      peque-di: link:../di
+      '@peque/di': link:../di
 
 packages:
 

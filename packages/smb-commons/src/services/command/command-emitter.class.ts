@@ -1,4 +1,4 @@
-import { Injectable } from 'peque-di';
+import { Injectable } from '@peque/di';
 
 import { EventService } from '../events/event.service';
 import { SocketService } from '../socket/socket.service';

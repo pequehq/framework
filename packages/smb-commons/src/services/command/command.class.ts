@@ -1,4 +1,4 @@
-import { Injectable } from 'peque-di';
+import { Injectable } from '@peque/di';
 
 import { ICommandService } from '../../models';
 import { CommandEmitter } from './command-emitter.class';

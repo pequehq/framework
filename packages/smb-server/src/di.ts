@@ -1,5 +1,5 @@
-import { DiContainer } from 'peque-di';
-import { Command, CommandEmitter, CommandParser, CommandReceiver, EventService } from 'peque-smb-commons';
+import { DiContainer } from '@peque/di';
+import { Command, CommandEmitter, CommandParser, CommandReceiver, EventService } from '@peque/smb-commons';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, WelcomeCommand } from './commands';
 import { Broker } from './server/broker.class';

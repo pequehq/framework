@@ -1,19 +1,20 @@
 {
-  "name": "peque-test",
+  "name": "@peque/test",
   "version": "1.0.0",
-  "description": "Peque.ts Test utils",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "Peque Test utils",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "clean": "rimraf .coverage dist",
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf coverage dist",
     "test": "node --loader ts-node/esm ../../node_modules/uvu/bin.js src .test.ts",
+    "test:coverage": "c8 pnpm test && make-coverage-badge --output-path ./coverage-badge.svg",
     "lint": "eslint \"./{src,test}/**/*.ts\" --fix"
   },
   "author": "Simone Di Cicco",
   "license": "ISC",
   "dependencies": {
-    "peque-di": "workspace:*"
+    "@peque/di": "workspace:*"
   },
   "engines": {
     "node": ">=16.0.0"
