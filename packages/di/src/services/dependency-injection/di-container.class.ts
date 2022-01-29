@@ -5,6 +5,11 @@ import { Binder } from './binder.class';
 
 type IHookMethods = 'onInit' | 'onDestroy';
 
+interface Dependency {
+  identifier: string;
+  dependency: ProviderClass;
+}
+
 export class DiContainer {
   #containers = new Map<string, ProviderInstance>();
   #bindings = new Map<string, Binder>();
@@ -15,33 +20,40 @@ export class DiContainer {
     this.options?.[method]?.(instance.constructor.name, instance);
   }
 
-  #resolve<T>(provider: ProviderClass): T {
-    if (this.#containers.has(provider.name)) {
-      return this.#containers.get(provider.name);
+  #resolve<T>(provider: ProviderClass, identifier: string): T {
+    if (this.#containers.has(identifier)) {
+      return this.#containers.get(identifier);
     }
 
     // 1. Collect params from constructor.
     // 2. Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
-    const dependenciesConstructors = getMetadataDesignParamTypes(provider);
+    const dependenciesConstructors = this.#arrangeDependencies(getMetadataDesignParamTypes(provider));
     this.#injectConstructorParams(provider, dependenciesConstructors);
 
-    const injections = dependenciesConstructors.map((dependency: ProviderClass) => this.#resolve<unknown>(dependency));
+    const injections = dependenciesConstructors.map((dependency) =>
+      this.#resolve<unknown>(dependency.dependency, dependency.identifier),
+    );
     const instance = new provider(...injections) as T;
 
     // Define the @Inject decorated class properties get.
     this.#setInjectProviderProperties(instance);
 
-    this.#containers.set(provider.name, instance);
+    this.#containers.set(identifier, instance);
 
     this.#triggerHook(instance, 'onInit');
     return instance;
   }
 
-  #injectConstructorParams(provider: ProviderClass, dependencies: ProviderClass[]): void {
+  #arrangeDependencies(dependencies: ProviderClass[]): Dependency[] {
+    return dependencies.map((dependency) => ({ identifier: dependency.name, dependency }));
+  }
+
+  #injectConstructorParams(provider: ProviderClass, dependencies: Dependency[]): void {
     const injectConstructorParams = extractInjectParamsMetadata(getMetadataInject(provider));
     for (let i = 0; i < injectConstructorParams.length; i++) {
       const binding = this.#getBinding(injectConstructorParams[i].identifier);
-      dependencies[injectConstructorParams[i].parameterIndex] = binding.getProvider();
+      dependencies[injectConstructorParams[i].parameterIndex].identifier = injectConstructorParams[i].identifier;
+      dependencies[injectConstructorParams[i].parameterIndex].dependency = binding.getProvider();
     }
   }
 
@@ -67,7 +79,8 @@ export class DiContainer {
   }
 
   get<T>(identifier: string): T {
-    return this.#resolve(this.#getBinding(identifier).getProvider()) as T;
+    const binding = this.#getBinding(identifier);
+    return this.#resolve(binding.getProvider(), identifier) as T;
   }
 
   set(provider: ProviderClass, identifier: string): Binder {
