@@ -1,14 +1,12 @@
 export abstract class ReflectionMetadata<TMetadata> {
   readonly #key: string | symbol;
-  readonly #defaultValue: TMetadata | undefined;
 
-  protected constructor(key: string | symbol, defaultValue?: TMetadata) {
+  protected constructor(key: string | symbol) {
     this.#key = key;
-    this.#defaultValue = defaultValue;
   }
 
   get(target: object): TMetadata {
-    return Reflect.getMetadata(this.#key, target) ?? this.#defaultValue;
+    return Reflect.getMetadata(this.#key, target);
   }
 
   set(metadata: TMetadata, target: object): void {

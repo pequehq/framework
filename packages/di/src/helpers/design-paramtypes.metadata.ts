@@ -3,7 +3,7 @@ import { ReflectionMetadata } from './reflection';
 
 class DesignParamTypesMetadata extends ReflectionMetadata<ProviderClass[]> {
   constructor() {
-    super('design:paramtypes', []);
+    super('design:paramtypes');
   }
 }
 

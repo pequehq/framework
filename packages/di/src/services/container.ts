@@ -18,7 +18,7 @@ export class Container {
 
     // 1. Collect params from constructor.
     // 2. Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
-    const dependenciesConstructors = this.#arrangeDependencies(designParamTypesMetadata.get(provider));
+    const dependenciesConstructors = this.#arrangeDependencies(designParamTypesMetadata.get(provider) ?? []);
     this.#injectConstructorParams(provider, dependenciesConstructors);
 
     const injections = dependenciesConstructors.map((dependency) =>
@@ -43,7 +43,6 @@ export class Container {
     const injectConstructorParams = injectDecoratorMetadata.getParamsOnly(provider);
     for (let i = 0; i < injectConstructorParams.length; i++) {
       const binding = this.#getBinding(injectConstructorParams[i].identifier);
-      console.log('sto cazzo', dependencies[injectConstructorParams[i].parameterIndex]);
       dependencies[injectConstructorParams[i].parameterIndex].identifier = injectConstructorParams[i].identifier;
       dependencies[injectConstructorParams[i].parameterIndex].provider = binding.getProvider();
     }

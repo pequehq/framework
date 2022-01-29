@@ -3,15 +3,15 @@ import { InjectMetadata, InjectMetadataParam, InjectMetadataProperty } from './i
 
 class InjectDecoratorMetadata extends ReflectionMetadata<InjectMetadata[]> {
   constructor() {
-    super(Symbol('inject'), []);
+    super(Symbol('inject'));
   }
 
   getPropertiesOnly(target: object): InjectMetadataProperty[] {
-    return this.get(target).filter((data) => !data.parameterIndex) as InjectMetadataProperty[];
+    return (this.get(target) ?? []).filter((data) => !data.parameterIndex) as InjectMetadataProperty[];
   }
 
   getParamsOnly(target: object): InjectMetadataParam[] {
-    return this.get(target).filter((data) => !data.propertyKey) as InjectMetadataParam[];
+    return (this.get(target) ?? []).filter((data) => !data.propertyKey) as InjectMetadataParam[];
   }
 }
 

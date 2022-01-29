@@ -12,7 +12,7 @@ test('should instantiate a provider binding', () => {
 
   const binding = new Binder(TestProvider);
 
-  assert.is(binding.getTargetProvider(), TestProvider);
+  assert.is(binding.getProvider(), TestProvider);
 });
 
 test('should allow binding to a different target class', () => {
@@ -22,7 +22,7 @@ test('should allow binding to a different target class', () => {
   const binding = new Binder(TestProvider);
   binding.to(TestProviderTarget);
 
-  assert.is(binding.getTargetProvider(), TestProviderTarget);
+  assert.is(binding.getProvider(), TestProviderTarget);
 });
 
 test.run();

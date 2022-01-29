@@ -5,11 +5,11 @@ import { Dependency, DependencyMap, ProviderClass } from '../types';
 
 export class Scanner {
   #getInjectDecorated(provider: ProviderClass): InjectMetadata[] {
-    return [...new Set<InjectMetadata>(injectDecoratorMetadata.get(provider))];
+    return [...new Set<InjectMetadata>(injectDecoratorMetadata.get(provider) ?? [])];
   }
 
   #getConstructorDependencies(provider: ProviderClass): ProviderClass[] {
-    return [...new Set<ProviderClass>(designParamTypesMetadata.get(provider))];
+    return [...new Set<ProviderClass>(designParamTypesMetadata.get(provider) ?? [])];
   }
 
   scan(provider: ProviderClass): DependencyMap {

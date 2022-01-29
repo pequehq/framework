@@ -84,7 +84,7 @@ test.after.each((context) => {
   context.container.unsetAll();
 });
 
-test.only('should set providers with TO syntax', (context) => {
+test('should set providers with TO syntax', (context) => {
   @Injectable()
   class ProviderBind {}
 
@@ -122,7 +122,7 @@ test.only('should set providers with TO syntax', (context) => {
   );
 });
 
-test.skip('should set providers', (context) => {
+test('should set providers', (context) => {
   const providerFour = context.container.get(context.providers.providerFour.name);
   assert.instance(context.container.get(context.providers.providerOne.name), context.providers.providerOne);
   assert.instance(context.container.get(context.providers.providerTwo.name), context.providers.providerTwo);
@@ -133,7 +133,7 @@ test.skip('should set providers', (context) => {
   assert.is(context.sandbox.stubs.onInit.callCount, 5);
 });
 
-test.skip('should unset providers', (context) => {
+test('should unset providers', (context) => {
   // Create instances.
   context.container.get(context.providers.providerOne.name);
   context.container.get(context.providers.providerTwo.name);
