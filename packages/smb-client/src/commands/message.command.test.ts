@@ -28,7 +28,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<MessageCommand>('MessageCommand');
+  context.message = DI.get<MessageCommand>('MessageCommand');
   context.events = DI.get<EventService>('EventService');
 });
 
@@ -38,6 +38,8 @@ test.after.each((context) => {
 });
 
 test('should process a message command', async (context) => {
+  context.message.init();
+
   assert.is(context.spies.eventOn.calledOnce, true);
 
   context.events.next('message', context.commands.message);

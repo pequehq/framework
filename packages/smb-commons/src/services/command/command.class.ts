@@ -13,12 +13,14 @@ export class Command {
     private commandEmitter: CommandEmitter,
   ) {}
 
-  init(commands: ICommandService[]): void {
+  init(commands?: ICommandService[]): void {
     this.commandError.init();
     this.commandReceiver.init();
     this.commandEmitter.init();
-    for (const command of commands) {
-      command.init();
+    if (commands) {
+      for (const command of commands) {
+        command.init();
+      }
     }
   }
 }

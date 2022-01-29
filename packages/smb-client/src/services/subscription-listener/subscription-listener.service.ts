@@ -28,7 +28,7 @@ export class SubscribeListenerService {
     return listeners;
   }
 
-  clear() {
+  clear(): void {
     this.#subscriptions.clear();
   }
 }

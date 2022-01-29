@@ -27,7 +27,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<SubscribeCommand>('SubscribeCommand');
+  context.subscribe = DI.get<SubscribeCommand>('SubscribeCommand');
   context.subs = DI.get<SubscribeService>('SubscribeService');
   context.events = DI.get<EventService>('EventService');
 });
@@ -39,6 +39,8 @@ test.after.each((context) => {
 });
 
 test('should subscribe a client to a topic', async (context) => {
+  context.subscribe.init();
+
   assert.is(context.spies.eventOn.calledOnce, true);
 
   context.events.next('subscribe', context.commands.subscribe);

@@ -25,7 +25,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<UnsubscribeCommand>('UnsubscribeCommand');
+  context.unsubscribe = DI.get<UnsubscribeCommand>('UnsubscribeCommand');
   context.events = DI.get<EventService>('EventService');
 });
 
@@ -35,6 +35,8 @@ test.after.each((context) => {
 });
 
 test('should process an unsubscribe command', async (context) => {
+  context.unsubscribe.init();
+
   assert.is(context.spies.eventOn.calledOnce, true);
 
   context.events.next('unsubscribe', context.commands.unsubscribe);

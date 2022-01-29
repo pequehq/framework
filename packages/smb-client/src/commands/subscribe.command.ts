@@ -3,9 +3,7 @@ import { EventService, ICommandService, ISubscribeCommand } from '@peque/smb-com
 
 @Injectable()
 export class SubscribeCommand implements ICommandService {
-  constructor(private events: EventService) {
-    this.init();
-  }
+  constructor(private events: EventService) {}
 
   init(): void {
     this.events.on('subscribe', async (command: ISubscribeCommand) => {

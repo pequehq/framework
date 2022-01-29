@@ -5,9 +5,7 @@ import { SubscribeService } from '../services';
 
 @Injectable()
 export class UnsubscribeCommand implements ICommandService {
-  constructor(private subscriptions: SubscribeService, private events: EventService) {
-    this.init();
-  }
+  constructor(private subscriptions: SubscribeService, private events: EventService) {}
 
   init(): void {
     this.events.on('unsubscribe', (command: IUnsubscribeCommand) =>

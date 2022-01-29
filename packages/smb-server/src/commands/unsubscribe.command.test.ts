@@ -27,7 +27,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<UnsubscribeCommand>('UnsubscribeCommand');
+  context.unsubscribe = DI.get<UnsubscribeCommand>('UnsubscribeCommand');
   context.subs = DI.get<SubscribeService>('SubscribeService');
   context.events = DI.get<EventService>('EventService');
 });
@@ -39,6 +39,8 @@ test.after.each((context) => {
 });
 
 test('should subscribe a client to a topic', async (context) => {
+  context.unsubscribe.init();
+
   context.subs.set('topic', 'id_1');
   context.subs.set('topic', 'id_2');
 
