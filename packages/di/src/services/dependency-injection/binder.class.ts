@@ -27,7 +27,7 @@ export class Binder {
 
   to(provider: ProviderClass): void {
     const dependencies = this.#dependencyScanner.scan(provider);
-    this.#provider = provider;
     this.#providerBinding = { provider: this.#provider, to: provider, dependencies };
+    this.#provider = provider;
   }
 }

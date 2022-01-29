@@ -87,21 +87,37 @@ test('should set providers with TO syntax', (context) => {
   class ProviderBind {}
 
   @Injectable()
-  class ProviderToBind {}
+  class ProviderToBindDependency {
+    testMethod() {
+      return 'ProviderToBindDependency';
+    }
+  }
 
   @Injectable()
-  class TestProviderToBind {
-    constructor(providerToBind: ProviderBind) {
+  class ProviderToBind {
+    constructor(public providerToBindDependency: ProviderToBindDependency) {
       // noop.
     }
   }
 
+  @Injectable()
+  class TestProviderToBind {
+    constructor(public providerToBind: ProviderBind) {
+      // noop.
+    }
+  }
+
+  context.container.set(ProviderToBindDependency, ProviderToBindDependency.name);
   context.container.set(ProviderBind, ProviderBind.name).to(ProviderToBind);
   context.container.set(TestProviderToBind, TestProviderToBind.name);
 
   assert.instance(context.container.get(ProviderBind.name), ProviderToBind);
   assert.instance(context.container.get(TestProviderToBind.name), TestProviderToBind);
   assert.instance(context.container.get(TestProviderToBind.name).providerToBind, ProviderToBind);
+  assert.is(
+    context.container.get(TestProviderToBind.name).providerToBind.providerToBindDependency.testMethod(),
+    'ProviderToBindDependency',
+  );
 });
 
 test('should set providers', (context) => {
