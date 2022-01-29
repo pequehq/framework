@@ -5,9 +5,7 @@ import { SubscribeListenerService } from '../services';
 
 @Injectable()
 export class PublishCommand implements ICommandService {
-  constructor(private events: EventService, private subscriptions: SubscribeListenerService) {
-    this.init();
-  }
+  constructor(private events: EventService, private subscriptions: SubscribeListenerService) {}
 
   init(): void {
     this.events.on('publish', async (command: IPublishCommand) => {

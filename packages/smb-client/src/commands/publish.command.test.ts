@@ -9,7 +9,7 @@ import { Listener } from '../models';
 import { SubscribeListenerService } from '../services';
 import { PublishCommand } from './publish.command';
 
-const test = suite('Message Command');
+const test = suite('Publish Command');
 
 test.before.each((context) => {
   const listenerOne: Listener = (command): unknown => ({ ...command, from: 'listenerOne' });
@@ -36,7 +36,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<PublishCommand>('PublishCommand');
+  context.publish = DI.get<PublishCommand>('PublishCommand');
   context.subs = DI.get<SubscribeListenerService>('SubscribeListenerService');
   context.events = DI.get<EventService>('EventService');
 });
@@ -47,6 +47,8 @@ test.after.each((context) => {
 });
 
 test('should process a publish command', async (context) => {
+  context.publish.init();
+
   context.subs.set('^to', context.spies.listenerOne);
   context.subs.set('topic', context.spies.listenerTwo);
 

@@ -39,10 +39,9 @@ export class BrokerClient {
     return new Promise((resolve, reject) => {
       this.#socket = new BrokerSocket();
 
-      const welcomeMsg = (data) => {
+      const welcomeMsg = (welcome: IWelcomeCommand) => {
         try {
-          const welcome = this.commandParser.parseAndMatchCommand<IWelcomeCommand>('welcome', data);
-          this.#socket.off('data', welcomeMsg);
+          this.events.remove('welcome', welcomeMsg);
           this.#socket.id = welcome.socketId;
           this.sockets.set(this.#socket);
           resolve(welcome.socketId);
@@ -57,8 +56,9 @@ export class BrokerClient {
         }, 3000);
       };
 
+      this.events.on('welcome', welcomeMsg);
+
       this.#socket.connect({ port: options?.port || 8021, host: options?.host || '127.0.0.1' });
-      this.#socket.on('data', welcomeMsg);
       this.#socket.on('data', (data) => this.events.next('incomingCommand', data));
     });
   }

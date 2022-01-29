@@ -28,8 +28,9 @@ test.before.each((context) => {
       issueTimestamp: 1234567890,
     } as IMessageCommand,
   };
+
   loadProviders();
-  DI.get<MessageCommand>('MessageCommand');
+  context.message = DI.get<MessageCommand>('MessageCommand');
   context.subs = DI.get<SubscribeService>('SubscribeService');
   context.events = DI.get<EventService>('EventService');
 });
@@ -60,6 +61,9 @@ test('should process a message command', async (context) => {
       },
     ],
   ];
+
+  context.message.init();
+
   context.subs.set('topic', 'id_1');
   context.subs.set('topic', 'id_2');
 

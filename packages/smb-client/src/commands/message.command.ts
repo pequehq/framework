@@ -3,9 +3,7 @@ import { EventService, ICommandService, IMessageCommand } from '@peque/smb-commo
 
 @Injectable()
 export class MessageCommand implements ICommandService {
-  constructor(private events: EventService) {
-    this.init();
-  }
+  constructor(private events: EventService) {}
 
   init(): void {
     this.events.on('message', (command: IMessageCommand) => {

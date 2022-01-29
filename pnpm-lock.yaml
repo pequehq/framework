@@ -57,6 +57,23 @@ importers:
       '@types/mustache': 4.1.2
       '@types/shelljs': 0.8.11
 
+  packages/cli/dist:
+    specifiers:
+      '@peque/framework': workspace:*
+      '@types/mustache': ^4.1.2
+      '@types/shelljs': ^0.8.10
+      commander: ^8.3.0
+      mustache: ^4.2.0
+      shelljs: ^0.8.4
+    dependencies:
+      commander: 8.3.0
+      mustache: 4.2.0
+      shelljs: 0.8.5
+    devDependencies:
+      '@peque/framework': link:../../framework
+      '@types/mustache': 4.1.2
+      '@types/shelljs': 0.8.11
+
   packages/di:
     specifiers:
       reflect-metadata: ^0.1.13

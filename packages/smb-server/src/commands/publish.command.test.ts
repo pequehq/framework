@@ -28,7 +28,7 @@ test.before.each((context) => {
   };
 
   loadProviders();
-  DI.get<PublishCommand>('PublishCommand');
+  context.publish = DI.get<PublishCommand>('PublishCommand');
   context.events = DI.get<EventService>('EventService');
 });
 
@@ -38,6 +38,8 @@ test.after.each((context) => {
 });
 
 test('should publish a command', async (context) => {
+  context.publish.init();
+
   assert.is(context.spies.eventOn.calledOnce, true);
 
   context.events.next('publish', context.commands.publish);
