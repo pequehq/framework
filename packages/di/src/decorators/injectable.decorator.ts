@@ -1,8 +1,8 @@
-import { IInjectableOptions } from '../models';
-import { META_INJECTABLE } from '../models/constants/metadata.constants';
+import { injectableDecoratorMetadata } from './injectable.decorator.metadata';
+import { InjectableOptions } from './injectable.decorator.types';
 
-export function Injectable(options?: IInjectableOptions): ClassDecorator {
-  return (target) => {
-    Reflect.defineMetadata(META_INJECTABLE, options, target);
+export function Injectable(options?: InjectableOptions): ClassDecorator {
+  return (target): void => {
+    injectableDecoratorMetadata.set(options, target);
   };
 }

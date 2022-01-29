@@ -1,24 +1,15 @@
-import { IDiContainerOptions, ProviderClass, ProviderInstance, ProviderNotFoundException } from '../../models';
-import { extractInjectParamsMetadata, extractInjectPropertiesMetadata } from '../../utils/inject.utils';
-import { getMetadataDesignParamTypes, getMetadataInject } from '../reflection/reflection';
-import { Binder } from './binder.class';
+import { injectDecoratorMetadata } from '../decorators/inject.decorator.metadata';
+import { ProviderNotFoundError } from '../errors/provider-not-found.error';
+import { designParamTypesMetadata } from '../helpers/design-paramtypes.metadata';
+import { Dependency, ProviderClass, ProviderInstance } from '../types';
+import { Binder } from './binder';
+import { ContainerOptions } from './container.types';
 
-type IHookMethods = 'onInit' | 'onDestroy';
-
-interface Dependency {
-  identifier: string;
-  dependency: ProviderClass;
-}
-
-export class DiContainer {
+export class Container {
   #containers = new Map<string, ProviderInstance>();
   #bindings = new Map<string, Binder>();
 
-  constructor(private options?: IDiContainerOptions) {}
-
-  #triggerHook(instance: ProviderInstance, method: IHookMethods): void {
-    this.options?.[method]?.(instance.constructor.name, instance);
-  }
+  constructor(private options?: ContainerOptions) {}
 
   #resolve<T>(provider: ProviderClass, identifier: string): T {
     if (this.#containers.has(identifier)) {
@@ -27,11 +18,11 @@ export class DiContainer {
 
     // 1. Collect params from constructor.
     // 2. Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
-    const dependenciesConstructors = this.#arrangeDependencies(getMetadataDesignParamTypes(provider));
+    const dependenciesConstructors = this.#arrangeDependencies(designParamTypesMetadata.get(provider));
     this.#injectConstructorParams(provider, dependenciesConstructors);
 
     const injections = dependenciesConstructors.map((dependency) =>
-      this.#resolve<unknown>(dependency.dependency, dependency.identifier),
+      this.#resolve<unknown>(dependency.provider, dependency.identifier),
     );
     const instance = new provider(...injections) as T;
 
@@ -40,30 +31,29 @@ export class DiContainer {
 
     this.#containers.set(identifier, instance);
 
-    this.#triggerHook(instance, 'onInit');
+    this.options?.onInit?.(identifier, instance);
     return instance;
   }
 
   #arrangeDependencies(dependencies: ProviderClass[]): Dependency[] {
-    return dependencies.map((dependency) => ({ identifier: dependency.name, dependency }));
+    return dependencies.map((dependency) => ({ identifier: dependency.name, provider: dependency }));
   }
 
   #injectConstructorParams(provider: ProviderClass, dependencies: Dependency[]): void {
-    const injectConstructorParams = extractInjectParamsMetadata(getMetadataInject(provider));
+    const injectConstructorParams = injectDecoratorMetadata.getParamsOnly(provider);
     for (let i = 0; i < injectConstructorParams.length; i++) {
       const binding = this.#getBinding(injectConstructorParams[i].identifier);
+      console.log('sto cazzo', dependencies[injectConstructorParams[i].parameterIndex]);
       dependencies[injectConstructorParams[i].parameterIndex].identifier = injectConstructorParams[i].identifier;
-      dependencies[injectConstructorParams[i].parameterIndex].dependency = binding.getProvider();
+      dependencies[injectConstructorParams[i].parameterIndex].provider = binding.getProvider();
     }
   }
 
   #setInjectProviderProperties(provider: ProviderInstance): void {
-    const injectProperties = extractInjectPropertiesMetadata(
-      getMetadataInject(Object.getPrototypeOf(provider).constructor),
-    );
-    for (const injectProperty of injectProperties) {
-      Object.defineProperty(provider, injectProperty.propertyKey, {
-        get: () => this.get(injectProperty.identifier),
+    const injectProperties = injectDecoratorMetadata.getPropertiesOnly(Object.getPrototypeOf(provider).constructor);
+    for (const { propertyKey, identifier } of injectProperties) {
+      Object.defineProperty(provider, propertyKey, {
+        get: () => this.get(identifier),
         enumerable: true,
         configurable: true,
       });
@@ -71,11 +61,11 @@ export class DiContainer {
   }
 
   #getBinding(identifier: string): Binder {
-    if (this.#bindings.has(identifier)) {
-      return <Binder>this.#bindings.get(identifier);
-    } else {
-      throw new ProviderNotFoundException(identifier);
+    const binding = this.#bindings.get(identifier);
+    if (!binding) {
+      throw new ProviderNotFoundError(identifier);
     }
+    return binding;
   }
 
   get<T>(identifier: string): T {
@@ -90,7 +80,7 @@ export class DiContainer {
   }
 
   unset(identifier: string): void {
-    this.#triggerHook(this.get(identifier), 'onDestroy');
+    this.options?.onDestroy?.(identifier, this.get(identifier));
     this.#bindings.delete(identifier);
     this.#containers.delete(identifier);
   }

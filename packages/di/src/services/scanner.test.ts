@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { Injectable } from '../../decorators';
-import { IDependency, IDependencyMap, ProviderClass } from '../../models';
-import { DependencyScanner } from './dependency-scanner.class';
+import { Injectable } from '../decorators/injectable.decorator';
+import { Dependency, DependencyMap, ProviderClass } from '../types';
+import { Scanner } from './scanner';
 
 const test = suite('Dependency Scanner');
 
@@ -28,7 +28,7 @@ test('should scan injectable classes dependencies', () => {
     constructor(private providerTwo: ProviderTwo, private providerThree: ProviderThree) {}
   }
 
-  const testDependenciesMap: IDependencyMap = new Map<ProviderClass, IDependency[]>();
+  const testDependenciesMap: DependencyMap = new Map<ProviderClass, Dependency[]>();
   testDependenciesMap.set(ProviderOne, []);
   testDependenciesMap.set(ProviderTwo, [{ provider: ProviderOne, identifier: ProviderOne.name }]);
   testDependenciesMap.set(ProviderThree, [
@@ -52,7 +52,7 @@ test('should scan injectable classes dependencies', () => {
     },
   ]);
 
-  const scanner = new DependencyScanner();
+  const scanner = new Scanner();
   const dependencies = scanner.scan(ProviderFour);
   assert.equal(dependencies, testDependenciesMap);
 });

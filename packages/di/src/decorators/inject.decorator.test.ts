@@ -3,30 +3,30 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { IProviderInject } from '../models';
-import { getMetadataInject } from '../services/reflection/reflection';
 import { Inject } from './inject.decorator';
+import { injectDecoratorMetadata } from './inject.decorator.metadata';
+import { InjectMetadata } from './inject.decorator.types';
 
-const test = suite('Injectable decorator');
+const test = suite('Inject decorator');
 
-test('should set metadata for @Injectable class', () => {
+test('should set metadata for @Inject property or parameter', () => {
   class TestInjectable {
     @Inject({ identifier: 'PropertyIdentifier' }) injectProperty: unknown;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     constructor(@Inject({ identifier: 'ParamIdentifier' }) injectParam: unknown) {
       // noop.
     }
   }
 
-  const testOptions: IProviderInject[] = [
+  const metadata = injectDecoratorMetadata.get(TestInjectable);
+
+  const expectedMetadata: InjectMetadata[] = [
     { identifier: 'PropertyIdentifier', propertyKey: 'injectProperty', parameterIndex: undefined },
     { identifier: 'ParamIdentifier', propertyKey: undefined, parameterIndex: 0 },
   ];
-  const injectMetadata = getMetadataInject(TestInjectable);
 
-  assert.is.not(injectMetadata, undefined);
-  assert.is(injectMetadata.length, 2);
-  assert.equal(injectMetadata, testOptions);
+  assert.equal(metadata, expectedMetadata);
 });
 
 test.run();

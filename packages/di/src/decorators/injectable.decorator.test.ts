@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { IInjectableOptions } from '../models';
-import { getMetadataInjectable } from '../services/reflection/reflection';
 import { Injectable } from './injectable.decorator';
+import { injectableDecoratorMetadata } from './injectable.decorator.metadata';
+import { InjectableMetadata } from './injectable.decorator.types';
 
 const test = suite('Injectable decorator');
 
@@ -13,11 +13,11 @@ test('should set metadata for @Injectable class', () => {
   @Injectable({ to: 'OtherProvider' })
   class TestInjectable {}
 
-  const testOptions: IInjectableOptions = { to: 'OtherProvider' };
-  const injectableMetadata = getMetadataInjectable(TestInjectable);
+  const metadata = injectableDecoratorMetadata.get(TestInjectable);
 
-  assert.is.not(injectableMetadata, undefined);
-  assert.equal(injectableMetadata, testOptions);
+  const expectedMetadata: InjectableMetadata = { to: 'OtherProvider' };
+
+  assert.equal(metadata, expectedMetadata);
 });
 
 test.run();

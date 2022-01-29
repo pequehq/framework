@@ -1,17 +1,16 @@
-import 'reflect-metadata';
+import { injectDecoratorMetadata } from './inject.decorator.metadata';
+import { InjectOptions } from './inject.decorator.types';
 
-import { IInjectOptions } from '../models';
-import { META_INJECT } from '../models/constants/metadata.constants';
-import { getMetadataInject } from '../services/reflection/reflection';
+export function Inject({ identifier }: InjectOptions): PropertyDecorator & ParameterDecorator {
+  return (target, propertyKey?, parameterIndex?): void => {
+    const metadata = injectDecoratorMetadata.get(target);
 
-export function Inject(options: IInjectOptions): PropertyDecorator & ParameterDecorator {
-  return (target, propertyKey?, parameterIndex?) => {
-    const metadata = getMetadataInject(target);
     metadata.push({
-      identifier: options.identifier,
+      identifier,
       propertyKey,
       parameterIndex,
     });
-    Reflect.defineMetadata(META_INJECT, metadata, target.constructor);
+
+    injectDecoratorMetadata.set(metadata, target.constructor);
   };
 }
