@@ -18,7 +18,11 @@ export class Scanner {
     const injectConstructorParams = this.#getInjectDecorated(provider);
 
     const dependencies: Dependency[] = constructorDependencies.map((dependency, index) => {
-      const injectConstructorParam = injectConstructorParams.find((param) => param.propertyKey === index.toString());
+      const injectConstructorParam = injectConstructorParams.find((param) => {
+        // @TODO review: propertyKey is not going to match a number (index),
+        // so the expression below never evaluates to true.
+        return param.propertyKey === index.toString();
+      });
       return {
         provider: dependency,
         identifier: injectConstructorParam?.identifier ?? dependency.name,

@@ -7,7 +7,7 @@ import { Injectable } from '../decorators/injectable.decorator';
 import { Dependency, DependencyMap, ProviderClass } from '../types';
 import { Scanner } from './scanner';
 
-const test = suite('Dependency Scanner');
+const test = suite('Scanner');
 
 test('should scan injectable classes dependencies', () => {
   @Injectable()

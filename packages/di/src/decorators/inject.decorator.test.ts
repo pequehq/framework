@@ -9,7 +9,7 @@ import { InjectMetadata } from './inject.decorator.types';
 
 const test = suite('Inject decorator');
 
-test('should set metadata for @Inject property or parameter', () => {
+test('should set metadata for @Inject property and parameter', () => {
   class TestInjectable {
     @Inject({ identifier: 'PropertyIdentifier' }) injectProperty: unknown;
 
@@ -22,8 +22,16 @@ test('should set metadata for @Inject property or parameter', () => {
   const metadata = injectDecoratorMetadata.get(TestInjectable);
 
   const expectedMetadata: InjectMetadata[] = [
-    { identifier: 'PropertyIdentifier', propertyKey: 'injectProperty', parameterIndex: undefined },
-    { identifier: 'ParamIdentifier', propertyKey: undefined, parameterIndex: 0 },
+    {
+      identifier: 'PropertyIdentifier',
+      propertyKey: 'injectProperty',
+      parameterIndex: undefined,
+    },
+    {
+      identifier: 'ParamIdentifier',
+      propertyKey: undefined,
+      parameterIndex: 0,
+    },
   ];
 
   assert.equal(metadata, expectedMetadata);
