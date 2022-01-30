@@ -12,10 +12,10 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
+import { BrokerConnectionTimeoutException } from '../models';
 import { SubscribeListenerService } from '../services';
 import { BrokerClient } from './broker-client.class';
 import { BrokerClientFactory } from './broker-client.factory';
-import { BrokerConnectionTimeoutException } from '../models';
 
 const test = suite('Broker Client');
 
