@@ -1,7 +1,8 @@
+import sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { LifeCycleManager } from './life-cycle.service';
+import { wait } from '../../../test/test.utils';
 import {
   LifeCycleEventsType,
   OnControllerDestroy,
@@ -20,10 +21,9 @@ import {
   OnWebSocketDestroy,
   OnWebSocketInit,
 } from '../../models';
-import sinon from 'sinon';
-import { Subjects } from '../subjects/subjects';
-import { wait } from '../../../test/test.utils';
 import { Injector } from '../../models/dependency-injection/dependency-injection.service';
+import { Subjects } from '../subjects/subjects';
+import { LifeCycleManager } from './life-cycle.service';
 
 interface LifeCycleInfoTest {
   name: string;
