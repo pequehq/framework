@@ -1,1 +1,1 @@
-export * from './broker-connection-timeout.exception';
+export * from './broker-connection-timeout.error';

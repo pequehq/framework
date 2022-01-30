@@ -13,7 +13,7 @@ import {
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand } from '../commands';
 import { IBrokerClientOptions, Listener } from '../models';
-import { BrokerConnectionTimeoutException } from '../models';
+import { BrokerConnectionTimeoutError } from '../models';
 import { SubscribeListenerService } from '../services';
 
 @Injectable()
@@ -54,7 +54,7 @@ export class BrokerClient {
       this.#connectionTimeout = setTimeout(() => {
         this.#socket.removeAllListeners('data');
         clearTimeout(this.#connectionTimeout);
-        reject(new BrokerConnectionTimeoutException());
+        reject(new BrokerConnectionTimeoutError());
       }, options?.connectionTimeout || 3000);
     });
   }

@@ -12,7 +12,7 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { BrokerConnectionTimeoutException } from '../models';
+import { BrokerConnectionTimeoutError } from '../models';
 import { SubscribeListenerService } from '../services';
 import { BrokerClient } from './broker-client.class';
 import { BrokerClientFactory } from './broker-client.factory';
@@ -91,7 +91,7 @@ test('should timeout a connection', async (context) => {
     await brokerClient.connect({ connectionTimeout: 500 });
     assert.unreachable();
   } catch (error) {
-    assert.instance(error, BrokerConnectionTimeoutException);
+    assert.instance(error, BrokerConnectionTimeoutError);
     assert.is(context.spies.socketRemoveAllListeners.calledOnce, true);
     assert.ok(context.spies.socketRemoveAllListeners.calledWith('data'));
   }
