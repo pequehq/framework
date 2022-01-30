@@ -98,7 +98,7 @@ test('should timeout a connection', async (context) => {
 });
 
 test('should send subscribe command', async (context) => {
-  const subscription: ISubscribeCommand = {
+  const expectedSubscribe: ISubscribeCommand = {
     command: 'subscribe',
     action: { topic: 'topic' },
     socketId: 'id_1',
@@ -116,12 +116,12 @@ test('should send subscribe command', async (context) => {
 
   // Getting the timestamps, which are the only not predictable values.
   const subscriptionTimestamp = context.spies.eventsNext.args.filter((array) => array[0] === 'subscribe');
-  subscription.issueTimestamp = subscriptionTimestamp[0][1].issueTimestamp;
-  assert.ok(context.spies.eventsNext.calledWith('subscribe', subscription));
+  expectedSubscribe.issueTimestamp = subscriptionTimestamp[0][1].issueTimestamp;
+  assert.ok(context.spies.eventsNext.calledWith('subscribe', expectedSubscribe));
 });
 
 test('should send unsubscribe command', async (context) => {
-  const unsubscription: IUnsubscribeCommand = {
+  const expectedUnsubscribe: IUnsubscribeCommand = {
     command: 'unsubscribe',
     action: { topic: 'topic' },
     socketId: 'id_1',
@@ -139,12 +139,12 @@ test('should send unsubscribe command', async (context) => {
 
   // Getting the timestamps, which are the only not predictable values.
   const unsubscriptionTimestamp = context.spies.eventsNext.args.filter((array) => array[0] === 'unsubscribe');
-  unsubscription.issueTimestamp = unsubscriptionTimestamp[0][1].issueTimestamp;
-  assert.ok(context.spies.eventsNext.calledWith('unsubscribe', unsubscription));
+  expectedUnsubscribe.issueTimestamp = unsubscriptionTimestamp[0][1].issueTimestamp;
+  assert.ok(context.spies.eventsNext.calledWith('unsubscribe', expectedUnsubscribe));
 });
 
 test('should send message command', async (context) => {
-  const message: IMessageCommand = {
+  const expectedMessage: IMessageCommand = {
     command: 'message',
     action: { topic: 'topic', message: JSON.stringify({ foo: 1 }) },
     socketId: 'id_1',
@@ -160,8 +160,8 @@ test('should send message command', async (context) => {
 
   // Getting the timestamps, which are the only not predictable values.
   const messageTimestamp = context.spies.eventsNext.args.filter((array) => array[0] === 'message');
-  message.issueTimestamp = messageTimestamp[0][1].issueTimestamp;
-  assert.ok(context.spies.eventsNext.calledWith('message', message));
+  expectedMessage.issueTimestamp = messageTimestamp[0][1].issueTimestamp;
+  assert.ok(context.spies.eventsNext.calledWith('message', expectedMessage));
 });
 
 test.run();

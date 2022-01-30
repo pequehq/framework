@@ -6,6 +6,7 @@ import * as assert from 'uvu/assert';
 import { DI, loadProviders } from '../di';
 import { Broker } from './broker.class';
 import { net } from './net';
+import { validateUUID } from '@peque/test';
 
 const test = suite('Broker Server');
 
@@ -56,6 +57,7 @@ test('should create a broker server', async (context) => {
   const welcomeCommand = context.spies.eventsNext.lastCall.args[1];
   assert.is(welcomeCommand.command, 'welcome');
   assert.ok(!!welcomeCommand.socketId);
+  assert.ok(validateUUID(welcomeCommand.socketId));
 });
 
 test.run();
