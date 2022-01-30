@@ -1,4 +1,5 @@
 import { BrokerSocket, Command, EventService, SocketService } from '@peque/smb-commons';
+import { validateUUID } from '@peque/test';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
@@ -6,7 +7,6 @@ import * as assert from 'uvu/assert';
 import { DI, loadProviders } from '../di';
 import { Broker } from './broker.class';
 import { net } from './net';
-import { validateUUID } from '@peque/test';
 
 const test = suite('Broker Server');
 
