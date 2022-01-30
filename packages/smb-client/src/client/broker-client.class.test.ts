@@ -80,7 +80,7 @@ test('should make a connection', async (context) => {
   assert.is(context.spies.socketsSet.args[0][0].id, 'id_1');
 
   assert.is(context.spies.socketOn.called, true);
-  assert.is(context.spies.socketOn.args.filter((args) => args[0] === 'data').length, 1);
+  assert.ok(context.spies.socketOn.args.some((args) => args[0] === 'data'));
   assert.is(clientId, 'id_1');
 });
 
