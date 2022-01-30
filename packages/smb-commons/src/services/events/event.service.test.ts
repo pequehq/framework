@@ -26,4 +26,24 @@ test('should publish and consume events', async (context) => {
   assert.is(message, 'test message');
 });
 
+test('should remove events', async (context) => {
+  let message;
+  const listener = (args): void => (message = args);
+
+  context.events.on('message', listener);
+  context.events.next('message', 'test message');
+
+  await wait();
+
+  assert.is(message, 'test message');
+
+  message = undefined;
+  context.events.remove('message', listener);
+  context.events.next('message', 'test message');
+
+  await wait();
+
+  assert.is(message, undefined);
+});
+
 test.run();
