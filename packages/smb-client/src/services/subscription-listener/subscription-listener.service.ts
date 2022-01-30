@@ -20,7 +20,7 @@ export class SubscribeListenerService {
     const listeners: Listener[] = [];
     for (const key of this.#subscriptions.keys()) {
       if (new RegExp(key).test(topic)) {
-        const values = [...(this.#subscriptions.get(key) ?? new Set<Listener>())];
+        const values = [...new Set<Listener>(this.#subscriptions.get(key))];
         listeners.push(...values);
       }
     }

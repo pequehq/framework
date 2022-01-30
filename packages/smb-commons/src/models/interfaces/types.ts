@@ -9,7 +9,13 @@ import {
 export type Listener = (...args: any[]) => void;
 export type IOutgoingCommandTypes = 'welcome' | 'publish';
 export type ICommandTypes = IOutgoingCommandTypes | 'subscribe' | 'unsubscribe' | 'message';
-export type ISubjectTypes = 'error' | 'incomingCommand' | 'outgoingCommand' | ICommandTypes;
+export type ISubjectTypes =
+  | 'listening'
+  | 'connection'
+  | 'error'
+  | 'incomingCommand'
+  | 'outgoingCommand'
+  | ICommandTypes;
 export type ICommandDataTypes =
   | ISubscribeCommand
   | IUnsubscribeCommand

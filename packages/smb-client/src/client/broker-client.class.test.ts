@@ -15,6 +15,7 @@ import * as assert from 'uvu/assert';
 import { SubscribeListenerService } from '../services';
 import { BrokerClient } from './broker-client.class';
 import { BrokerClientFactory } from './broker-client.factory';
+import { BrokerConnectionTimeoutException } from '../models';
 
 const test = suite('Broker Client');
 
@@ -24,6 +25,7 @@ test.before.each((context) => {
     commandInit: context.sandbox.spy(Command.prototype, 'init'),
     commandParser: context.sandbox.spy(CommandParser.prototype, 'cast'),
     socketOn: context.sandbox.spy(BrokerSocket.prototype, 'on'),
+    socketRemoveAllListeners: context.sandbox.spy(BrokerSocket.prototype, 'removeAllListeners'),
     eventsOn: context.sandbox.spy(EventService.prototype, 'on'),
     eventsNext: context.sandbox.spy(EventService.prototype, 'next'),
     eventsRemove: context.sandbox.spy(EventService.prototype, 'remove'),
@@ -78,7 +80,20 @@ test('should make a connection', async (context) => {
   assert.is(context.spies.socketsSet.args[0][0].id, 'id_1');
 
   assert.is(context.spies.socketOn.called, true);
+  assert.is(context.spies.socketOn.args.filter((args) => args[0] === 'data').length, 1);
   assert.is(clientId, 'id_1');
+});
+
+test('should timeout a connection', async (context) => {
+  const brokerClient = context.clientFactory.createClient();
+
+  try {
+    await brokerClient.connect({ connectionTimeout: 500 });
+  } catch (error) {
+    assert.instance(error, BrokerConnectionTimeoutException);
+    assert.is(context.spies.socketRemoveAllListeners.calledOnce, true);
+    assert.ok(context.spies.socketRemoveAllListeners.calledWith('data'));
+  }
 });
 
 test('should send subscribe command', async (context) => {
