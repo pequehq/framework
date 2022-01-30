@@ -1,3 +1,5 @@
+import { LifeCycleEventsType } from './types';
+
 export interface OnModuleInit {
   onModuleInit();
 }
@@ -56,4 +58,9 @@ export interface OnUncaughtException {
 
 export interface OnUncaughtRejection {
   onUncaughtRejection();
+}
+
+export interface LifeCycleEvent {
+  event: LifeCycleEventsType;
+  data?: unknown;
 }

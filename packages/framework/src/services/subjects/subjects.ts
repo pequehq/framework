@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import { CompleteTransportQueueItem, SubjectType, TransportSubjectType } from '../../models';
+import { CompleteTransportQueueItem, LifeCycleEvent, SubjectType, TransportSubjectType } from '../../models';
 import { SubjectEvent } from '../../models/interfaces/subject.interface';
 
 export const Subjects: Record<SubjectType, Subject<SubjectEvent<unknown>>> = {
