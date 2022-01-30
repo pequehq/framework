@@ -6,9 +6,10 @@ import {
   CommandParser,
   CommandReceiver,
   EventService,
+  SocketService,
 } from '@peque/smb-commons';
 
-import { MessageCommand, PublishCommand, SubscribeCommand, WelcomeCommand } from './commands';
+import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from './commands';
 import { Broker } from './server/broker.class';
 import { SubscribeService } from './services';
 
@@ -16,6 +17,7 @@ export const DI = new DiContainer();
 
 const providers = [
   EventService,
+  SocketService,
   SubscribeService,
   CommandError,
   CommandParser,
@@ -24,6 +26,7 @@ const providers = [
   Command,
   WelcomeCommand,
   SubscribeCommand,
+  UnsubscribeCommand,
   MessageCommand,
   PublishCommand,
   Broker,

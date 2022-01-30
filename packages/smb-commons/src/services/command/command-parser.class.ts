@@ -11,7 +11,7 @@ import {
 @Injectable()
 export class CommandParser {
   #validate(data: unknown): boolean {
-    const validate = data as ICommand<ICommandTypes, unknown>;
+    const validate = data as ICommand<ICommandTypes, never>;
     return !!validate.command && !!validate.socketId && !!validate.issueTimestamp && !!validate.action;
   }
 

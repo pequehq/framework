@@ -1,9 +1,10 @@
 import { Injectable } from '@peque/di';
 import { BrokerSocket, Command, EventService, SocketService } from '@peque/smb-commons';
 import { randomUUID } from 'crypto';
-import { createServer, Server } from 'net';
+import { Server } from 'net';
 
 import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, WelcomeCommand } from '../commands';
+import { net } from './net';
 
 @Injectable()
 export class Broker {
@@ -30,21 +31,30 @@ export class Broker {
     ]);
   }
 
-  create(): Promise<void> {
-    this.#server = createServer();
+  #connectionHandler(socket: BrokerSocket): void {
+    socket.id = randomUUID();
+    socket.on('data', (data) => this.events.next('incomingCommand', data));
+    this.sockets.set(socket);
+    this.events.next('welcome', {
+      command: 'welcome',
+      socketId: socket.id,
+      action: {},
+      issueTimestamp: Date.now(),
+    });
+  }
 
+  async create(): Promise<void> {
+    this.#server = net.createServer();
+
+    this.events.on('connection', this.#connectionHandler.bind(this));
     this.#server.on('connection', (socket: BrokerSocket) => {
-      socket.id = randomUUID();
-      socket.on('data', (data) => this.events.next('incomingCommand', data));
-      this.sockets.set(socket);
-      this.events.next('welcome', {
-        command: 'welcome',
-        socketId: socket.id,
-        action: '',
-        issueTimestamp: Date.now(),
-      });
+      this.events.next('connection', socket);
     });
 
-    return new Promise((resolve) => this.#server.listen(this.#port, this.#hostname, () => resolve()));
+    const listener = new Promise<void>((resolve) => {
+      this.#server.listen(this.#port, this.#hostname, () => resolve());
+    });
+
+    return await listener;
   }
 }

@@ -40,26 +40,22 @@ export class BrokerClient {
       this.#socket = new BrokerSocket();
 
       const welcomeMsg = (welcome: IWelcomeCommand) => {
-        try {
-          this.events.remove('welcome', welcomeMsg);
-          this.#socket.id = welcome.socketId;
-          this.sockets.set(this.#socket);
-          resolve(welcome.socketId);
-        } catch (error) {
-          reject(error);
-        }
-
-        this.#connectionTimeout = setTimeout(() => {
-          this.#socket.removeAllListeners('data');
-          clearTimeout(this.#connectionTimeout);
-          reject(new BrokerConnectionTimeoutException());
-        }, 3000);
+        this.events.remove('welcome', welcomeMsg);
+        this.#socket.id = welcome.socketId;
+        this.sockets.set(this.#socket);
+        resolve(welcome.socketId);
       };
 
       this.events.on('welcome', welcomeMsg);
 
       this.#socket.connect({ port: options?.port || 8021, host: options?.host || '127.0.0.1' });
       this.#socket.on('data', (data) => this.events.next('incomingCommand', data));
+
+      this.#connectionTimeout = setTimeout(() => {
+        this.#socket.removeAllListeners('data');
+        clearTimeout(this.#connectionTimeout);
+        reject(new BrokerConnectionTimeoutException());
+      }, options?.connectionTimeout || 3000);
     });
   }
 

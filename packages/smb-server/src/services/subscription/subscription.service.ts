@@ -11,7 +11,7 @@ export class SubscribeService {
   }
 
   unset(pattern: string, socketId: string): void {
-    const subscriptions = this.#subscriptions.get(pattern) ?? new Set<string>();
+    const subscriptions = new Set<string>(this.#subscriptions.get(pattern));
     this.#subscriptions.set(pattern, new Set([...subscriptions].filter((subs) => subs !== socketId)));
   }
 
@@ -19,7 +19,7 @@ export class SubscribeService {
     const sockets: string[] = [];
     for (const key of this.#subscriptions.keys()) {
       if (new RegExp(key).test(pattern)) {
-        const values = [...(this.#subscriptions.get(key) ?? new Set<string>())];
+        const values = [...new Set<string>(this.#subscriptions.get(key))];
         sockets.push(...values);
       }
     }
