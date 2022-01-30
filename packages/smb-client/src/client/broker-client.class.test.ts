@@ -89,6 +89,7 @@ test('should timeout a connection', async (context) => {
 
   try {
     await brokerClient.connect({ connectionTimeout: 500 });
+    assert.unreachable();
   } catch (error) {
     assert.instance(error, BrokerConnectionTimeoutException);
     assert.is(context.spies.socketRemoveAllListeners.calledOnce, true);
