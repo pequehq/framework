@@ -99,6 +99,7 @@ importers:
       cors: ^2.8.5
       express: ^4.17.2
       express-session: ^1.17.2
+      kafkajs: ^1.15.0
       mqtt: ^4.3.3
       mustache: ^4.2.0
       node-cron: ^3.0.0
@@ -118,6 +119,7 @@ importers:
       cors: 2.8.5
       express: 4.17.2
       express-session: 1.17.2
+      kafkajs: 1.15.0
       mqtt: 4.3.4
       mustache: 4.2.0
       node-cron: 3.0.0
@@ -1702,6 +1704,11 @@ packages:
 
   /just-extend/4.2.1:
     resolution: {integrity: sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==}
+    dev: false
+
+  /kafkajs/1.15.0:
+    resolution: {integrity: sha512-yjPyEnQCkPxAuQLIJnY5dI+xnmmgXmhuOQ1GVxClG5KTOV/rJcW1qA3UfvyEJKTp/RTSqQnUR3HJsKFvHyTpNg==}
+    engines: {node: '>=10.13.0'}
     dev: false
 
   /kleur/4.1.4:
