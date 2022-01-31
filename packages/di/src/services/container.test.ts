@@ -4,16 +4,17 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { Inject, Injectable } from '../../decorators';
-import { ProviderNotFoundException } from '../../models';
-import { DiContainer } from './di-container.class';
+import { Inject } from '../decorators/inject.decorator';
+import { Injectable } from '../decorators/injectable.decorator';
+import { ProviderNotFoundError } from '../errors/provider-not-found.error';
+import { Container } from './container';
 
-const test = suite('Dependency Injection Container');
+const test = suite('Container');
 
 test.before.each((context) => {
   @Injectable()
   class ProviderOne {
-    testMethod() {
+    testMethod(): string {
       return 'ProviderOne.testMethod';
     }
   }
@@ -21,7 +22,7 @@ test.before.each((context) => {
   @Injectable()
   class ProviderTwo {
     constructor(private providerOne: ProviderOne) {}
-    testMethod() {
+    testMethod(): string {
       return 'ProviderTwo.testMethod';
     }
   }
@@ -33,22 +34,23 @@ test.before.each((context) => {
 
   @Injectable()
   class ProviderFour {
-    @Inject({ identifier: 'ProviderOne' })
+    @Inject('ProviderOne')
     injectPropertyOne: ProviderOne;
 
     constructor(
       private providerTwo: ProviderTwo,
       private providerThree: ProviderThree,
-      @Inject({ identifier: 'ProviderFive' }) private injectParamProvider: ProviderOne,
+      @Inject('ProviderFive') private injectParamProvider: ProviderOne,
     ) {}
-    testMethod() {
+
+    testMethod(): string {
       return `ProviderFour.testMethod ${this.providerTwo.testMethod()} ${this.injectParamProvider.testMethod()}`;
     }
   }
 
   @Injectable()
   class ProviderFive {
-    testMethod() {
+    testMethod(): string {
       return 'ProviderFive.testMethod';
     }
   }
@@ -68,7 +70,7 @@ test.before.each((context) => {
 
   context.sandbox.stubs = { onInit, onDestroy };
 
-  context.container = new DiContainer({ onInit, onDestroy });
+  context.container = new Container({ onInit, onDestroy });
 
   context.container.set(context.providers.providerOne, context.providers.providerOne.name);
   context.container.set(context.providers.providerTwo, context.providers.providerTwo.name);
@@ -88,7 +90,7 @@ test('should set providers with TO syntax', (context) => {
 
   @Injectable()
   class ProviderToBindDependency {
-    testMethod() {
+    testMethod(): string {
       return 'ProviderToBindDependency';
     }
   }
@@ -142,7 +144,7 @@ test('should unset providers', (context) => {
   context.container.unset(context.providers.providerOne.name);
   assert.throws(
     () => context.container.get(context.providers.providerOne.name),
-    (err) => err instanceof ProviderNotFoundException,
+    (err) => err instanceof ProviderNotFoundError,
   );
   assert.instance(context.container.get(context.providers.providerTwo.name), context.providers.providerTwo);
   assert.instance(context.container.get(context.providers.providerThree.name), context.providers.providerThree);
@@ -151,17 +153,45 @@ test('should unset providers', (context) => {
   context.container.unsetAll();
   assert.throws(
     () => context.container.get(context.providers.providerTwo.name),
-    (err) => err instanceof ProviderNotFoundException,
+    (err) => err instanceof ProviderNotFoundError,
   );
   assert.throws(
     () => context.container.get(context.providers.providerThree.name),
-    (err) => err instanceof ProviderNotFoundException,
+    (err) => err instanceof ProviderNotFoundError,
   );
   assert.throws(
     () => context.container.get(context.providers.providerFour.name),
-    (err) => err instanceof ProviderNotFoundException,
+    (err) => err instanceof ProviderNotFoundError,
   );
   assert.is(context.sandbox.stubs.onDestroy.callCount, 5);
+});
+
+test('should not require onInit and onDestroy hooks', () => {
+  const container = new Container();
+
+  @Injectable()
+  class TestProvider {}
+
+  container.set(TestProvider, 'TestProvider');
+
+  assert.instance(container.get('TestProvider'), TestProvider);
+
+  container.unset('TestProvider');
+
+  assert.throws(() => container.get('TestProvider'));
+});
+
+test('should call .set for initial providers if specified', (context) => {
+  class Foo {}
+  class Bar {}
+
+  const setSpy = context.sandbox.spy(Container.prototype, 'set');
+
+  new Container({ providers: [Foo, Bar] });
+
+  assert.is(setSpy.callCount, 2);
+  assert.ok(setSpy.calledWith(Foo, 'Foo'));
+  assert.ok(setSpy.calledWith(Bar, 'Bar'));
 });
 
 test.run();
