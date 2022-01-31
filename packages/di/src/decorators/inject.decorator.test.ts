@@ -4,7 +4,7 @@ import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
 import { Inject } from './inject.decorator';
-import { injectDecoratorMetadata } from './inject.decorator.metadata';
+import { InjectDecoratorMetadata } from './inject.decorator.metadata';
 import { InjectMetadata } from './inject.decorator.types';
 
 const test = suite('Inject decorator');
@@ -19,7 +19,7 @@ test('should set metadata for @Inject property and parameter', () => {
     }
   }
 
-  const metadata = injectDecoratorMetadata.get(TestInjectable);
+  const metadata = InjectDecoratorMetadata.get(TestInjectable);
 
   const expectedMetadata: InjectMetadata[] = [
     {

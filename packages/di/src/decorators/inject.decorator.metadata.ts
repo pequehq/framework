@@ -1,7 +1,7 @@
 import { ReflectionMetadata } from '../helpers/reflection';
 import { InjectMetadata, InjectMetadataParam, InjectMetadataProperty } from './inject.decorator.types';
 
-class InjectDecoratorMetadata extends ReflectionMetadata<InjectMetadata[]> {
+class Implementation extends ReflectionMetadata<InjectMetadata[]> {
   constructor() {
     super(Symbol('inject'));
   }
@@ -15,4 +15,4 @@ class InjectDecoratorMetadata extends ReflectionMetadata<InjectMetadata[]> {
   }
 }
 
-export const injectDecoratorMetadata = new InjectDecoratorMetadata();
+export const InjectDecoratorMetadata = new Implementation();

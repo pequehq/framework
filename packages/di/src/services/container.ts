@@ -1,6 +1,6 @@
-import { injectDecoratorMetadata } from '../decorators/inject.decorator.metadata';
+import { InjectDecoratorMetadata } from '../decorators/inject.decorator.metadata';
 import { ProviderNotFoundError } from '../errors/provider-not-found.error';
-import { designParamTypesMetadata } from '../helpers/design-paramtypes.metadata';
+import { DesignParamTypesMetadata } from '../helpers/design-param-types.metadata';
 import { unique } from '../helpers/unique';
 import { ProviderClass } from '../types';
 import { Binder } from './binder';
@@ -71,13 +71,13 @@ export class Container {
    */
   #getConstructorDependencies(provider: ProviderClass): Dependency[] {
     // Collect dependencies from the constructor.
-    const dependencies = unique(designParamTypesMetadata.get(provider)).map((provider) => ({
+    const dependencies = unique(DesignParamTypesMetadata.get(provider)).map((provider) => ({
       identifier: provider.name,
       provider,
     }));
 
     // Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
-    const injectDependencies = injectDecoratorMetadata.getParamsOnly(provider);
+    const injectDependencies = InjectDecoratorMetadata.getParamsOnly(provider);
 
     for (const { identifier, parameterIndex } of injectDependencies) {
       dependencies[parameterIndex] = {
@@ -96,7 +96,7 @@ export class Container {
    * @private
    */
   #setInjectProviderProperties(instance: ProviderInstance): void {
-    const injectProperties = injectDecoratorMetadata.getPropertiesOnly(Object.getPrototypeOf(instance).constructor);
+    const injectProperties = InjectDecoratorMetadata.getPropertiesOnly(Object.getPrototypeOf(instance).constructor);
 
     for (const { identifier, propertyKey } of injectProperties) {
       Object.defineProperty(instance, propertyKey, {

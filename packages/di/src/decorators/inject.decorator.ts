@@ -1,8 +1,8 @@
-import { injectDecoratorMetadata } from './inject.decorator.metadata';
+import { InjectDecoratorMetadata } from './inject.decorator.metadata';
 
 export function Inject(identifier: string): PropertyDecorator & ParameterDecorator {
   return (target, propertyKey?, parameterIndex?): void => {
-    const metadata = injectDecoratorMetadata.get(target) ?? [];
+    const metadata = InjectDecoratorMetadata.get(target) ?? [];
 
     metadata.push({
       identifier,
@@ -10,6 +10,6 @@ export function Inject(identifier: string): PropertyDecorator & ParameterDecorat
       parameterIndex,
     });
 
-    injectDecoratorMetadata.set(metadata, target.constructor);
+    InjectDecoratorMetadata.set(metadata, target.constructor);
   };
 }
