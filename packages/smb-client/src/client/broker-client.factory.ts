@@ -1,4 +1,4 @@
-import { DiContainer } from '@peque/di';
+import { Container } from '@peque/di';
 import {
   Command,
   CommandEmitter,
@@ -14,10 +14,8 @@ import { SubscribeListenerService } from '../services';
 import { BrokerClient } from './broker-client.class';
 
 export class BrokerClientFactory {
-  #DI: DiContainer = new DiContainer();
-
-  constructor() {
-    const providers = [
+  #DI: Container = new Container({
+    providers: [
       EventService,
       CommandError,
       CommandParser,
@@ -31,12 +29,8 @@ export class BrokerClientFactory {
       UnsubscribeCommand,
       SubscribeListenerService,
       BrokerClient,
-    ];
-
-    for (const provider of providers) {
-      this.#DI.set(provider, provider.name);
-    }
-  }
+    ],
+  });
 
   createClient(): BrokerClient {
     return this.#DI.get<BrokerClient>('BrokerClient');

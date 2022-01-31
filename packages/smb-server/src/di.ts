@@ -1,4 +1,4 @@
-import { DiContainer } from '@peque/di';
+import { Container } from '@peque/di';
 import {
   Command,
   CommandEmitter,
@@ -13,7 +13,7 @@ import { MessageCommand, PublishCommand, SubscribeCommand, UnsubscribeCommand, W
 import { Broker } from './server/broker.class';
 import { SubscribeService } from './services';
 
-export const DI = new DiContainer();
+export const DI = new Container();
 
 const providers = [
   EventService,
