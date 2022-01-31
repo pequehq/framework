@@ -1,7 +1,6 @@
 import { injectDecoratorMetadata } from './inject.decorator.metadata';
-import { InjectOptions } from './inject.decorator.types';
 
-export function Inject({ identifier }: InjectOptions): PropertyDecorator & ParameterDecorator {
+export function Inject(identifier: string): PropertyDecorator & ParameterDecorator {
   return (target, propertyKey?, parameterIndex?): void => {
     const metadata = injectDecoratorMetadata.get(target) ?? [];
 

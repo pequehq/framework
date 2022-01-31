@@ -34,13 +34,13 @@ test.before.each((context) => {
 
   @Injectable()
   class ProviderFour {
-    @Inject({ identifier: 'ProviderOne' })
+    @Inject('ProviderOne')
     injectPropertyOne: ProviderOne;
 
     constructor(
       private providerTwo: ProviderTwo,
       private providerThree: ProviderThree,
-      @Inject({ identifier: 'ProviderFive' }) private injectParamProvider: ProviderOne,
+      @Inject('ProviderFive') private injectParamProvider: ProviderOne,
     ) {}
 
     testMethod(): string {
@@ -164,6 +164,21 @@ test('should unset providers', (context) => {
     (err) => err instanceof ProviderNotFoundError,
   );
   assert.is(context.sandbox.stubs.onDestroy.callCount, 5);
+});
+
+test('should not require onInit and onDestroy hooks', () => {
+  const container = new Container();
+
+  @Injectable()
+  class TestProvider {}
+
+  container.set(TestProvider, 'TestProvider');
+
+  assert.instance(container.get('TestProvider'), TestProvider);
+
+  container.unset('TestProvider');
+
+  assert.throws(() => container.get('TestProvider'));
 });
 
 test.run();

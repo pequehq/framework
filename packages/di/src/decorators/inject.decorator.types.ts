@@ -1,7 +1,3 @@
-interface InjectOptions {
-  identifier: string;
-}
-
 interface InjectMetadata {
   identifier: string;
   propertyKey?: string;
@@ -12,4 +8,4 @@ type InjectMetadataParam = Required<Omit<InjectMetadata, 'propertyKey'>>;
 
 type InjectMetadataProperty = Required<Omit<InjectMetadata, 'parameterIndex'>>;
 
-export type { InjectMetadata, InjectOptions, InjectMetadataParam, InjectMetadataProperty };
+export type { InjectMetadata, InjectMetadataParam, InjectMetadataProperty };

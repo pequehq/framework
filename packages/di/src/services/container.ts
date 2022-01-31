@@ -1,57 +1,98 @@
 import { injectDecoratorMetadata } from '../decorators/inject.decorator.metadata';
 import { ProviderNotFoundError } from '../errors/provider-not-found.error';
 import { designParamTypesMetadata } from '../helpers/design-paramtypes.metadata';
-import { Dependency, ProviderClass, ProviderInstance } from '../types';
+import { unique } from '../helpers/unique';
+import type { ProviderClass } from '../types';
 import { Binder } from './binder';
-import { ContainerOptions } from './container.types';
+import type { ContainerOptions, Dependency, ProviderInstance } from './container.types';
+
+type Identifier = string;
 
 export class Container {
-  #containers = new Map<string, ProviderInstance>();
-  #bindings = new Map<string, Binder>();
+  #options: ContainerOptions | undefined;
+  #instances = new Map<Identifier, ProviderInstance>();
+  #bindings = new Map<Identifier, Binder>();
 
-  constructor(private options?: ContainerOptions) {}
+  constructor(options?: ContainerOptions) {
+    this.#options = options;
+  }
 
-  #resolve<T>(provider: ProviderClass, identifier: string): T {
-    if (this.#containers.has(identifier)) {
-      return this.#containers.get(identifier);
+  /**
+   * Retrieve instance of class by its identifier.
+   * @param identifier
+   */
+  get<T>(identifier: Identifier): T {
+    return this.#resolve(this.#getBinding(identifier).getTargetProvider(), identifier);
+  }
+
+  /**
+   * Allow the input class to be instantiated and resolved
+   * using the dependency injection or via the container API.
+   * @param provider
+   * @param identifier
+   */
+  set(provider: ProviderClass, identifier: Identifier): Binder {
+    const binding = new Binder(provider);
+    this.#bindings.set(identifier, binding);
+    return binding;
+  }
+
+  /**
+   * Destroy binding and instance of the given identifier.
+   * @param identifier
+   */
+  unset(identifier: Identifier): void {
+    this.#options?.onDestroy?.(identifier, this.get(identifier));
+    this.#bindings.delete(identifier);
+    this.#instances.delete(identifier);
+  }
+
+  /**
+   * Reset container to the initial state.
+   */
+  unsetAll(): void {
+    for (const identifier of this.#instances.keys()) {
+      this.unset(identifier);
+    }
+  }
+
+  /**
+   * Collect dependencies from input provider's constructor,
+   * including dependencies decorated with @Inject.
+   * @param provider
+   * @private
+   */
+  #getConstructorDependencies(provider: ProviderClass): Dependency[] {
+    // Collect dependencies from the constructor.
+    const dependencies = unique(designParamTypesMetadata.get(provider)).map((provider) => ({
+      identifier: provider.name,
+      provider,
+    }));
+
+    // Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
+    const injectDependencies = injectDecoratorMetadata.getParamsOnly(provider);
+
+    for (const { identifier, parameterIndex } of injectDependencies) {
+      dependencies[parameterIndex] = {
+        identifier,
+        provider: this.#getBinding(identifier).getTargetProvider(),
+      };
     }
 
-    // 1. Collect params from constructor.
-    // 2. Evaluate if a constructor param is decorated with @Inject and override it with the specified provider instead.
-    const dependenciesConstructors = this.#arrangeDependencies(designParamTypesMetadata.get(provider) ?? []);
-    this.#injectConstructorParams(provider, dependenciesConstructors);
-
-    const injections = dependenciesConstructors.map((dependency) =>
-      this.#resolve<unknown>(dependency.provider, dependency.identifier),
-    );
-    const instance = new provider(...injections) as T;
-
-    // Define the @Inject decorated class properties get.
-    this.#setInjectProviderProperties(instance);
-
-    this.#containers.set(identifier, instance);
-
-    this.options?.onInit?.(identifier, instance);
-    return instance;
+    return dependencies;
   }
 
-  #arrangeDependencies(dependencies: ProviderClass[]): Dependency[] {
-    return dependencies.map((dependency) => ({ identifier: dependency.name, provider: dependency }));
-  }
+  /**
+   * Evaluate if instance has properties decorated with @Inject(),
+   * and override them with the resolved instance of the provider.
+   * @param instance
+   * @private
+   */
+  #setInjectProviderProperties(instance: ProviderInstance): void {
+    const injectProperties = injectDecoratorMetadata.getPropertiesOnly(Object.getPrototypeOf(instance).constructor);
 
-  #injectConstructorParams(provider: ProviderClass, dependencies: Dependency[]): void {
-    const injectConstructorParams = injectDecoratorMetadata.getParamsOnly(provider);
-    for (let i = 0; i < injectConstructorParams.length; i++) {
-      const binding = this.#getBinding(injectConstructorParams[i].identifier);
-      dependencies[injectConstructorParams[i].parameterIndex].identifier = injectConstructorParams[i].identifier;
-      dependencies[injectConstructorParams[i].parameterIndex].provider = binding.getProvider();
-    }
-  }
-
-  #setInjectProviderProperties(provider: ProviderInstance): void {
-    const injectProperties = injectDecoratorMetadata.getPropertiesOnly(Object.getPrototypeOf(provider).constructor);
-    for (const { propertyKey, identifier } of injectProperties) {
-      Object.defineProperty(provider, propertyKey, {
+    for (const { identifier, propertyKey } of injectProperties) {
+      Object.defineProperty(instance, propertyKey, {
         get: () => this.get(identifier),
         enumerable: true,
         configurable: true,
@@ -59,37 +100,45 @@ export class Container {
     }
   }
 
-  #getBinding(identifier: string): Binder {
+  /**
+   * Inject and instantiate (if necessary) input provider's dependencies.
+   * @param provider
+   * @param identifier
+   * @private
+   */
+  #resolve(provider: ProviderClass, identifier: Identifier): ProviderInstance {
+    if (this.#instances.has(identifier)) {
+      return this.#instances.get(identifier);
+    }
+
+    const constructorDependencies = this.#getConstructorDependencies(provider);
+
+    const injections = constructorDependencies.map((dependency) => {
+      return this.#resolve(dependency.provider, dependency.identifier);
+    });
+
+    const instance = new provider(...injections);
+
+    this.#setInjectProviderProperties(instance);
+
+    this.#instances.set(identifier, instance);
+    this.#options?.onInit?.(identifier, instance);
+
+    return instance;
+  }
+
+  /**
+   * Retrieve binder instance of the given identifier or throw error if not found.
+   * @param identifier
+   * @private
+   */
+  #getBinding(identifier: Identifier): Binder {
     const binding = this.#bindings.get(identifier);
+
     if (!binding) {
       throw new ProviderNotFoundError(identifier);
     }
+
     return binding;
-  }
-
-  get<T>(identifier: string): T {
-    const binding = this.#getBinding(identifier);
-    return this.#resolve(binding.getProvider(), identifier) as T;
-  }
-
-  set(provider: ProviderClass, identifier: string): Binder {
-    const binding = new Binder(provider);
-    this.#bindings.set(identifier, binding);
-    return binding;
-  }
-
-  unset(identifier: string): void {
-    this.options?.onDestroy?.(identifier, this.get(identifier));
-    this.#bindings.delete(identifier);
-    this.#containers.delete(identifier);
-  }
-
-  unsetAll(): void {
-    for (const key of this.#containers.keys()) {
-      this.unset(key);
-    }
-
-    this.#containers.clear();
-    this.#bindings.clear();
   }
 }

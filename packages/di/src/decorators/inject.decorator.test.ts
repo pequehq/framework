@@ -11,10 +11,10 @@ const test = suite('Inject decorator');
 
 test('should set metadata for @Inject property and parameter', () => {
   class TestInjectable {
-    @Inject({ identifier: 'PropertyIdentifier' }) injectProperty: unknown;
+    @Inject('PropertyIdentifier') injectProperty: unknown;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    constructor(@Inject({ identifier: 'ParamIdentifier' }) injectParam: unknown) {
+    constructor(@Inject('ParamIdentifier') injectParam: unknown) {
       // noop.
     }
   }
