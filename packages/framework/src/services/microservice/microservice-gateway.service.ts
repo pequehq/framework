@@ -1,9 +1,11 @@
 import { Subscription } from 'rxjs';
 
 import { CompleteTransportQueueItem, ExternalTransportType, MicroserviceOptions } from '../../models';
+import { KafkaBrokerClient } from '../kafka/kafka-broker.client';
 import { MqttBrokerClient } from '../mqtt/mqtt-broker.client';
 import { RedisBrokerClient } from '../redis/redis-broker.client';
 import { TransportSubjects } from '../subjects/subjects';
+import { KafkaGateway } from './gateway/kafka-gateway.service';
 import { MqttGateway } from './gateway/mqtt-gateway.service';
 import { RedisGateway } from './gateway/redis-gateway.service';
 
@@ -12,6 +14,7 @@ class MicroserviceGatewayService {
   #gateways: Record<ExternalTransportType, Map<string, any>> = {
     mqtt: new Map<string, MqttBrokerClient>(),
     redis: new Map<string, RedisBrokerClient>(),
+    kafka: new Map<string, KafkaBrokerClient>(),
   };
 
   #register: Record<ExternalTransportType, (options: MicroserviceOptions) => void> = {
@@ -25,6 +28,11 @@ class MicroserviceGatewayService {
       await RedisGateway.subscribe(client);
       this.#gateways.redis.set(options.broker, client);
     },
+    kafka: async (options) => {
+      const client = await KafkaGateway.register(options);
+      await KafkaGateway.subscribe(client);
+      this.#gateways.kafka.set(options.broker, client);
+    },
   };
 
   #publish: Record<ExternalTransportType, (item: CompleteTransportQueueItem) => void> = {
@@ -33,6 +41,9 @@ class MicroserviceGatewayService {
     },
     redis: async (item) => {
       await RedisGateway.publish(this.#gateways.redis.get(item.broker), item);
+    },
+    kafka: async (item) => {
+      await KafkaGateway.publish(this.#gateways.kafka.get(item.broker), item);
     },
   };
 

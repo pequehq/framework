@@ -10,10 +10,10 @@ interface KafkaClients {
 
 interface KafkaProducePayload {
   topic: string;
-  messages: unknown[];
+  messages: string[];
 }
 
-interface KafkaConsumePayload {
+export interface KafkaConsumePayload {
   topic: string;
   message: Buffer | null;
 }
@@ -23,15 +23,17 @@ export class KafkaBrokerClient extends BrokerProxy<unknown> {
 
   async connect(): Promise<void> {
     const kafka = new Kafka({ clientId: randomUUID(), brokers: [this.broker] });
-    this.#client.producer = kafka.producer();
-    this.#client.consumer = kafka.consumer();
+    this.#client = {
+      producer: kafka.producer(),
+      consumer: kafka.consumer(),
+    };
 
     await this.#client.producer.connect();
     await this.#client.consumer.connect();
   }
 
   async publish(payload: KafkaProducePayload): Promise<void> {
-    const messages: Message[] = payload.messages.map((message) => ({ value: JSON.stringify(message) }));
+    const messages: Message[] = payload.messages.map((message) => ({ value: message }));
     await this.#client.producer.send({ topic: payload.topic, messages });
   }
 
