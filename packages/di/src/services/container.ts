@@ -2,9 +2,9 @@ import { injectDecoratorMetadata } from '../decorators/inject.decorator.metadata
 import { ProviderNotFoundError } from '../errors/provider-not-found.error';
 import { designParamTypesMetadata } from '../helpers/design-paramtypes.metadata';
 import { unique } from '../helpers/unique';
-import type { ProviderClass } from '../types';
+import { ProviderClass } from '../types';
 import { Binder } from './binder';
-import type { ContainerOptions, Dependency, ProviderInstance } from './container.types';
+import { ContainerOptions, Dependency, ProviderInstance } from './container.types';
 
 type Identifier = string;
 
@@ -15,6 +15,13 @@ export class Container {
 
   constructor(options?: ContainerOptions) {
     this.#options = options;
+
+    // Run set for providers specified in the options.
+    if (this.#options?.providers?.length) {
+      for (const provider of this.#options.providers) {
+        this.set(provider, provider.name);
+      }
+    }
   }
 
   /**

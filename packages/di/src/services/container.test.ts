@@ -181,4 +181,17 @@ test('should not require onInit and onDestroy hooks', () => {
   assert.throws(() => container.get('TestProvider'));
 });
 
+test('should call .set for initial providers if specified', (context) => {
+  class Foo {}
+  class Bar {}
+
+  const setSpy = context.sandbox.spy(Container.prototype, 'set');
+
+  new Container({ providers: [Foo, Bar] });
+
+  assert.is(setSpy.callCount, 2);
+  assert.ok(setSpy.calledWith(Foo, 'Foo'));
+  assert.ok(setSpy.calledWith(Bar, 'Bar'));
+});
+
 test.run();

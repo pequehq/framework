@@ -9,3 +9,6 @@ export { Injectable } from './decorators/injectable.decorator';
 
 // Errors
 export { ProviderNotFoundError } from './errors/provider-not-found.error';
+
+// Other types
+export type { ProviderClass } from './types';
