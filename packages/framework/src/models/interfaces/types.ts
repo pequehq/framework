@@ -11,7 +11,7 @@ export type InterceptorType = 'exception';
 export type ProviderType = 'injectable' | 'interceptor' | 'transformer' | 'middleware' | 'microservice';
 export type ExternalTransportType = 'mqtt' | 'redis';
 export type TransportType = ExternalTransportType | 'internal';
-export type NativeEventsType =
+export type LifeCycleEventsType =
   | 'lifecycle.bootstrap'
   | 'lifecycle.init.provider'
   | 'lifecycle.init.module'
@@ -26,10 +26,8 @@ export type NativeEventsType =
   | 'lifecycle.server.listening.stop'
   | 'lifecycle.server.shutdown'
   | 'lifecycle.uncaught.exception'
-  | 'lifecycle.uncaught.rejection'
-  | 'http'
-  | 'logger'
-  | 'interceptor.exception';
+  | 'lifecycle.uncaught.rejection';
+export type NativeEventsType = 'lifecycle' | 'http' | 'logger' | 'interceptor.exception';
 export type SubjectType = 'lifeCycleSubject' | 'pushEventSubject';
 export type TransportSubjectType = 'sendTransportSubject' | 'failedTransportSubject' | 'successTransportSubject';
 export type InterceptorStage = 'after' | 'before' | 'error';

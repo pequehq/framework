@@ -14,4 +14,8 @@ export class EventService {
   on(event: ISubjectTypes, listener: Listener): void {
     this.#emitter.addListener(event, listener);
   }
+
+  remove(event: ISubjectTypes, listener: Listener): void {
+    this.#emitter.removeListener(event, listener);
+  }
 }
