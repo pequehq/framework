@@ -16,8 +16,8 @@ test.after.each((context) => {
 });
 
 test('should call connect', async (context) => {
-  const onProducerConnectSpy = context.sandbox.spy(context.sandbox.fake());
-  const onConsumerConnectSpy = context.sandbox.spy(context.sandbox.fake());
+  const onProducerConnectSpy = context.sandbox.fake();
+  const onConsumerConnectSpy = context.sandbox.fake();
 
   const kafkaProducer = context.sandbox.stub(Kafka.prototype, 'producer').returns({
     connect: onProducerConnectSpy,
