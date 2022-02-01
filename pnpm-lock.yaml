@@ -61,6 +61,7 @@ importers:
     specifiers:
       '@apidevtools/json-schema-ref-parser': ^9.0.9
       '@pequehq/di': ^1.0.0
+      '@pequehq/smb-client': ^1.0.3
       '@types/cookie-parser': ^1.4.2
       '@types/express': ^4.17.13
       '@types/express-session': ^1.17.4
@@ -90,6 +91,7 @@ importers:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
       '@pequehq/di': 1.0.0
+      '@pequehq/smb-client': 1.0.3
       axios: 0.24.0
       cluster: 0.7.7
       cookie-parser: 1.4.6
@@ -252,6 +254,19 @@ packages:
     engines: {node: '>=16.0.0'}
     dependencies:
       reflect-metadata: 0.1.13
+    dev: false
+
+  /@pequehq/smb-client/1.0.3:
+    resolution: {integrity: sha512-zZ1IQy1X7mg/+Y9oKEq7AvrKWbZMYgdU+ovi5RCY80SB1Xr6WoTDBnuvDBfs34hcjhRE7+JFzx3ybIhCgW2WMA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@pequehq/di': 1.0.0
+      '@pequehq/smb-commons': 1.0.2
+    dev: false
+
+  /@pequehq/smb-commons/1.0.2:
+    resolution: {integrity: sha512-uUO38ugsuRH1f1cLyX6ODFfhiikJ3X74c9CHrZpyNU2QDjxl1MkZxPiYLauE5S3Jf5h9xY5mkhFo1u+vYwpLiQ==}
+    engines: {node: '>=16.0.0'}
     dev: false
 
   /@sinonjs/commons/1.8.3:

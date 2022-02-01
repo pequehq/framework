@@ -14,6 +14,7 @@ export class TransportQueueService {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
     kafka: new Set<CompleteTransportQueueItem>(),
+    smb: new Set<CompleteTransportQueueItem>(),
   };
 
   #enqueueItems(): void {
