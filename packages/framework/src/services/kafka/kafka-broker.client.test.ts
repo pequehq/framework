@@ -40,9 +40,9 @@ test('should call subscribe', async (context) => {
     topic: 'test_topic',
     message: { value: new Buffer('test_value') },
   };
-  const subscribeFunctionSpy = context.sandbox.spy((event: KafkaConsumePayload) => event);
-  const kafkaConsumerSubscribe = context.sandbox.spy(context.sandbox.fake());
-  const kafkaConsumerRun = context.sandbox.spy((config) => {
+  const subscribeFunctionSpy = context.sandbox.fake((event: KafkaConsumePayload) => event);
+  const kafkaConsumerSubscribe = context.sandbox.fake();
+  const kafkaConsumerRun = context.sandbox.fake((config) => {
     config.eachMessage(payload);
   });
 
