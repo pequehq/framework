@@ -24,7 +24,10 @@ test('should call the register correctly', async (context) => {
 });
 
 test('should call the subscribe correctly', (context) => {
-  const cb: KafkaConsumePayload = { topic: 'text_event', message: new Buffer(`{ "data": "test" }`) };
+  const cb: KafkaConsumePayload = {
+    topic: 'text_event',
+    message: Buffer.from(`{ "data": "test" }`, 'utf-8'),
+  };
   const kafkaClientSubscribeStub = context.sandbox.stub(KafkaBrokerClient.prototype, 'subscribe').callsArgWith(0, cb);
 
   const client = new KafkaBrokerClient('localhost:9092');
