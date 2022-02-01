@@ -1,4 +1,4 @@
-import { Container, ProviderClass } from '@peque/di';
+import { Container, ProviderClass } from '@pequehq/di';
 
 export const loadDI = (DI: Container, providers: ProviderClass[]): void => {
   for (const provider of providers) {

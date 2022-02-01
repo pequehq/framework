@@ -1,4 +1,4 @@
-import { ModuleDefinition } from '@peque/framework';
+import { ModuleDefinition } from '@pequehq/framework';
 import { Option } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';

@@ -1,4 +1,4 @@
-import { ControllerDefinition, ModuleDefinition } from '@peque/framework';
+import { ControllerDefinition, ModuleDefinition } from '@pequehq/framework';
 import * as path from 'path';
 
 export interface GeneralMetadata<TData> {

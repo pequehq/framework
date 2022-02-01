@@ -19,7 +19,7 @@ The usage of the Node.js LTS version is required.
 
 ## Server
 ```typescript
-import { PequeFactory } from '@peque/framework';
+import { PequeFactory } from '@pequehq/framework';
 import { TestRootModule } from './modules/root/test-root.module';
 
 const webserver = PequeFactory.createServer({

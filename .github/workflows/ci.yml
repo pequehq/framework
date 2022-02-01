@@ -51,14 +51,6 @@ jobs:
         run: cd "$GITHUB_WORKSPACE/packages/framework/" && pnpm test:integration
       - name: Test utils
         run: cd "$GITHUB_WORKSPACE/packages/test/" && pnpm test:coverage
-      - name: DI
-        run: cd "$GITHUB_WORKSPACE/packages/di/" && pnpm test:coverage
-      - name: SMB Commons
-        run: cd "$GITHUB_WORKSPACE/packages/smb-commons/" && pnpm test:coverage
-      - name: SMB Server
-        run: cd "$GITHUB_WORKSPACE/packages/smb-server/" && pnpm test:coverage
-      - name: SMB Client
-        run: cd "$GITHUB_WORKSPACE/packages/smb-client/" && pnpm test:coverage
       - name: Update coverage badges
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

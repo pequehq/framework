@@ -1,5 +1,5 @@
 {
-  "name": "@peque/framework",
+  "name": "@pequehq/framework",
   "version": "1.0.19",
   "description": "Peque Framework",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
-    "@peque/di": "workspace:*",
+    "@pequehq/di": "^1.0.0",
     "axios": "^0.24.0",
     "cluster": "^0.7.7",
     "cookie-parser": "^1.4.6",

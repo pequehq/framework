@@ -14,7 +14,7 @@
   "author": "Simone Di Cicco",
   "license": "ISC",
   "dependencies": {
-    "@peque/di": "workspace:*"
+    "@pequehq/di": "^1.0.0"
   },
   "engines": {
     "node": ">=16.0.0"

@@ -1,4 +1,4 @@
-import { Container } from '@peque/di';
+import { Container } from '@pequehq/di';
 import sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
