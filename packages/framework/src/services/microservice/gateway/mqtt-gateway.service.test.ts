@@ -17,13 +17,6 @@ test.after.each((context) => {
 });
 
 test('should call the register correctly', async (context) => {
-  const mqttClientConnectSpy = context.sandbox.stub(MqttBrokerClient.prototype, 'connect');
-
-  await MqttGateway.register({ broker: 'mqtt://localhost:1883', transport: 'mqtt' });
-  assert.is(mqttClientConnectSpy.called, true);
-});
-
-test('should call the register correctly', async (context) => {
   const mqttClientConnectStub = context.sandbox.stub(MqttBrokerClient.prototype, 'connect');
 
   await MqttGateway.register({ broker: 'mqtt://localhost:1883', transport: 'mqtt' });
@@ -50,12 +43,12 @@ test('should call the publish correctly', async (context) => {
     id: 'id',
     retry: 0,
   };
-  const mqttClientConnectStub = context.sandbox.stub(MqttBrokerClient.prototype, 'publish');
+  const mqttClientPublishStub = context.sandbox.stub(MqttBrokerClient.prototype, 'publish');
   const mqttGatewaySpy = context.sandbox.spy(MqttGatewayService.prototype, 'successPublish');
   const client = new MqttBrokerClient('mqtt://localhost:1883');
 
   await MqttGateway.publish(client, event);
-  assert.is(mqttClientConnectStub.called, true);
+  assert.is(mqttClientPublishStub.called, true);
   assert.ok(mqttGatewaySpy.calledWith(event));
 });
 

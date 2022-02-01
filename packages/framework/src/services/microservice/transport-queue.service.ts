@@ -13,6 +13,7 @@ export class TransportQueueService {
   #queues: Record<ExternalTransportType, Set<CompleteTransportQueueItem>> = {
     mqtt: new Set<CompleteTransportQueueItem>(),
     redis: new Set<CompleteTransportQueueItem>(),
+    kafka: new Set<CompleteTransportQueueItem>(),
   };
 
   #enqueueItems(): void {

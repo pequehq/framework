@@ -66,6 +66,7 @@ importers:
   packages/framework:
     specifiers:
       '@apidevtools/json-schema-ref-parser': ^9.0.9
+      '@peque/di': workspace:*
       '@types/cookie-parser': ^1.4.2
       '@types/express': ^4.17.13
       '@types/express-session': ^1.17.4
@@ -81,6 +82,7 @@ importers:
       cors: ^2.8.5
       express: ^4.17.2
       express-session: ^1.17.2
+      kafkajs: ^1.15.0
       mqtt: ^4.3.3
       mustache: ^4.2.0
       node-cron: ^3.0.0
@@ -93,12 +95,14 @@ importers:
       yamljs: ^0.3.0
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
+      '@peque/di': link:../di
       axios: 0.24.0
       cluster: 0.7.7
       cookie-parser: 1.4.6
       cors: 2.8.5
       express: 4.17.2
       express-session: 1.17.2
+      kafkajs: 1.15.0
       mqtt: 4.3.4
       mustache: 4.2.0
       node-cron: 3.0.0
@@ -1683,6 +1687,11 @@ packages:
 
   /just-extend/4.2.1:
     resolution: {integrity: sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==}
+    dev: false
+
+  /kafkajs/1.15.0:
+    resolution: {integrity: sha512-yjPyEnQCkPxAuQLIJnY5dI+xnmmgXmhuOQ1GVxClG5KTOV/rJcW1qA3UfvyEJKTp/RTSqQnUR3HJsKFvHyTpNg==}
+    engines: {node: '>=10.13.0'}
     dev: false
 
   /kleur/4.1.4:
