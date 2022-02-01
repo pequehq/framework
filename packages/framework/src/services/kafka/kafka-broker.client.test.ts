@@ -67,7 +67,7 @@ test('should call subscribe', async (context) => {
 });
 
 test('should call publish', async (context) => {
-  const kafkaProduceSend = context.sandbox.spy(context.sandbox.fake());
+  const kafkaProduceSend = context.sandbox.fake();
 
   context.sandbox.stub(Kafka.prototype, 'producer').returns({
     connect: context.sandbox.fake(),
