@@ -1,7 +1,8 @@
+import { BrokerClientFactory } from '@pequehq/smb-client';
 import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import { BrokerClientFactory } from '@pequehq/smb-client';
+
 import { SmbBrokerClient, SmbSubscribePayload } from './smb-broker.client';
 
 const test = suite('SMB Broker Client');
