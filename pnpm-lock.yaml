@@ -66,6 +66,7 @@ importers:
   packages/framework:
     specifiers:
       '@apidevtools/json-schema-ref-parser': ^9.0.9
+      '@peque/di': workspace:*
       '@types/cookie-parser': ^1.4.2
       '@types/express': ^4.17.13
       '@types/express-session': ^1.17.4
@@ -94,6 +95,7 @@ importers:
       yamljs: ^0.3.0
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
+      '@peque/di': link:../di
       axios: 0.24.0
       cluster: 0.7.7
       cookie-parser: 1.4.6
