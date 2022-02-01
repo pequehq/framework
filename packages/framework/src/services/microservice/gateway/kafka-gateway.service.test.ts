@@ -67,7 +67,7 @@ test('should call the publish and throw', async (context) => {
   };
   const kafkaClientPublishStub = context.sandbox.stub(KafkaBrokerClient.prototype, 'publish').throws();
   const kafkaGatewaySpy = context.sandbox.spy(KafkaGatewayService.prototype, 'failedPublish');
-  const client = new KafkaBrokerClient('mqtt://localhost:1883');
+  const client = new KafkaBrokerClient('localhost:8021');
 
   await KafkaGateway.publish(client, event);
   assert.is(kafkaClientPublishStub.called, true);

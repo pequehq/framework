@@ -21,7 +21,7 @@ export class SmbBrokerClient extends BrokerProxy<unknown> {
       const split = this.broker.split(':');
 
       if (!split[1] || isNaN(Number(split[1]))) {
-        throw new BrokerAddressInvalidError();
+        throw new BrokerAddressInvalidError(this.broker);
       }
 
       return {
