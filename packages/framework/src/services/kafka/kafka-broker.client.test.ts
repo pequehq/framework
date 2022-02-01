@@ -38,7 +38,7 @@ test('should call connect', async (context) => {
 test('should call subscribe', async (context) => {
   const payload = {
     topic: 'test_topic',
-    message: { value: new Buffer('test_value') },
+    message: { value: Buffer.from('test_value', 'utf-8') },
   };
   const subscribeFunctionSpy = context.sandbox.fake((event: KafkaConsumePayload) => event);
   const kafkaConsumerSubscribe = context.sandbox.fake();
