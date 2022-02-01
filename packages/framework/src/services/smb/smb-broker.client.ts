@@ -1,7 +1,7 @@
 import { BrokerClient, BrokerClientFactory, IBrokerClientOptions } from '@pequehq/smb-client';
 
+import { BrokerAddressInvalidError } from '../../models';
 import { BrokerProxy } from '../../models/interfaces/broker-proxy.interface';
-import { BrokerAddressInvalidError } from "../../models";
 
 export interface SmbPublishPayload {
   topic: string;
