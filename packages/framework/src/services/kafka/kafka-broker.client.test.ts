@@ -7,7 +7,7 @@ import { KafkaBrokerClient, KafkaConsumePayload } from './kafka-broker.client';
 
 const test = suite('Kafka Broker Client');
 
-test.before.each(async (context) => {
+test.before((context) => {
   context.sandbox = sinon.createSandbox();
 });
 
