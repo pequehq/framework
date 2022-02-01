@@ -1,4 +1,4 @@
-export * from './errors/errors';
+export * from './errors';
 export * from './interfaces/authorization.interface';
 export * from './interfaces/cache/cache-client.abstract';
 export * from './interfaces/context.interface';

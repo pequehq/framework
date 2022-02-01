@@ -3,7 +3,8 @@ import * as sinon from 'sinon';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { SmbBrokerClient, SmbSubscribePayload } from './smb-broker.client';
+import { SmbBrokerClient, SmbPublishPayload, SmbSubscribePayload } from "./smb-broker.client";
+import { BrokerAddressInvalidError } from "../../models";
 
 const test = suite('SMB Broker Client');
 
@@ -27,6 +28,28 @@ test('should call connect', async (context) => {
   assert.ok(brokerFactoryCreateSpy.calledOnce);
   assert.ok(connectSpy.calledOnce);
   assert.ok(connectSpy.calledWith({ host: 'localhost', port: 8021 }));
+});
+
+test('should throw on connect', async (context) => {
+  const connectSpy = context.sandbox.fake();
+  context.sandbox.stub(BrokerClientFactory.prototype, 'createClient').returns({
+    connect: connectSpy,
+  });
+
+  const clients = [
+    new SmbBrokerClient('localhost'),
+    new SmbBrokerClient('localhost:abcd'),
+    new SmbBrokerClient('localhost:'),
+  ];
+
+  for (const client of clients) {
+    try {
+      await client.connect();
+      assert.unreachable();
+    } catch (error) {
+      assert.instance(error, BrokerAddressInvalidError);
+    }
+  }
 });
 
 test('should call subscribe', async (context) => {
@@ -54,6 +77,26 @@ test('should call subscribe', async (context) => {
   assert.ok(subscribeSpy.calledOnce);
   assert.ok(subscribeFunctionSpy.calledOnce);
   assert.ok(subscribeFunctionSpy.calledWith({ topic: payload.action.topic, data: payload.action.message }));
+});
+
+test('should call publish', async (context) => {
+  const payload: SmbPublishPayload = {
+    topic: 'test_topic',
+    data: 'test message',
+  };
+  const messageSpy = context.sandbox.fake();
+  context.sandbox.stub(BrokerClientFactory.prototype, 'createClient').returns({
+    connect: context.sandbox.fake(),
+    message: messageSpy,
+  });
+
+  const client = new SmbBrokerClient('localhost:8021');
+  await client.connect();
+
+  client.publish(payload);
+
+  assert.ok(messageSpy.calledOnce);
+  assert.ok(messageSpy.calledWith(payload.topic, payload.data));
 });
 
 test.run();

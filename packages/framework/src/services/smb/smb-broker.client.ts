@@ -1,6 +1,7 @@
 import { BrokerClient, BrokerClientFactory, IBrokerClientOptions } from '@pequehq/smb-client';
 
 import { BrokerProxy } from '../../models/interfaces/broker-proxy.interface';
+import { BrokerAddressInvalidError } from "../../models";
 
 export interface SmbPublishPayload {
   topic: string;
@@ -18,9 +19,14 @@ export class SmbBrokerClient extends BrokerProxy<unknown> {
   async connect(): Promise<void> {
     const calculateHostPort = (): IBrokerClientOptions => {
       const split = this.broker.split(':');
+
+      if (!split[1] || isNaN(Number(split[1]))) {
+        throw new BrokerAddressInvalidError();
+      }
+
       return {
         host: split[0],
-        port: !isNaN(Number(split[1])) ? Number(split[1]) : undefined,
+        port: Number(split[1]),
       };
     };
 
