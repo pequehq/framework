@@ -30,7 +30,7 @@ test('should call connect', async (context) => {
   assert.ok(connectSpy.calledWith({ host: 'localhost', port: 8021 }));
 });
 
-test('should throw on connect', async (context) => {
+test('should throw on connect when address format is not valid', async (context) => {
   const connectSpy = context.sandbox.fake();
   context.sandbox.stub(BrokerClientFactory.prototype, 'createClient').returns({
     connect: connectSpy,
