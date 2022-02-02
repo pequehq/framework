@@ -54,7 +54,7 @@ class MicroserviceGatewayService {
       await KafkaGateway.publish(this.#gateways.kafka.get(item.broker), item);
     },
     smb: (item) => {
-      SmbGateway.publish(this.#gateways.mqtt.get(item.broker), item);
+      SmbGateway.publish(this.#gateways.smb.get(item.broker), item);
     },
   };
 
