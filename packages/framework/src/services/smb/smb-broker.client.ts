@@ -18,15 +18,15 @@ export class SmbBrokerClient extends BrokerProxy<unknown> {
 
   async connect(): Promise<void> {
     const calculateHostPort = (): IBrokerClientOptions => {
-      const split = this.broker.split(':');
+      const [host, port] = this.broker.split(':');
 
-      if (!split[1] || isNaN(Number(split[1]))) {
+      if (!port || isNaN(Number(port))) {
         throw new BrokerAddressInvalidError(this.broker);
       }
 
       return {
-        host: split[0],
-        port: Number(split[1]),
+        host,
+        port: Number(port),
       };
     };
 
