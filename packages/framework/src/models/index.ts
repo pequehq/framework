@@ -21,3 +21,4 @@ export * from './interfaces/types';
 export * from './interfaces/web-server-options.interface';
 export * from './interfaces/web-sockets/web-sockets-client.abstract';
 export * from './interfaces/web-sockets/web-sockets-server.abstract';
+export * from './interfaces/graphql-options.interface';

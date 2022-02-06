@@ -1,0 +1,6 @@
+type Query {
+  helloWorld: String!
+}
+type User {
+  name: String
+}
