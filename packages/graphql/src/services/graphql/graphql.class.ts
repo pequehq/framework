@@ -1,6 +1,6 @@
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchemaSync } from '@graphql-tools/load';
-import { IResolvers } from '@graphql-tools/utils';
+import { IResolvers } from '@graphql-tools/utils/Interfaces';
 import { ApolloServer } from 'apollo-server-express';
 import { Application } from 'express';
 import { makeExecutableSchema } from 'graphql-tools';

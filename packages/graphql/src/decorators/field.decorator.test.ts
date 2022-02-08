@@ -6,40 +6,47 @@ import * as assert from 'uvu/assert';
 import { ObjectTypeFieldsMetadata } from '../constants/metadata.constants';
 import { Field } from './field.decorator';
 import { ObjectType } from './object-type.decorator';
+import { DI } from '../di';
+import { SchemaBuilderService } from '../services';
 
 const test = suite('@Field');
 
 test('should load @Field metadata', () => {
   @ObjectType()
   class Generalities {
-    @Field()
+    @Field('String')
     name: string;
 
-    @Field()
+    @Field('String')
     surname: string;
   }
 
   @ObjectType()
   class Interest {
-    @Field()
+    @Field('String')
     name: string;
 
-    @Field()
+    @Field('String')
     description: string;
   }
 
   @ObjectType()
   class Person {
-    @Field((type) => Generalities)
+    @Field(Generalities)
     generalities: Generalities;
 
-    @Field((type) => [Interest])
+    @Field([Interest])
     interests: Interest[];
-    age: number;
+
+    @Field(['Int'], { nullable: true })
+    numbers?: number[];
   }
 
   console.log(ObjectTypeFieldsMetadata.get(Person));
-  console.log(ObjectTypeFieldsMetadata.get(Interest));
+  const builder = DI.get<SchemaBuilderService>(SchemaBuilderService.name);
+  const schema = builder.generateTypes();
+
+  console.log(schema);
   assert.is(1, 1);
 });
 

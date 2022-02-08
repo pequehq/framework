@@ -127,10 +127,12 @@ importers:
       '@graphql-tools/utils': ^8.6.1
       '@pequehq/di': ^1.0.0
       '@pequehq/test': workspace:*
+      '@types/mustache': ^4.1.2
       apollo-server-express: ^3.6.2
       express: ^4.17.2
       graphql: ^16.3.0
       graphql-tools: ^8.2.0
+      mustache: ^4.2.0
       reflect-metadata: ^0.1.13
     dependencies:
       '@graphql-tools/graphql-file-loader': 7.3.3_graphql@16.3.0
@@ -138,9 +140,11 @@ importers:
       '@graphql-tools/utils': 8.6.1_graphql@16.3.0
       '@pequehq/di': 1.0.0
       graphql-tools: 8.2.0_graphql@16.3.0
+      mustache: 4.2.0
       reflect-metadata: 0.1.13
     devDependencies:
       '@pequehq/test': link:../test
+      '@types/mustache': 4.1.2
       apollo-server-express: 3.6.2_express@4.17.2+graphql@16.3.0
       express: 4.17.2
       graphql: 16.3.0

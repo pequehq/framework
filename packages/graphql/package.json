@@ -19,6 +19,7 @@
     "@graphql-tools/utils": "^8.6.1",
     "@pequehq/di": "^1.0.0",
     "graphql-tools": "^8.2.0",
+    "mustache": "^4.2.0",
     "reflect-metadata": "^0.1.13"
   },
   "engines": {
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@pequehq/test": "workspace:*",
+    "@types/mustache": "^4.1.2",
     "apollo-server-express": "^3.6.2",
     "express": "^4.17.2",
     "graphql": "^16.3.0"
