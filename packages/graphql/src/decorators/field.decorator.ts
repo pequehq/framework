@@ -1,12 +1,16 @@
-import { ObjectTypeFieldsMetadata } from '../constants/metadata.constants';
-import { IFieldOptions, IFieldOptionsMetadata } from '../interfaces';
+import 'reflect-metadata';
 
-export function Field(options: IFieldOptions): PropertyDecorator {
+import { DesignTypeMetadata, ObjectTypeFieldsMetadata } from '../constants/metadata.constants';
+import { IFieldOptions, IFieldOptionsMetadata, IReturnTypeFunction } from '../interfaces';
+
+export function Field(type?: IReturnTypeFunction, options?: IFieldOptions): PropertyDecorator {
   return (target, propertyKey) => {
     const objectType = target.constructor;
+    const typeMeta = DesignTypeMetadata.get(objectType);
+    console.log(propertyKey, typeMeta);
     const fields: IFieldOptionsMetadata[] = ObjectTypeFieldsMetadata.get(objectType) ?? [];
 
-    fields.push({ ...options, propertyKey });
+    fields.push({ propertyKey, type: type ? type : typeMeta, options });
     ObjectTypeFieldsMetadata.set(fields, objectType);
   };
 }

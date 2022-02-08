@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { OBJECT_TYPES } from '../constants/graphql.constants';
 import { ObjectTypeFieldsMetadata } from '../constants/metadata.constants';
 import { ClassDeclaration, IFieldOptionsMetadata } from '../interfaces';
