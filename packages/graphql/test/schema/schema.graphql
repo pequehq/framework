@@ -1,5 +1,6 @@
 type Query {
   helloWorld: String!
+  sbeffo: User!
 }
 type User {
   name: String
