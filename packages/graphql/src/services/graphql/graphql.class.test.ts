@@ -34,7 +34,7 @@ test('should apply the schema to the app', async (context) => {
     },
   };
 
-  await graphQL.apply(__dirname + '/../../../test/schema/schema.graphql', ServiceResolvers, app, '/graphql');
+  // await graphQL.apply(__dirname + '/../../../test/schema/schema.graphql', ServiceResolvers, app, '/graphql');
   // const httpServer = createServer(app);
   // httpServer.listen({ port: 3000 }, (): void =>
   //   console.log(`GraphQL-Server is running on http://localhost:3000/graphql`),

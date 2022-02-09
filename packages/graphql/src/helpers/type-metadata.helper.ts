@@ -8,7 +8,7 @@ export class TypeMetadataHelper {
   calculateMetadata(type: IReturnType): ITypeMetadata {
     return {
       type,
-      absoluteType: type[0] ?? type,
+      absoluteType: Array.isArray(type) ? type[0] : type,
       scalar: type instanceof GraphQLScalarType,
       array: Array.isArray(type),
       primitive: typeof (type[0] ?? type) === 'string',

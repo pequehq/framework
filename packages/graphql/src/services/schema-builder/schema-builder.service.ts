@@ -33,7 +33,6 @@ export class SchemaBuilderService {
       }
 
       schema.push(mustacheHelper.render(view));
-      console.log(view);
     }
 
     return schema.join('\n');
