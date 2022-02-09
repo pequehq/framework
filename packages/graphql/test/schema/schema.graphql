@@ -1,7 +1,18 @@
 type Query {
-  helloWorld: String!
-  sbeffo: User!
+  user: User!
 }
+
 type User {
-  name: String
+  id: ID!
+  name: String!
+  surname: String!
+  location: Location!
 }
+
+type Location {
+  id: ID!
+  city: String!
+  country: String!
+}
+
+

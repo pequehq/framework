@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import { ApolloError } from 'apollo-server-express';
 import express from 'express';
+import * as fs from 'fs';
 import { buildSchema } from 'graphql';
 import { createServer } from 'http';
 import { suite } from 'uvu';
@@ -9,58 +10,36 @@ import * as assert from 'uvu/assert';
 
 import { DI } from '../di';
 import { GraphQL, SchemaBuilderService } from '../services';
-import { Field } from './field.decorator';
-import { ObjectType } from './object-type.decorator';
 
 const test = suite('@Field');
 
 test('should load @Field metadata', async () => {
-  @ObjectType()
-  class Generalities {
-    @Field('String')
-    name: string;
-
-    @Field('String')
-    surname: string;
-  }
-
-  @ObjectType()
-  class Interest {
-    @Field('String')
-    name: string;
-
-    @Field('String')
-    description: string;
-  }
-
-  @ObjectType()
-  class Person {
-    @Field(Generalities)
-    generalities: Generalities;
-
-    @Field([Interest])
-    interests: Interest[];
-
-    @Field(['Int'], { nullable: true })
-    numbers?: number[];
-  }
-
-  const builder = DI.get<SchemaBuilderService>(SchemaBuilderService.name);
-  const schema = buildSchema(builder.generateTypes());
+  const file = fs.readFileSync(`${__dirname}/../../test/schema/schema.graphql`, { encoding: 'utf8' });
+  const schema = buildSchema(file);
 
   const graphQL = new GraphQL();
   const app = express();
 
   const ServiceResolvers = {
     Query: {
-      helloWorld: (st: string) => {
-        try {
-          return 'pezzodimmerda ' + st;
-        } catch (error) {
-          throw new ApolloError(error);
-        }
+      user: () => {
+        const users = [
+          { id: 1, name: 'simone', surname: 'di cicco', location: 1 },
+          { id: 2, name: 'beppe', surname: 'tenzio', location: 2 },
+          { id: 3, name: 'loco', surname: 'marte', location: 3 },
+        ];
+        return users;
       },
-      sbeffo: () => ({ name: 'sbeffolino' }),
+    },
+    User: {
+      location: (parent, args, ctx, info) => {
+        const locations = [
+          { id: 1, city: 'madrid', country: 'spain' },
+          { id: 2, city: 'lanciano', country: 'italy' },
+          { id: 3, city: 'berlin', country: 'germany' },
+        ];
+        return locations.filter((location) => location.id === parent.location);
+      },
     },
   };
 
