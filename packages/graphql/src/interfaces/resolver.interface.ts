@@ -1,6 +1,7 @@
 import { IResolverParamType } from './types';
 
-export interface IResolverParameters {
+export interface IResolverParameter {
+  method: string;
   type: IResolverParamType;
   index: number;
 }
@@ -8,7 +9,6 @@ export interface IResolverParameters {
 export interface IResolverMetadata<TOptions> {
   method: string;
   options: TOptions;
-  params?: IResolverParameters[];
 }
 
 export interface IQueryOptions {

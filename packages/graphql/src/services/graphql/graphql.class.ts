@@ -1,16 +1,20 @@
-import { IResolvers, TypeSource } from '@graphql-tools/utils/Interfaces';
-import { ApolloServer } from 'apollo-server-express';
+import { Injectable } from '@pequehq/di';
+import { ApolloServer, gql } from 'apollo-server-express';
 import { Application } from 'express';
-import { GraphQLSchema } from 'graphql';
+import * as fs from 'fs';
 
+import { ResolverService } from '../resolver/resolver.service';
+
+@Injectable()
 export class GraphQL {
-  async apply(
-    schema: GraphQLSchema,
-    resolvers: IResolvers | IResolvers[],
-    app: Application,
-    path: string,
-    typeDefs: TypeSource,
-  ): Promise<void> {
+  constructor(private resolverService: ResolverService) {}
+
+  async apply(app: Application, schemaPath: string, path: string): Promise<void> {
+    const schema = fs.readFileSync(schemaPath, { encoding: 'utf8' });
+    const typeDefs = gql(schema);
+
+    const resolvers = this.resolverService.loadResolvers();
+
     const server = new ApolloServer({
       typeDefs,
       resolvers,

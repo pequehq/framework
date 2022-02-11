@@ -1,5 +1,6 @@
 import { ReflectionHelper } from '../../helpers';
-import { IResolverMetadata, IResolverParameters, IResolverParamType } from '../../interfaces';
+import { IResolverMetadata, IResolverParamType } from '../../interfaces';
+import { ResolverParametersMetadata } from '../../constants/metadata.constants';
 
 interface IResolverMetadataOptions {
   target: object;
@@ -8,22 +9,16 @@ interface IResolverMetadataOptions {
   reflectionHelper: ReflectionHelper<IResolverMetadata<unknown>[]>;
 }
 
-interface IResolverParametersMetadataOptions extends IResolverMetadataOptions {
+interface IResolverParametersMetadataOptions {
+  target: object;
   parameterIndex: number;
   paramType: IResolverParamType;
-}
-
-function getMetadata(
-  target: object,
-  reflectionHelper: ReflectionHelper<IResolverMetadata<unknown>[]>,
-): IResolverMetadata<unknown>[] {
-  const objectType = target.constructor;
-  return reflectionHelper.get(objectType) ?? [];
+  propertyKey: symbol | string;
 }
 
 export function manageResolverMetadata(options: IResolverMetadataOptions): void {
   const objectType = options.target.constructor;
-  const elements = getMetadata(objectType, options.reflectionHelper) ?? [];
+  const elements = options.reflectionHelper.get(objectType) ?? [];
 
   elements.push({ method: options.propertyKey.toString(), options: options.options });
   options.reflectionHelper.set(elements, objectType);
@@ -32,17 +27,8 @@ export function manageResolverMetadata(options: IResolverMetadataOptions): void 
 export function manageResolverParametersMetadata(options: IResolverParametersMetadataOptions): void {
   const objectType = options.target.constructor;
 
-  manageResolverMetadata({
-    target: objectType,
-    propertyKey: options.propertyKey,
-    reflectionHelper: options.reflectionHelper,
-  });
+  const params = ResolverParametersMetadata.get(objectType) ?? [];
+  params.push({ index: options.parameterIndex, type: options.paramType, method: options.propertyKey.toString() });
 
-  const elements = getMetadata(objectType, options.reflectionHelper) ?? [];
-  const index = elements.findIndex((metadata) => metadata.method === options.propertyKey);
-  const params = elements[index].params ?? [];
-
-  params.push({ index: options.parameterIndex, type: options.paramType });
-  elements[index].params = params;
-  options.reflectionHelper.set(elements, objectType);
+  ResolverParametersMetadata.set(params, objectType);
 }

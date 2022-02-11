@@ -1,12 +1,13 @@
 import { Container } from '@pequehq/di';
 
-import { ResolverService } from '../src';
+import { GraphQL, ResolverService } from '../src';
 import { diHelper } from '../src/helpers';
 
 export const DI = new Container();
 
 export function loadProviders(): void {
   DI.set(ResolverService, ResolverService.name);
+  DI.set(GraphQL, GraphQL.name);
 
   diHelper.register(DI);
 }

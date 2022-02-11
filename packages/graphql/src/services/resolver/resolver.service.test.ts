@@ -35,7 +35,6 @@ test.skip('should load the resolvers', async () => {
   const resolverService = diHelper.get().get<ResolverService>('ResolverService');
   const resolvers = resolverService.loadResolvers();
 
-  console.log(resolvers);
   assert.is(1, 1);
 });
 
