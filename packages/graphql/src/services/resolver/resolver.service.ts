@@ -9,7 +9,7 @@ import {
   ResolverQueriesMetadata,
 } from '../../constants/metadata.constants';
 import { diHelper } from '../../helpers';
-import { IResolverParameter, IResolverParamType, IResolverServiceMetadata, Resolver } from '../../interfaces';
+import { IResolverParamType, IResolverServiceMetadata, Resolver } from '../../interfaces';
 
 @Injectable()
 export class ResolverService {
@@ -29,8 +29,10 @@ export class ResolverService {
   }
 
   #buildMethodWithParams(instance: InstanceType<Resolver>, method: string) {
-    return (parent: unknown, args: unknown[], ctx: unknown, info: unknown) => {
-      const params = ResolverParametersMetadata.get(Object.getPrototypeOf(instance).constructor);
+    return (parent: unknown, args: unknown, ctx: unknown, info: unknown) => {
+      const params = ResolverParametersMetadata.get(Object.getPrototypeOf(instance).constructor).filter(
+        (param) => param.method === method,
+      );
       const methodArgs: unknown[] = [];
       const apolloParams: Record<IResolverParamType, (index: number) => void> = {
         parent: (index: number) => (methodArgs[index] = parent),
@@ -50,20 +52,26 @@ export class ResolverService {
   #buildInterface(instance: InstanceType<Resolver>, metadata: IResolverServiceMetadata): IResolvers {
     const resolver: IResolvers = {};
 
+    const objectAssign = (key: string, property: object) => {
+      Object.assign(resolver, { [key]: { ...resolver[key], ...property } });
+    };
+
     for (const query of metadata.query) {
       const queryName = query.options?.name ?? query.method;
-      Object.assign(resolver, { Query: { [queryName]: instance[query.method] } });
+      objectAssign('Query', { [queryName]: instance[query.method] });
     }
 
     if (metadata.field) {
       for (const field of metadata.field) {
         const name = field.options?.name ?? field.method;
-        Object.assign(resolver, {
-          [field.options.type]: {
-            ...resolver[field.options.type],
-            [name]: this.#buildMethodWithParams(instance, field.method),
-          },
-        });
+        objectAssign(field.options.type, { [name]: this.#buildMethodWithParams(instance, field.method) });
+      }
+    }
+
+    if (metadata.mutation) {
+      for (const mutation of metadata.mutation) {
+        const name = mutation.options?.name ?? mutation.method;
+        objectAssign('Mutation', { [name]: this.#buildMethodWithParams(instance, mutation.method) });
       }
     }
 

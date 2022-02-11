@@ -22,10 +22,12 @@ type LocationProperties {
 }
 
 type Location {
-  id: ID
-  city: String
-  country: String
-  properties: [LocationProperties]
+  id: ID!
+  city: String!
+  country: String!
+  properties: [LocationProperties!]!
 }
 
-
+type Mutation {
+  insertUser(id: ID!, name: String!, surname: String!, location: ID!): ID!
+}
