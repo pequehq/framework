@@ -1,17 +1,11 @@
 import 'reflect-metadata';
 
-import { ObjectTypeFieldsMetadata } from '../constants/metadata.constants';
-import { DI } from '../di';
-import { TypeMetadataHelper } from '../helpers';
-import { IFieldOptions, IFieldOptionsMetadata, IReturnType } from '../interfaces';
+import { ResolverFieldsMetadata } from '../constants/metadata.constants';
+import { IFieldOptions } from '../interfaces';
+import { manageResolverMetadata } from './utils/resolver-decorators.utils';
 
-export function Field(type: IReturnType, options?: IFieldOptions): PropertyDecorator {
-  return (target, propertyKey) => {
-    const objectType = target.constructor;
-    const fields: IFieldOptionsMetadata[] = ObjectTypeFieldsMetadata.get(objectType) ?? [];
-    const typeMetadataHelper = DI.get<TypeMetadataHelper>(TypeMetadataHelper.name);
-
-    fields.push({ propertyKey, type: typeMetadataHelper.calculateMetadata(type), options });
-    ObjectTypeFieldsMetadata.set(fields, objectType);
+export function Field(options: IFieldOptions): MethodDecorator {
+  return (target, propertyKey, descriptor) => {
+    manageResolverMetadata({ target, propertyKey, reflectionHelper: ResolverFieldsMetadata, options });
   };
 }

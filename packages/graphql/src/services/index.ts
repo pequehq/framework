@@ -1,2 +1,2 @@
 export * from './graphql/graphql.class';
-export * from './schema-builder/schema-builder.service';
+export * from './resolver/resolver.service';

@@ -4,4 +4,5 @@ export interface Type<T = any> extends Function {
 
 export type ClassDeclaration = Type;
 
-export type ObjectType = ClassDeclaration;
+export type IResolverParamType = 'parent' | 'args' | 'ctx' | 'info';
+export type Resolver = ClassDeclaration;

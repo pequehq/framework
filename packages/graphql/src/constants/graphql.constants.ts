@@ -1,3 +1,3 @@
-import { ObjectType } from '../interfaces';
+import { Resolver } from '../interfaces';
 
-export const OBJECT_TYPES: ObjectType[] = [];
+export const RESOLVERS: Resolver[] = [];

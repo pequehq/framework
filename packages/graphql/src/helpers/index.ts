@@ -1,3 +1,2 @@
-export * from './mustache.helper';
 export * from './reflection.helper';
-export * from './type-metadata.helper';
+export * from './di.helper';
