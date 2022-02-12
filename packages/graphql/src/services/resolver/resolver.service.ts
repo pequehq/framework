@@ -1,34 +1,27 @@
 import { IResolvers } from '@graphql-tools/utils/Interfaces';
 import { Injectable } from '@pequehq/di';
 
-import { RESOLVERS } from '../../constants/graphql.constants';
 import {
   ResolverFieldsMetadata,
   ResolverMutationsMetadata,
   ResolverParametersMetadata,
   ResolverQueriesMetadata,
 } from '../../constants/metadata.constants';
-import { diHelper } from '../../helpers';
-import { IResolverParamType, IResolverServiceMetadata, Resolver } from '../../interfaces';
+import { IResolverParamType, IResolverServiceMetadata, ResolverDeclaration } from '../../interfaces';
 
 @Injectable()
 export class ResolverService {
-  #loadResolversInDI(): void {
-    for (const resolver of RESOLVERS) {
-      diHelper.get().set(resolver, resolver.name);
-    }
-  }
-
-  #buildMetadata(resolver: Resolver): IResolverServiceMetadata {
+  #buildMetadata(resolver: ResolverDeclaration): IResolverServiceMetadata {
+    const prototype = Object.getPrototypeOf(resolver).constructor;
     return {
-      name: resolver.name,
-      field: ResolverFieldsMetadata.get(resolver),
-      mutation: ResolverMutationsMetadata.get(resolver),
-      query: ResolverQueriesMetadata.get(resolver),
+      name: prototype.name,
+      field: ResolverFieldsMetadata.get(prototype),
+      mutation: ResolverMutationsMetadata.get(prototype),
+      query: ResolverQueriesMetadata.get(prototype),
     };
   }
 
-  #buildMethodWithParams(instance: InstanceType<Resolver>, method: string) {
+  #buildMethodWithParams(instance: InstanceType<ResolverDeclaration>, method: string) {
     return (parent: unknown, args: unknown, ctx: unknown, info: unknown) => {
       const params = ResolverParametersMetadata.get(Object.getPrototypeOf(instance).constructor).filter(
         (param) => param.method === method,
@@ -49,7 +42,7 @@ export class ResolverService {
     };
   }
 
-  #buildInterface(instance: InstanceType<Resolver>, metadata: IResolverServiceMetadata): IResolvers {
+  #buildInterface(instance: InstanceType<ResolverDeclaration>, metadata: IResolverServiceMetadata): IResolvers {
     const resolver: IResolvers = {};
 
     const objectAssign = (key: string, property: object) => {
@@ -78,17 +71,14 @@ export class ResolverService {
     return resolver;
   }
 
-  loadResolvers(): IResolvers[] {
-    const resolvers: IResolvers[] = [];
+  loadResolvers(resolvers: InstanceType<ResolverDeclaration>[]): IResolvers[] {
+    const apolloResolvers: IResolvers[] = [];
 
-    this.#loadResolversInDI();
-
-    for (const resolver of RESOLVERS) {
-      const instance = diHelper.get().get(resolver.name);
+    for (const resolver of resolvers) {
       const metadata = this.#buildMetadata(resolver);
-      resolvers.push(this.#buildInterface(instance, metadata));
+      apolloResolvers.push(this.#buildInterface(resolver, metadata));
     }
 
-    return resolvers;
+    return apolloResolvers;
   }
 }

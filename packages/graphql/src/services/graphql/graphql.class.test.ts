@@ -108,6 +108,9 @@ test('should load all resolvers and typeDefs', async () => {
     }
   }
 
+  diHelper.get().set(ResolverSchema, ResolverSchema.name);
+  diHelper.get().set(ResolverSchemaTwo, ResolverSchemaTwo.name);
+
   const schemaPaths = [
     `${__dirname}/../../../test/schema/schema.graphql`,
     `${__dirname}/../../../test/schema/schema_two.graphql`,
@@ -116,11 +119,12 @@ test('should load all resolvers and typeDefs', async () => {
   const app = express();
   const graphQL = diHelper.get().get<GraphQL>('GraphQL');
 
-  // await graphQL.apply(app, schemaPaths, '/graphql');
-  // const httpServer = createServer(app);
-  // httpServer.listen({ port: 3000 }, (): void =>
-  //   console.log(`GraphQL-Server is running on http://localhost:3000/graphql`),
-  // );
+  const resolvers = graphQL.getResolversClassDeclaration().map((resolver) => diHelper.get().get(resolver.name));
+
+  const server = createServer(app);
+  await graphQL.config({ app, path: '/graphql', resolvers, schemaPaths, server });
+
+  // server.listen({ port: 3000 }, (): void => console.log(`http://localhost:3000/graphql`));
 
   assert.is(1, 1);
 });

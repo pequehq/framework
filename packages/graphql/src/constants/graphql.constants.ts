@@ -1,3 +1,3 @@
-import { Resolver } from '../interfaces';
+import { ResolverDeclaration } from '../interfaces';
 
-export const RESOLVERS: Resolver[] = [];
+export const RESOLVERS: ResolverDeclaration[] = [];
