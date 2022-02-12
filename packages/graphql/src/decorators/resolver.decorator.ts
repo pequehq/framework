@@ -1,8 +1,8 @@
-import { RESOLVERS } from '../constants/graphql.constants';
 import { ResolverDeclaration } from '../interfaces';
+import { ResolverStorage } from '../services';
 
 export function Resolver(): ClassDecorator {
   return (target) => {
-    RESOLVERS.push(target as unknown as ResolverDeclaration);
+    ResolverStorage.set(target as unknown as ResolverDeclaration);
   };
 }

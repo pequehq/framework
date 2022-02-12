@@ -1,41 +1,154 @@
 import 'reflect-metadata';
 
+import { gql } from 'apollo-server-express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { loadProviders, unloadProviders } from '../../../test/di';
-import { Field, Parent, Query, Resolver } from '../../decorators';
-import { diHelper } from '../../helpers';
+import { createGraphQL } from '../../../test/test.utils';
+import { Args, Field, Mutation, Parent, Query, Resolver } from '../../decorators';
+import { ResolverStorage } from '../resolver-storage/resolver-storage.service';
 import { ResolverService } from './resolver.service';
 
 const test = suite('ResolverService');
 
-test.before.each(() => {
-  loadProviders();
-});
-
 test.after.each(() => {
-  unloadProviders();
+  ResolverStorage.clear();
 });
 
-test.skip('should load the resolvers', async () => {
+test('should load the resolvers', async () => {
   @Resolver()
-  class ResolverTest {
+  class ResolverSchemaOne {
     @Query()
-    query() {
-      console.log('query');
+    user(): unknown {
+      return [{ id: 1, name: 'name', surname: 'surname', location: 1 }];
     }
 
-    @Field({ type: 'String' })
-    test(@Parent() parent) {
-      console.log('test');
+    @Field({ type: 'User' })
+    location(@Parent() parent): unknown {
+      return { id: 1, city: 'madrid', country: 'spain' };
+    }
+
+    @Field({ type: 'User' })
+    family(@Parent() parent): unknown {
+      return { userId: 1, father: 'father', mother: 'mother' };
+    }
+
+    @Field({ type: 'Location', name: 'properties' })
+    properties(@Parent() parent): unknown {
+      return [
+        { locationId: 1, property: 'property 1' },
+        { locationId: 1, property: 'property 2' },
+      ];
+    }
+
+    @Mutation()
+    insertUser(@Args() args: any): unknown {
+      // no mutation op.
+      return Number(args.id);
     }
   }
 
-  // const resolverService = diHelper.get().get<ResolverService>('ResolverService');
-  // const resolvers = resolverService.loadResolvers();
+  @Resolver()
+  class ResolverSchemaTwo {
+    @Query()
+    countries(@Args() args): unknown {
+      return [
+        { id: 1, name: 'italy', continent: 'europe' },
+        { id: 4, name: 'spain', continent: 'europe' },
+      ];
+    }
+  }
 
-  assert.is(1, 1);
+  const resolverService = new ResolverService();
+  const resolvers = resolverService.loadResolvers([new ResolverSchemaOne(), new ResolverSchemaTwo()]);
+
+  assert.is(resolvers.length, 2);
+
+  const schemaPaths = [
+    `${__dirname}/../../../test/schema/schema.graphql`,
+    `${__dirname}/../../../test/schema/schema_two.graphql`,
+  ];
+
+  const apolloServer = await createGraphQL(schemaPaths);
+
+  const queryOne = gql`
+    query Query {
+      user {
+        id
+        name
+        surname
+        location {
+          id
+          city
+          country
+          properties {
+            locationId
+            property
+          }
+        }
+        family {
+          father
+          mother
+          userId
+        }
+      }
+    }
+  `;
+
+  const resultMatchOne = {
+    user: [
+      {
+        id: '1',
+        name: 'name',
+        surname: 'surname',
+        location: {
+          id: '1',
+          city: 'madrid',
+          country: 'spain',
+          properties: [
+            {
+              locationId: '1',
+              property: 'property 1',
+            },
+            {
+              locationId: '1',
+              property: 'property 2',
+            },
+          ],
+        },
+        family: {
+          father: 'father',
+          mother: 'mother',
+          userId: '1',
+        },
+      },
+    ],
+  };
+
+  const resultOne = await apolloServer.executeOperation({ query: queryOne });
+
+  assert.is(JSON.stringify(resultOne.data), JSON.stringify(resultMatchOne));
+
+  const queryTwo = gql`
+    query Countries($continent: String) {
+      countries(continent: $continent) {
+        name
+        continent
+        id
+      }
+    }
+  `;
+
+  const resultMatchTwo = {
+    countries: [
+      { name: 'italy', continent: 'europe', id: '1' },
+      { name: 'spain', continent: 'europe', id: '4' },
+    ],
+  };
+
+  const resultTwo = await apolloServer.executeOperation({ query: queryTwo, variables: { continent: 'europe' } });
+
+  assert.is(JSON.stringify(resultTwo.data), JSON.stringify(resultMatchTwo));
 });
 
 test.run();

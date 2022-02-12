@@ -8,9 +8,9 @@ import { DocumentNode, execute, subscribe } from 'graphql';
 import { Server } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-import { RESOLVERS } from '../../constants/graphql.constants';
 import { ResolverDeclaration } from '../../interfaces';
 import { ResolverService } from '../resolver/resolver.service';
+import { ResolverStorage } from '../resolver-storage/resolver-storage.service';
 
 interface Config {
   app: Application;
@@ -25,10 +25,10 @@ export class GraphQL {
   constructor(private resolverService: ResolverService) {}
 
   getResolversClassDeclaration(): ResolverDeclaration[] {
-    return RESOLVERS;
+    return ResolverStorage.getAll();
   }
 
-  async config(config: Config): Promise<void> {
+  async config(config: Config): Promise<ApolloServer> {
     const typeDefs: DocumentNode[] = [];
     for (const schemaPath of config.schemaPaths) {
       const schemaFile = fs.readFileSync(schemaPath, { encoding: 'utf8' });
@@ -62,5 +62,7 @@ export class GraphQL {
 
     await server.start();
     server.applyMiddleware({ app: config.app, path: config.path });
+
+    return server;
   }
 }
