@@ -2,10 +2,11 @@ import 'reflect-metadata';
 
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
+
+import { ResolverFieldsMetadata } from '../constants/metadata.constants';
+import { IResolverFieldMetadata } from '../interfaces';
 import { Args } from './args.decorator';
 import { Field } from './field.decorator';
-import { IResolverFieldMetadata } from '../interfaces';
-import { ResolverFieldsMetadata } from '../constants/metadata.constants';
 
 const test = suite('@Field');
 
