@@ -57,8 +57,8 @@ export class ResolverService {
     };
 
     for (const query of metadata.query) {
-      const queryName = query.options?.name ?? query.method;
-      objectAssign('Query', { [queryName]: instance[query.method] });
+      const name = query.options?.name ?? query.method;
+      objectAssign('Query', { [name]: this.#buildMethodWithParams(instance, query.method) });
     }
 
     if (metadata.field) {

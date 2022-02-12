@@ -51,8 +51,16 @@ test('should load all resolvers and typeDefs', async () => {
     { locationId: 3, property: 'cazzo' },
   ];
 
+  const countries = [
+    { id: 1, name: 'italy', continent: 'europe' },
+    { id: 2, name: 'usa', continent: 'america' },
+    { id: 3, name: 'china', continent: 'asia' },
+    { id: 4, name: 'spain', continent: 'europe' },
+    { id: 5, name: 'france', continent: 'europe' },
+  ];
+
   @Resolver()
-  class ResolverTest {
+  class ResolverSchema {
     @Query()
     user() {
       return users;
@@ -92,16 +100,27 @@ test('should load all resolvers and typeDefs', async () => {
     }
   }
 
-  const schemaPath = '/../../../test/schema/schema.graphql';
+  @Resolver()
+  class ResolverSchemaTwo {
+    @Query()
+    countries(@Args() args) {
+      return countries.filter((country) => country.continent === args.continent);
+    }
+  }
+
+  const schemaPaths = [
+    `${__dirname}/../../../test/schema/schema.graphql`,
+    `${__dirname}/../../../test/schema/schema_two.graphql`,
+  ];
 
   const app = express();
   const graphQL = diHelper.get().get<GraphQL>('GraphQL');
 
-  /* await graphQL.apply(app, `${__dirname}/${schemaPath}`, '/graphql');
-  const httpServer = createServer(app);
-  httpServer.listen({ port: 3000 }, (): void =>
-    console.log(`GraphQL-Server is running on http://localhost:3000/graphql`),
-  ); */
+  // await graphQL.apply(app, schemaPaths, '/graphql');
+  // const httpServer = createServer(app);
+  // httpServer.listen({ port: 3000 }, (): void =>
+  //   console.log(`GraphQL-Server is running on http://localhost:3000/graphql`),
+  // );
 
   assert.is(1, 1);
 });
