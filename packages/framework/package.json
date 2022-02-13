@@ -18,6 +18,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@pequehq/di": "^1.0.0",
+    "@pequehq/smb-client": "^1.0.3",
     "axios": "^0.24.0",
     "cluster": "^0.7.7",
     "cookie-parser": "^1.4.6",
