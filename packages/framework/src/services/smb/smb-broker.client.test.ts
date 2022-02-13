@@ -8,7 +8,7 @@ import { SmbBrokerClient, SmbPublishPayload, SmbSubscribePayload } from './smb-b
 
 const test = suite('SMB Broker Client');
 
-test.before.each(async (context) => {
+test.before.each((context) => {
   context.sandbox = sinon.createSandbox();
 });
 

@@ -20,7 +20,7 @@ export class SmbGatewayService extends MicroserviceGatewayHandler {
 
   subscribe(client: SmbBrokerClient): void {
     client.subscribe((event) => {
-      this.pushEvent({ event: event.topic, transport: 'kafka', data: event.data.toString() });
+      this.pushEvent({ event: event.topic, transport: 'smb', data: event.data.toString() });
     });
   }
 }
