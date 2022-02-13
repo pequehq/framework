@@ -5,22 +5,22 @@ import * as assert from 'uvu/assert';
 
 import { ResolverParametersMetadata } from '../constants/metadata.constants';
 import { IResolverParameterMetadata } from '../interfaces';
-import { Parent } from './parent.decorator';
+import { Context } from './context.decorator';
 
-const test = suite('@Parent');
+const test = suite('@Context');
 
-test('should load @Parent metadata', async () => {
+test('should load @Context metadata', async () => {
   const metadata: IResolverParameterMetadata[] = [
-    { method: 'methodOne', type: 'parent', index: 0, key: undefined },
-    { method: 'methodTwo', type: 'parent', index: 0, key: undefined },
+    { method: 'methodOne', type: 'ctx', index: 0, key: undefined },
+    { method: 'methodTwo', type: 'ctx', index: 0, key: 'param' },
   ];
 
   class ResolverTest {
-    methodOne(@Parent() parent: unknown): void {
+    methodOne(@Context() ctx: unknown): void {
       // noop.
     }
 
-    methodTwo(@Parent() parent: unknown): void {
+    methodTwo(@Context('param') ctx: unknown): void {
       // noop.
     }
   }

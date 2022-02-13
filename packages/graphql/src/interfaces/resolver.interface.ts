@@ -4,6 +4,7 @@ export interface IResolverParameterMetadata {
   method: string;
   type: IResolverParamType;
   index: number;
+  key?: string;
 }
 
 export interface IResolverMetadata<TOptions> {

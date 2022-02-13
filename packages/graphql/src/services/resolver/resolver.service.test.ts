@@ -51,11 +51,12 @@ test('should load the resolvers', async () => {
   @Resolver()
   class ResolverSchemaTwo {
     @Query()
-    countries(@Args() args): unknown {
+    countries(@Args('continent') continent: string): unknown {
       return [
         { id: 1, name: 'italy', continent: 'europe' },
-        { id: 4, name: 'spain', continent: 'europe' },
-      ];
+        { id: 2, name: 'spain', continent: 'europe' },
+        { id: 3, name: 'china', continent: 'asia' },
+      ].filter((country) => country.continent === continent);
     }
   }
 
@@ -142,7 +143,7 @@ test('should load the resolvers', async () => {
   const resultMatchTwo = {
     countries: [
       { name: 'italy', continent: 'europe', id: '1' },
-      { name: 'spain', continent: 'europe', id: '4' },
+      { name: 'spain', continent: 'europe', id: '2' },
     ],
   };
 

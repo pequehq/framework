@@ -10,7 +10,7 @@ import { Info } from './info.decorator';
 const test = suite('@Info');
 
 test('should load @Info metadata', async () => {
-  const metadata: IResolverParameterMetadata = { method: 'method', type: 'info', index: 0 };
+  const metadata: IResolverParameterMetadata = { method: 'method', type: 'info', index: 0, key: undefined };
 
   class ResolverTest {
     method(@Info() ctx: unknown): void {

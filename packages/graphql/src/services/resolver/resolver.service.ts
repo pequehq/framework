@@ -22,20 +22,20 @@ export class ResolverService {
   }
 
   #buildMethodWithParams(instance: InstanceType<ResolverDeclaration>, method: string) {
-    return (parent: unknown, args: unknown, ctx: unknown, info: unknown) => {
+    return (parent: unknown, args: never, ctx: never, info: unknown) => {
       const params = ResolverParametersMetadata.get(Object.getPrototypeOf(instance).constructor).filter(
         (param) => param.method === method,
       );
       const methodArgs: unknown[] = [];
-      const apolloParams: Record<IResolverParamType, (index: number) => void> = {
+      const apolloParams: Record<IResolverParamType, (index: number, key?: string) => void> = {
         parent: (index: number) => (methodArgs[index] = parent),
-        ctx: (index: number) => (methodArgs[index] = ctx),
-        args: (index: number) => (methodArgs[index] = args),
+        ctx: (index: number, key?: string) => (key ? (methodArgs[index] = ctx[key]) : (methodArgs[index] = ctx)),
+        args: (index: number, key?: string) => (key ? (methodArgs[index] = args[key]) : (methodArgs[index] = args)),
         info: (index: number) => (methodArgs[index] = info),
       };
 
       for (const param of params) {
-        apolloParams[param.type](param.index);
+        apolloParams[param.type](param.index, param.key);
       }
 
       return instance[method](...methodArgs);

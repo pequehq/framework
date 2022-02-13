@@ -10,15 +10,22 @@ import { Args } from './args.decorator';
 const test = suite('@Args');
 
 test('should load @Args metadata', async () => {
-  const metadata: IResolverParameterMetadata = { method: 'method', type: 'args', index: 0 };
+  const metadata: IResolverParameterMetadata[] = [
+    { method: 'methodOne', type: 'args', index: 0, key: undefined },
+    { method: 'methodTwo', type: 'args', index: 0, key: 'param' },
+  ];
 
   class ResolverTest {
-    method(@Args() args: unknown): void {
+    methodOne(@Args() args: unknown): void {
+      // noop.
+    }
+
+    methodTwo(@Args('param') args: unknown): void {
       // noop.
     }
   }
 
-  assert.equal(ResolverParametersMetadata.get(ResolverTest), [metadata]);
+  assert.equal(ResolverParametersMetadata.get(ResolverTest), metadata);
 });
 
 test.run();

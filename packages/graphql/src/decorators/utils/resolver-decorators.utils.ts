@@ -14,6 +14,7 @@ interface IResolverParametersMetadataOptions {
   parameterIndex: number;
   paramType: IResolverParamType;
   propertyKey: symbol | string;
+  paramKey?: string;
 }
 
 export function manageResolverMetadata(options: IResolverMetadataOptions): void {
@@ -28,7 +29,12 @@ export function manageResolverParametersMetadata(options: IResolverParametersMet
   const objectType = options.target.constructor;
 
   const params = ResolverParametersMetadata.get(objectType) ?? [];
-  params.push({ index: options.parameterIndex, type: options.paramType, method: options.propertyKey.toString() });
+  params.push({
+    index: options.parameterIndex,
+    type: options.paramType,
+    method: options.propertyKey.toString(),
+    key: options.paramKey,
+  });
 
   ResolverParametersMetadata.set(params, objectType);
 }
