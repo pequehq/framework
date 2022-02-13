@@ -4,10 +4,12 @@ import { CompleteTransportQueueItem, ExternalTransportType, MicroserviceOptions 
 import { KafkaBrokerClient } from '../kafka/kafka-broker.client';
 import { MqttBrokerClient } from '../mqtt/mqtt-broker.client';
 import { RedisBrokerClient } from '../redis/redis-broker.client';
+import { SmbBrokerClient } from '../smb/smb-broker.client';
 import { TransportSubjects } from '../subjects/subjects';
 import { KafkaGateway } from './gateway/kafka-gateway.service';
 import { MqttGateway } from './gateway/mqtt-gateway.service';
 import { RedisGateway } from './gateway/redis-gateway.service';
+import { SmbGateway } from './gateway/smb-gateway.service';
 
 class MicroserviceGatewayService {
   #subscriptions: Subscription[] = [];
@@ -15,6 +17,7 @@ class MicroserviceGatewayService {
     mqtt: new Map<string, MqttBrokerClient>(),
     redis: new Map<string, RedisBrokerClient>(),
     kafka: new Map<string, KafkaBrokerClient>(),
+    smb: new Map<string, SmbBrokerClient>(),
   };
 
   #register: Record<ExternalTransportType, (options: MicroserviceOptions) => void> = {
@@ -33,6 +36,11 @@ class MicroserviceGatewayService {
       await KafkaGateway.subscribe(client);
       this.#gateways.kafka.set(options.broker, client);
     },
+    smb: async (options) => {
+      const client = await SmbGateway.register(options);
+      SmbGateway.subscribe(client);
+      this.#gateways.smb.set(options.broker, client);
+    },
   };
 
   #publish: Record<ExternalTransportType, (item: CompleteTransportQueueItem) => void> = {
@@ -44,6 +52,9 @@ class MicroserviceGatewayService {
     },
     kafka: async (item) => {
       await KafkaGateway.publish(this.#gateways.kafka.get(item.broker), item);
+    },
+    smb: (item) => {
+      SmbGateway.publish(this.#gateways.smb.get(item.broker), item);
     },
   };
 
