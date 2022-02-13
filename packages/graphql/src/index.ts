@@ -1,2 +1,2 @@
 export * from './decorators';
-export * from './graphql.factory';
+export * from './services/resolver/resolver.service';

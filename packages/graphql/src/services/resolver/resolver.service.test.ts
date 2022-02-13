@@ -1,21 +1,18 @@
 import 'reflect-metadata';
 
+import { IResolvers } from '@graphql-tools/utils/Interfaces';
 import { gql } from 'apollo-server-express';
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
 
-import { createGraphQL } from '../../../test/test.utils';
+import { createGraphQLServer } from '../../../test/test.utils';
 import { Args, Field, Mutation, Parent, Query, Resolver } from '../../decorators';
 import { ResolverStorage } from '../resolver-storage/resolver-storage.service';
 import { ResolverService } from './resolver.service';
 
 const test = suite('ResolverService');
 
-test.after.each(() => {
-  ResolverStorage.clear();
-});
-
-test('should load the resolvers', async () => {
+test.before(async (context) => {
   @Resolver()
   class ResolverSchemaOne {
     @Query()
@@ -60,18 +57,35 @@ test('should load the resolvers', async () => {
     }
   }
 
-  const resolverService = new ResolverService();
-  const resolvers = resolverService.loadResolvers([new ResolverSchemaOne(), new ResolverSchemaTwo()]);
-
-  assert.is(resolvers.length, 2);
-
-  const schemaPaths = [
-    `${__dirname}/../../../test/schema/schema.graphql`,
-    `${__dirname}/../../../test/schema/schema_two.graphql`,
+  const currentResolvers: IResolvers[] = [
+    { Query: { testOne: (): string => 'testOne' } },
+    { Query: { testTwo: (): string => 'testTwo' } },
   ];
 
-  const apolloServer = await createGraphQL(schemaPaths);
+  const resolverService = new ResolverService();
 
+  context.currentResolvers = currentResolvers;
+  context.resolvers = resolverService.loadResolvers(
+    [new ResolverSchemaOne(), new ResolverSchemaTwo()],
+    currentResolvers,
+  );
+  context.schemaPaths = [
+    `${__dirname}/../../../test/schema/schema_one.graphql`,
+    `${__dirname}/../../../test/schema/schema_two.graphql`,
+    `${__dirname}/../../../test/schema/schema_three.graphql`,
+  ];
+  context.apolloServer = await createGraphQLServer({ schemaPaths: context.schemaPaths, resolvers: context.resolvers });
+});
+
+test.after(() => {
+  ResolverStorage.clear();
+});
+
+test('should load the resolvers', (context) => {
+  assert.is(context.resolvers.length, 4);
+});
+
+test('should run lib resolvers correctly', async (context) => {
   const queryOne = gql`
     query Query {
       user {
@@ -126,7 +140,7 @@ test('should load the resolvers', async () => {
     ],
   };
 
-  const resultOne = await apolloServer.executeOperation({ query: queryOne });
+  const resultOne = await context.apolloServer.executeOperation({ query: queryOne });
 
   assert.is(JSON.stringify(resultOne.data), JSON.stringify(resultMatchOne));
 
@@ -147,7 +161,36 @@ test('should load the resolvers', async () => {
     ],
   };
 
-  const resultTwo = await apolloServer.executeOperation({ query: queryTwo, variables: { continent: 'europe' } });
+  const resultTwo = await context.apolloServer.executeOperation({
+    query: queryTwo,
+    variables: { continent: 'europe' },
+  });
+
+  assert.is(JSON.stringify(resultTwo.data), JSON.stringify(resultMatchTwo));
+});
+
+test('should run pre-existent resolvers correctly', async (context) => {
+  const queryOne = gql`
+    query Query {
+      testOne
+    }
+  `;
+
+  const resultMatchOne = { testOne: 'testOne' };
+
+  const resultOne = await context.apolloServer.executeOperation({ query: queryOne });
+
+  assert.is(JSON.stringify(resultOne.data), JSON.stringify(resultMatchOne));
+
+  const queryTwo = gql`
+    query Query {
+      testTwo
+    }
+  `;
+
+  const resultMatchTwo = { testTwo: 'testTwo' };
+
+  const resultTwo = await context.apolloServer.executeOperation({ query: queryTwo });
 
   assert.is(JSON.stringify(resultTwo.data), JSON.stringify(resultMatchTwo));
 });

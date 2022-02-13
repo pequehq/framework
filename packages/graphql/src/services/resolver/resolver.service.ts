@@ -71,14 +71,23 @@ export class ResolverService {
     return resolver;
   }
 
-  loadResolvers(resolvers: InstanceType<ResolverDeclaration>[]): IResolvers[] {
-    const apolloResolvers: IResolvers[] = [];
+  loadResolvers(
+    resolvers: InstanceType<ResolverDeclaration>[],
+    currentResolvers?: IResolvers | IResolvers[],
+  ): IResolvers[] {
+    const arrResolvers: IResolvers[] = [];
+
+    if (currentResolvers) {
+      arrResolvers.push(
+        ...new Set<IResolvers>(Array.isArray(currentResolvers) ? currentResolvers : [currentResolvers]),
+      );
+    }
 
     for (const resolver of resolvers) {
       const metadata = this.#buildMetadata(resolver);
-      apolloResolvers.push(this.#buildInterface(resolver, metadata));
+      arrResolvers.push(this.#buildInterface(resolver, metadata));
     }
 
-    return apolloResolvers;
+    return arrResolvers;
   }
 }

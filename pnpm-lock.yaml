@@ -133,7 +133,6 @@ importers:
       graphql: ^16.3.0
       graphql-subscriptions: ^2.0.0
       reflect-metadata: ^0.1.13
-      subscriptions-transport-ws: ^0.11.0
     dependencies:
       '@graphql-tools/merge': 8.2.2_graphql@16.3.0
       '@graphql-tools/schema': 8.3.1_graphql@16.3.0
@@ -141,7 +140,6 @@ importers:
       '@pequehq/di': 1.0.0
       graphql-subscriptions: 2.0.0_graphql@16.3.0
       reflect-metadata: 0.1.13
-      subscriptions-transport-ws: 0.11.0_graphql@16.3.0
     devDependencies:
       '@pequehq/test': link:../test
       '@types/mustache': 4.1.2
@@ -1528,10 +1526,6 @@ packages:
       es5-ext: 0.10.53
     dev: false
 
-  /eventemitter3/3.1.2:
-    resolution: {integrity: sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==}
-    dev: false
-
   /express-session/1.17.2:
     resolution: {integrity: sha512-mPcYcLA0lvh7D4Oqr5aNJFMtBMKPLl++OKKxkHzZ0U0oDq1rpKBnkR5f5vCHR26VeArlTOEF9td4x5IjICksRQ==}
     engines: {node: '>= 0.8.0'}
@@ -2764,22 +2758,6 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /subscriptions-transport-ws/0.11.0_graphql@16.3.0:
-    resolution: {integrity: sha512-8D4C6DIH5tGiAIpp5I0wD/xRlNiZAPGHygzCe7VzyzUoxHtawzjNAY9SUTXU05/EY2NMY9/9GF0ycizkXr1CWQ==}
-    peerDependencies:
-      graphql: ^15.7.2 || ^16.0.0
-    dependencies:
-      backo2: 1.0.2
-      eventemitter3: 3.1.2
-      graphql: 16.3.0
-      iterall: 1.3.0
-      symbol-observable: 1.2.0
-      ws: 7.5.6
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /supports-color/7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
@@ -2804,11 +2782,6 @@ packages:
     dependencies:
       express: 4.17.2
       swagger-ui-dist: 4.1.3
-    dev: false
-
-  /symbol-observable/1.2.0:
-    resolution: {integrity: sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==}
-    engines: {node: '>=0.10.0'}
     dev: false
 
   /test-exclude/6.0.0:

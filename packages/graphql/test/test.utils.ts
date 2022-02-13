@@ -1,17 +1,33 @@
-import { ApolloServer } from 'apollo-server-express';
+import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
+import { ApolloServer, gql } from 'apollo-server-express';
 import express from 'express';
-import { createServer } from 'http';
+import fs from 'fs';
+import { DocumentNode } from 'graphql';
 
-import { GraphqlFactory } from '../src/graphql.factory';
+import { ResolverDeclaration } from '../src/interfaces';
 
-export async function createGraphQL(schemaPaths: string[]): Promise<ApolloServer> {
-  const graphQLFactory = new GraphqlFactory();
-  const graphQL = graphQLFactory.createServer();
+interface Config {
+  schemaPaths: string[];
+  resolvers: InstanceType<ResolverDeclaration>[];
+}
 
-  const resolvers = graphQL.getResolversClassDeclaration().map((resolver) => new resolver());
-
+export async function createGraphQLServer(config: Config): Promise<ApolloServer> {
   const app = express();
-  const server = createServer();
 
-  return await graphQL.config({ app, path: './graphql', resolvers, schemaPaths, server });
+  const typeDefs: DocumentNode[] = [];
+  for (const schemaPath of config.schemaPaths) {
+    const schemaFile = fs.readFileSync(schemaPath, { encoding: 'utf8' });
+    typeDefs.push(gql(schemaFile));
+  }
+  const mergedTypeDefs = mergeTypeDefs(typeDefs);
+
+  const server = new ApolloServer({
+    typeDefs: mergedTypeDefs,
+    resolvers: mergeResolvers(config.resolvers),
+  });
+
+  await server.start();
+  server.applyMiddleware({ app: app, path: '/graphql' });
+
+  return server;
 }
