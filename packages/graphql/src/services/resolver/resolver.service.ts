@@ -8,6 +8,7 @@ import {
   ResolverQueriesMetadata,
 } from '../../constants/metadata.constants';
 import { IResolverParamType, IResolverServiceMetadata, ResolverDeclaration } from '../../interfaces';
+import { ResolverStorage } from '../resolver-storage/resolver-storage.service';
 
 @Injectable()
 export class ResolverService {
@@ -69,6 +70,10 @@ export class ResolverService {
     }
 
     return resolver;
+  }
+
+  getResolversDeclarations(): ResolverDeclaration[] {
+    return ResolverStorage.getAll();
   }
 
   loadResolvers(

@@ -66,7 +66,7 @@ test.before(async (context) => {
 
   context.currentResolvers = currentResolvers;
   context.resolvers = resolverService.loadResolvers(
-    [new ResolverSchemaOne(), new ResolverSchemaTwo()],
+    resolverService.getResolversDeclarations().map((resolver) => new resolver()),
     currentResolvers,
   );
   context.schemaPaths = [
