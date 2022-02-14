@@ -1,6 +1,5 @@
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
 import { ApolloServer, gql } from 'apollo-server-express';
-import express from 'express';
 import fs from 'fs';
 import { DocumentNode } from 'graphql';
 
@@ -11,9 +10,7 @@ interface Config {
   resolvers: InstanceType<ResolverDeclaration>[];
 }
 
-export async function createGraphQLServer(config: Config): Promise<ApolloServer> {
-  const app = express();
-
+export function createGraphQLServer(config: Config): ApolloServer {
   const typeDefs: DocumentNode[] = [];
   for (const schemaPath of config.schemaPaths) {
     const schemaFile = fs.readFileSync(schemaPath, { encoding: 'utf8' });
@@ -21,13 +18,8 @@ export async function createGraphQLServer(config: Config): Promise<ApolloServer>
   }
   const mergedTypeDefs = mergeTypeDefs(typeDefs);
 
-  const server = new ApolloServer({
+  return new ApolloServer({
     typeDefs: mergedTypeDefs,
     resolvers: mergeResolvers(config.resolvers),
   });
-
-  await server.start();
-  server.applyMiddleware({ app: app, path: '/graphql' });
-
-  return server;
 }

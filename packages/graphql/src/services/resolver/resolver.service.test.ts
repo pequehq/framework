@@ -65,8 +65,8 @@ test.before(async (context) => {
   const resolverService = new ResolverService();
 
   context.currentResolvers = currentResolvers;
-  context.resolvers = resolverService.loadResolvers(
-    resolverService.getResolversDeclarations().map((resolver) => new resolver()),
+  context.resolvers = resolverService.get(
+    resolverService.getDeclarations().map((resolver) => new resolver()),
     currentResolvers,
   );
   context.schemaPaths = [
@@ -74,7 +74,7 @@ test.before(async (context) => {
     `${__dirname}/../../../test/schema/schema_two.graphql`,
     `${__dirname}/../../../test/schema/schema_three.graphql`,
   ];
-  context.apolloServer = await createGraphQLServer({ schemaPaths: context.schemaPaths, resolvers: context.resolvers });
+  context.apolloServer = createGraphQLServer({ schemaPaths: context.schemaPaths, resolvers: context.resolvers });
 });
 
 test.after(() => {

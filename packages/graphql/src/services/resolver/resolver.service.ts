@@ -1,5 +1,4 @@
 import { IResolvers } from '@graphql-tools/utils/Interfaces';
-import { Injectable } from '@pequehq/di';
 
 import {
   ResolverFieldsMetadata,
@@ -7,10 +6,9 @@ import {
   ResolverParametersMetadata,
   ResolverQueriesMetadata,
 } from '../../constants/metadata.constants';
-import { IResolverParamType, IResolverServiceMetadata, ResolverDeclaration } from '../../interfaces';
+import { IResolverFunction, IResolverParamType, IResolverServiceMetadata, ResolverDeclaration } from '../../interfaces';
 import { ResolverStorage } from '../resolver-storage/resolver-storage.service';
 
-@Injectable()
 export class ResolverService {
   #buildMetadata(resolver: ResolverDeclaration): IResolverServiceMetadata {
     const prototype = Object.getPrototypeOf(resolver).constructor;
@@ -22,8 +20,8 @@ export class ResolverService {
     };
   }
 
-  #buildMethodWithParams(instance: InstanceType<ResolverDeclaration>, method: string) {
-    return (parent: unknown, args: never, ctx: never, info: unknown) => {
+  #buildMethodWithParams(instance: InstanceType<ResolverDeclaration>, method: string): IResolverFunction {
+    return (parent, args, ctx, info): unknown => {
       const params = ResolverParametersMetadata.get(Object.getPrototypeOf(instance).constructor).filter(
         (param) => param.method === method,
       );
@@ -50,9 +48,11 @@ export class ResolverService {
       Object.assign(resolver, { [key]: { ...resolver[key], ...property } });
     };
 
-    for (const query of metadata.query) {
-      const name = query.options?.name ?? query.method;
-      objectAssign('Query', { [name]: this.#buildMethodWithParams(instance, query.method) });
+    if (metadata.query) {
+      for (const query of metadata.query) {
+        const name = query.options?.name ?? query.method;
+        objectAssign('Query', { [name]: this.#buildMethodWithParams(instance, query.method) });
+      }
     }
 
     if (metadata.field) {
@@ -72,14 +72,11 @@ export class ResolverService {
     return resolver;
   }
 
-  getResolversDeclarations(): ResolverDeclaration[] {
+  getDeclarations(): ResolverDeclaration[] {
     return ResolverStorage.getAll();
   }
 
-  loadResolvers(
-    resolvers: InstanceType<ResolverDeclaration>[],
-    currentResolvers?: IResolvers | IResolvers[],
-  ): IResolvers[] {
+  get(resolvers: InstanceType<ResolverDeclaration>[], currentResolvers?: IResolvers | IResolvers[]): IResolvers[] {
     const arrResolvers: IResolvers[] = [];
 
     if (currentResolvers) {
