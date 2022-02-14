@@ -1,5 +1,5 @@
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import fs from 'fs';
 
 import { ResolverDeclaration } from '../src/interfaces';
