@@ -1,0 +1,33 @@
+type Query {
+  user: [User]
+}
+
+type User {
+  id: ID
+  name: String
+  surname: String
+  location: Location
+  family: Family
+}
+
+type Family {
+  father: String!
+  mother: String!
+  userId: ID!
+}
+
+type LocationProperties {
+  locationId: ID!
+  property: String!
+}
+
+type Location {
+  id: ID!
+  city: String!
+  country: String!
+  properties: [LocationProperties!]!
+}
+
+type Mutation {
+  insertUser(id: ID!, name: String!, surname: String!, location: ID!): ID!
+}

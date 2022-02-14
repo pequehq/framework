@@ -1,7 +1,7 @@
 {
-  "name": "@pequehq/test",
-  "version": "1.0.0",
-  "description": "Peque Test utils",
+  "name": "@pequehq/graphql",
+  "version": "1.0.2",
+  "description": "Peque GraphQL",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -14,9 +14,17 @@
   "author": "Simone Di Cicco",
   "license": "ISC",
   "dependencies": {
-    "@pequehq/di": "^1.0.0"
+    "@graphql-tools/merge": "^8.2.2",
+    "@graphql-tools/schema": "^8.3.1",
+    "@graphql-tools/utils": "^8.6.1",
+    "reflect-metadata": "^0.1.13"
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@pequehq/test": "workspace:*",
+    "apollo-server-express": "^3.6.2",
+    "graphql": "^16.3.0"
   }
 }
