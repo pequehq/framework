@@ -1,4 +1,0 @@
-type Query {
-    testOne: String!
-    testTwo: String!
-}
