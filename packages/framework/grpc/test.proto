@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+service TestService {
+  rpc GetAll (Empty) returns (TestList) {}
+}
+
+message Empty {}
+
+message TestList {
+  repeated string test = 1;
+}

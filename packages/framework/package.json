@@ -17,6 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
+    "@grpc/grpc-js": "^1.5.7",
+    "@grpc/proto-loader": "^0.6.9",
     "@pequehq/di": "^1.0.0",
     "@pequehq/smb-client": "^1.0.3",
     "axios": "^0.24.0",
